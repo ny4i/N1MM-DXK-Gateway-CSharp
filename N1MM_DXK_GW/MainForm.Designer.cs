@@ -24,6 +24,8 @@ partial class MainForm
       settingsLayout = new TableLayoutPanel();
       udpPortLabel = new Label();
       udpPortTextBox = new TextBox();
+      dxkPortLabel = new Label();
+      dxkPortValueBox = new TextBox();
       checkboxLayout = new TableLayoutPanel();
       dxkLookupCheck = new CheckBox();
       callbookCheck = new CheckBox();
@@ -98,12 +100,16 @@ partial class MainForm
       settingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
       settingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
       settingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-      settingsLayout.RowCount = 2;
+      settingsLayout.RowCount = 3;
+      settingsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
       settingsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
       settingsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
       settingsLayout.Controls.Add(udpPortLabel, 0, 0);
       settingsLayout.Controls.Add(udpPortTextBox, 1, 0);
-      settingsLayout.Controls.Add(checkboxLayout, 0, 1);
+      settingsLayout.Controls.Add(dxkPortLabel, 0, 1);
+      settingsLayout.Controls.Add(dxkPortValueBox, 1, 1);
+      settingsLayout.SetColumnSpan(dxkPortValueBox, 2);
+      settingsLayout.Controls.Add(checkboxLayout, 0, 2);
       settingsLayout.SetColumnSpan(checkboxLayout, 3);
 
       //
@@ -120,6 +126,29 @@ partial class MainForm
       udpPortTextBox.Width = 80;
       udpPortTextBox.Anchor = AnchorStyles.Left;
       udpPortTextBox.Margin = new Padding(0, 3, 0, 6);
+
+      //
+      // dxkPortLabel
+      //
+      dxkPortLabel.Text = "DXKeeper TCP base port:";
+      dxkPortLabel.AutoSize = true;
+      dxkPortLabel.Anchor = AnchorStyles.Left;
+      dxkPortLabel.Margin = new Padding(3, 6, 6, 6);
+
+      //
+      // dxkPortValueBox
+      //
+      // Read-only display of the DXKeeper port info from registry. Selectable
+      // (TextBox) so users can copy values for troubleshooting, but TabStop
+      // is off and BorderStyle is None to match a label visually.
+      dxkPortValueBox.ReadOnly = true;
+      dxkPortValueBox.TabStop = false;
+      dxkPortValueBox.BorderStyle = BorderStyle.None;
+      dxkPortValueBox.BackColor = SystemColors.Control;
+      dxkPortValueBox.Width = 280;
+      dxkPortValueBox.Anchor = AnchorStyles.Left;
+      dxkPortValueBox.Margin = new Padding(0, 6, 0, 6);
+      dxkPortValueBox.Text = "(reading from registry…)";
 
       //
       // checkboxLayout
@@ -323,6 +352,8 @@ partial class MainForm
    private TableLayoutPanel settingsLayout;
    private Label udpPortLabel;
    private TextBox udpPortTextBox;
+   private Label dxkPortLabel;
+   private TextBox dxkPortValueBox;
    private TableLayoutPanel checkboxLayout;
    private CheckBox dxkLookupCheck;
    private CheckBox callbookCheck;

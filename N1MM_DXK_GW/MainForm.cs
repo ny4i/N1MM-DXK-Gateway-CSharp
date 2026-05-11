@@ -62,6 +62,7 @@ public partial class MainForm : Form
       logger.LogWritten += OnLogWritten;
 
       ApplySettingsToUi();
+      RefreshDxKeeperPortDisplay();
       RestoreWindowPosition();
       SetTitleWithVersion();
       StartListenerOnConfiguredPort();
@@ -87,6 +88,13 @@ public partial class MainForm : Form
       dxvDde.Dispose();
       pfDde.Dispose();
       base.OnFormClosed(e);
+   }
+
+   private void RefreshDxKeeperPortDisplay()
+   {
+      var info = DxKeeperTcpClient.GetDxKeeperBasePortInfo();
+      var suffix = info.FromRegistry ? string.Empty : " — default, DXKeeper not detected in registry";
+      dxkPortValueBox.Text = $"{info.BasePort} (using TCP port {info.ServicePort}){suffix}";
    }
 
    private void SetTitleWithVersion()
@@ -525,6 +533,10 @@ public partial class MainForm : Form
          }
       }
       toolTip.SetToolTip(udpPortTextBox, "UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)");
+      toolTip.SetToolTip(dxkPortLabel,
+         @"Read-only. DXKeeper's TCP service base port from HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort. The gateway sends to base + 1.");
+      toolTip.SetToolTip(dxkPortValueBox,
+         @"Read-only. DXKeeper's TCP service base port from HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort. The gateway sends to base + 1.");
       toolTip.SetToolTip(showErrorLogButton, "Open ErrorLog.txt in the default text editor");
       toolTip.SetToolTip(helpButton, "Open online documentation");
       toolTip.SetToolTip(errorLogLink, "Errors have been logged - click to open ErrorLog.txt");

@@ -156,7 +156,11 @@ public sealed class DxKeeperTcpClient
 
    public int GetDxKeeperServicePort() => GetDxKeeperBasePort() + DxkPortOffset;
 
-   public static int GetDxKeeperBasePort()
+   public static int GetDxKeeperBasePort() => GetDxKeeperBasePortInfo().BasePort;
+
+   public readonly record struct BasePortInfo(int BasePort, int ServicePort, bool FromRegistry);
+
+   public static BasePortInfo GetDxKeeperBasePortInfo()
    {
       // VB6 stores port as a REG_SZ string. Read defensively and fall back
       // to the documented default 52000 if missing or malformed.
@@ -166,14 +170,14 @@ public sealed class DxKeeperTcpClient
          if (key?.GetValue("ServiceBasePort") is string s &&
              int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var port))
          {
-            return port;
+            return new BasePortInfo(port, port + DxkPortOffset, FromRegistry: true);
          }
       }
       catch
       {
          // Treat any registry access failure as "use default".
       }
-      return DxkDefaultBasePort;
+      return new BasePortInfo(DxkDefaultBasePort, DxkDefaultBasePort + DxkPortOffset, FromRegistry: false);
    }
 
    private static string BuildFrame(string command, string parameters)
