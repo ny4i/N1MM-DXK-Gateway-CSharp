@@ -21,6 +21,7 @@ public sealed class Settings
    public bool DxkLotwUpload { get; set; }
    public bool DxkClubLogUpload { get; set; }
    public bool DebugLogging { get; set; }
+   public bool VerboseLogging { get; set; }
 
    // Window state. WindowPositionUnset means "use designer defaults".
    public int WindowLeft { get; set; } = WindowPositionUnset;
@@ -45,6 +46,7 @@ public sealed class Settings
       s.DxkLotwUpload = ReadBool(key, "DXKeeperLoTWUpload");
       s.DxkClubLogUpload = ReadBool(key, "DXKeeperClubLogUpload");
       s.DebugLogging = ReadBool(key, "DiagMode");
+      s.VerboseLogging = ReadBool(key, "VerboseLogging");
       s.WindowLeft = ReadInt(key, "WindowLeft", WindowPositionUnset);
       s.WindowTop = ReadInt(key, "WindowTop", WindowPositionUnset);
       s.WindowWidth = ReadInt(key, "WindowWidth", WindowPositionUnset);
@@ -65,6 +67,7 @@ public sealed class Settings
       WriteString(key, "DXKeeperLoTWUpload", BoolToVb(DxkLotwUpload));
       WriteString(key, "DXKeeperClubLogUpload", BoolToVb(DxkClubLogUpload));
       WriteString(key, "DiagMode", BoolToVb(DebugLogging));
+      WriteString(key, "VerboseLogging", BoolToVb(VerboseLogging));
       WriteString(key, "WindowLeft", WindowLeft.ToString(CultureInfo.InvariantCulture));
       WriteString(key, "WindowTop", WindowTop.ToString(CultureInfo.InvariantCulture));
       WriteString(key, "WindowWidth", WindowWidth.ToString(CultureInfo.InvariantCulture));

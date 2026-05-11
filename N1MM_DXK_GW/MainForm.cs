@@ -37,6 +37,7 @@ public partial class MainForm : Form
       eqslCheck.CheckedChanged += SettingCheckChanged;
       lotwCheck.CheckedChanged += SettingCheckChanged;
       clubLogCheck.CheckedChanged += SettingCheckChanged;
+      verboseLoggingCheck.CheckedChanged += SettingCheckChanged;
       logDebugInfoCheck.CheckedChanged += LogDebugInfoCheck_CheckedChanged;
 
       dequeueTimer.Tick += (_, _) => dispatcher.Drain();
@@ -94,7 +95,7 @@ public partial class MainForm : Form
    {
       var info = DxKeeperTcpClient.GetDxKeeperBasePortInfo();
       var suffix = info.FromRegistry ? string.Empty : " — default, DXKeeper not detected in registry";
-      dxkPortValueBox.Text = $"{info.BasePort} (using TCP port {info.ServicePort}){suffix}";
+      dxkPortValue.Text = $"{info.BasePort} (using TCP port {info.ServicePort}){suffix}";
    }
 
    private void SetTitleWithVersion()
@@ -179,7 +180,7 @@ public partial class MainForm : Form
    {
       // Detach change handlers before pushing loaded values into controls so
       // we don't immediately re-save the same values back to the registry.
-      var checks = new[] { dxkLookupCheck, callbookCheck, eqslCheck, lotwCheck, clubLogCheck };
+      var checks = new[] { dxkLookupCheck, callbookCheck, eqslCheck, lotwCheck, clubLogCheck, verboseLoggingCheck };
       foreach (var cb in checks)
       {
          cb.CheckedChanged -= SettingCheckChanged;
@@ -192,6 +193,7 @@ public partial class MainForm : Form
       eqslCheck.Checked = settings.DxkEqslUpload;
       lotwCheck.Checked = settings.DxkLotwUpload;
       clubLogCheck.Checked = settings.DxkClubLogUpload;
+      verboseLoggingCheck.Checked = settings.VerboseLogging;
       logDebugInfoCheck.Checked = settings.DebugLogging;
 
       foreach (var cb in checks)
@@ -380,7 +382,7 @@ public partial class MainForm : Form
             dot.ForeColor = connected ? Color.LimeGreen : Color.IndianRed;
             statusLabel.Text = connected ? "connected" : "disconnected";
             statusLabel.ForeColor = connected ? SystemColors.ControlText : SystemColors.GrayText;
-            AppendLog($"{channel.Service} DDE: {(connected ? "connected" : "disconnected")}");
+            AppendVerboseLog($"{channel.Service} DDE: {(connected ? "connected" : "disconnected")}");
             logger.DebugLog($"{channel.Service}|{channel.Topic} DDE state: {(connected ? "connected" : "disconnected")}");
          });
       }
@@ -426,6 +428,18 @@ public partial class MainForm : Form
       }
       catch (ObjectDisposedException) { }
       catch (InvalidOperationException) { }
+   }
+
+   private void AppendVerboseLog(string line)
+   {
+      // Low-priority status events (e.g. DDE connect/disconnect). Suppressed
+      // unless "Verbose logging" is enabled — keeps the operation log focused
+      // on QSO traffic by default. Independent of "Log debugging information"
+      // which controls ErrorLog.txt file volume.
+      if (settings.VerboseLogging)
+      {
+         AppendLog(line);
+      }
    }
 
    private void AppendLog(string line)
@@ -489,6 +503,7 @@ public partial class MainForm : Form
       settings.DxkEqslUpload = eqslCheck.Checked;
       settings.DxkLotwUpload = lotwCheck.Checked;
       settings.DxkClubLogUpload = clubLogCheck.Checked;
+      settings.VerboseLogging = verboseLoggingCheck.Checked;
       settings.Save();
    }
 
@@ -525,7 +540,7 @@ public partial class MainForm : Form
 
    private void AttachToolTips()
    {
-      foreach (var cb in new[] { dxkLookupCheck, callbookCheck, eqslCheck, lotwCheck, clubLogCheck, logDebugInfoCheck })
+      foreach (var cb in new[] { dxkLookupCheck, callbookCheck, eqslCheck, lotwCheck, clubLogCheck, logDebugInfoCheck, verboseLoggingCheck })
       {
          if (cb.Tag is string tip)
          {
@@ -535,7 +550,7 @@ public partial class MainForm : Form
       toolTip.SetToolTip(udpPortTextBox, "UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)");
       toolTip.SetToolTip(dxkPortLabel,
          @"Read-only. DXKeeper's TCP service base port from HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort. The gateway sends to base + 1.");
-      toolTip.SetToolTip(dxkPortValueBox,
+      toolTip.SetToolTip(dxkPortValue,
          @"Read-only. DXKeeper's TCP service base port from HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort. The gateway sends to base + 1.");
       toolTip.SetToolTip(showErrorLogButton, "Open ErrorLog.txt in the default text editor");
       toolTip.SetToolTip(helpButton, "Open online documentation");

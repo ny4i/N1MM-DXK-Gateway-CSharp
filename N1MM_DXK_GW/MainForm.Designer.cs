@@ -25,7 +25,7 @@ partial class MainForm
       udpPortLabel = new Label();
       udpPortTextBox = new TextBox();
       dxkPortLabel = new Label();
-      dxkPortValueBox = new TextBox();
+      dxkPortValue = new Label();
       checkboxLayout = new TableLayoutPanel();
       dxkLookupCheck = new CheckBox();
       callbookCheck = new CheckBox();
@@ -33,6 +33,7 @@ partial class MainForm
       lotwCheck = new CheckBox();
       clubLogCheck = new CheckBox();
       logDebugInfoCheck = new CheckBox();
+      verboseLoggingCheck = new CheckBox();
       statusGroup = new GroupBox();
       statusLayout = new TableLayoutPanel();
       dxkDot = new Label();
@@ -107,8 +108,8 @@ partial class MainForm
       settingsLayout.Controls.Add(udpPortLabel, 0, 0);
       settingsLayout.Controls.Add(udpPortTextBox, 1, 0);
       settingsLayout.Controls.Add(dxkPortLabel, 0, 1);
-      settingsLayout.Controls.Add(dxkPortValueBox, 1, 1);
-      settingsLayout.SetColumnSpan(dxkPortValueBox, 2);
+      settingsLayout.Controls.Add(dxkPortValue, 1, 1);
+      settingsLayout.SetColumnSpan(dxkPortValue, 2);
       settingsLayout.Controls.Add(checkboxLayout, 0, 2);
       settingsLayout.SetColumnSpan(checkboxLayout, 3);
 
@@ -136,19 +137,16 @@ partial class MainForm
       dxkPortLabel.Margin = new Padding(3, 6, 6, 6);
 
       //
-      // dxkPortValueBox
+      // dxkPortValue
       //
-      // Read-only display of the DXKeeper port info from registry. Selectable
-      // (TextBox) so users can copy values for troubleshooting, but TabStop
-      // is off and BorderStyle is None to match a label visually.
-      dxkPortValueBox.ReadOnly = true;
-      dxkPortValueBox.TabStop = false;
-      dxkPortValueBox.BorderStyle = BorderStyle.None;
-      dxkPortValueBox.BackColor = SystemColors.Control;
-      dxkPortValueBox.Width = 280;
-      dxkPortValueBox.Anchor = AnchorStyles.Left;
-      dxkPortValueBox.Margin = new Padding(0, 6, 0, 6);
-      dxkPortValueBox.Text = "(reading from registry…)";
+      // Plain Label for read-only display. Using Label (not a borderless
+      // TextBox) keeps the text baseline aligned with the dxkPortLabel in
+      // the adjacent column — a borderless TextBox has different internal
+      // padding and renders a few pixels lower.
+      dxkPortValue.AutoSize = true;
+      dxkPortValue.Anchor = AnchorStyles.Left;
+      dxkPortValue.Margin = new Padding(0, 6, 6, 6);
+      dxkPortValue.Text = "(reading from registry…)";
 
       //
       // checkboxLayout
@@ -159,7 +157,7 @@ partial class MainForm
       checkboxLayout.ColumnCount = 2;
       checkboxLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
       checkboxLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
-      checkboxLayout.RowCount = 3;
+      checkboxLayout.RowCount = 4;
       checkboxLayout.Margin = new Padding(0, 6, 0, 0);
       checkboxLayout.Controls.Add(dxkLookupCheck, 0, 0);
       checkboxLayout.Controls.Add(callbookCheck, 1, 0);
@@ -167,6 +165,7 @@ partial class MainForm
       checkboxLayout.Controls.Add(lotwCheck, 1, 1);
       checkboxLayout.Controls.Add(clubLogCheck, 0, 2);
       checkboxLayout.Controls.Add(logDebugInfoCheck, 1, 2);
+      checkboxLayout.Controls.Add(verboseLoggingCheck, 1, 3);
 
       ConfigureCheckbox(dxkLookupCheck, "Lookup previous QSOs",
          "Direct DXKeeper to display previous QSOs with the logged callsign");
@@ -180,6 +179,11 @@ partial class MainForm
          "Direct DXKeeper to upload logged QSO to Club Log");
       ConfigureCheckbox(logDebugInfoCheck, "Log debugging information",
          "Log debugging information to ErrorLog.txt");
+      ConfigureCheckbox(verboseLoggingCheck, "Verbose logging",
+         "Show low-priority status events in the operation log (e.g. DDE connect/disconnect)");
+      // Indented sub-option of "Log debugging information"; the extra left
+      // margin replaces the default 3 set by ConfigureCheckbox.
+      verboseLoggingCheck.Margin = new Padding(24, 3, 12, 3);
 
       //
       // statusGroup
@@ -353,7 +357,7 @@ partial class MainForm
    private Label udpPortLabel;
    private TextBox udpPortTextBox;
    private Label dxkPortLabel;
-   private TextBox dxkPortValueBox;
+   private Label dxkPortValue;
    private TableLayoutPanel checkboxLayout;
    private CheckBox dxkLookupCheck;
    private CheckBox callbookCheck;
@@ -361,6 +365,7 @@ partial class MainForm
    private CheckBox lotwCheck;
    private CheckBox clubLogCheck;
    private CheckBox logDebugInfoCheck;
+   private CheckBox verboseLoggingCheck;
    private GroupBox statusGroup;
    private TableLayoutPanel statusLayout;
    private Label dxkDot;
