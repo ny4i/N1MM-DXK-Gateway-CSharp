@@ -1,6 +1,6 @@
 ﻿namespace N1MM_DXK_GW;
 
-partial class Form1
+partial class MainForm
 {
     /// <summary>
     ///  Required designer variable.
