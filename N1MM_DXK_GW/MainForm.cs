@@ -198,7 +198,7 @@ public partial class MainForm : Form
       AppendLog($"UDP listener starting on port {settings.UdpPort}...");
       logger.DebugLog($"Binding UDP port {settings.UdpPort}");
 
-      var listener = new UdpListener(settings.UdpPort, dispatcher.Enqueue);
+      var listener = new UdpListener(settings.UdpPort, OnUdpDatagram);
       try
       {
          listener.Start();
@@ -214,6 +214,15 @@ public partial class MainForm : Form
          MessageBox.Show(this, msg, "N1MM-DXKeeper Gateway",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+   }
+
+   private void OnUdpDatagram(string xml)
+   {
+      // Fires on UdpListener's background receive thread. Logger is
+      // thread-safe (it locks internally). DebugLog is cheap when debug
+      // is off (early-return on the flag), so always-call is fine.
+      logger.DebugLog($"Received UDP on port {settings.UdpPort}: {xml}");
+      dispatcher.Enqueue(xml);
    }
 
    private void OnContactInfo(XElement root)
@@ -266,10 +275,21 @@ public partial class MainForm : Form
 
    private void ReportSendResult(AdifBuilder.Result adif, DxKeeperTcpClient.SendResult result)
    {
+      var portTag = result.Port.HasValue ? $" (TCP {result.Port.Value})" : string.Empty;
+
+      // Always log the wire frame at debug level — pairs with the ADIF and
+      // UDP-receive debug lines to give a full round-trip trace.
+      if (result.WireFrame != null)
+      {
+         logger.DebugLog($"Sent to DXKeeper{portTag}: {result.WireFrame}");
+      }
+
       switch (result.Outcome)
       {
          case DxKeeperTcpClient.SendOutcome.Sent:
-            AppendLog($"logged QSO with {adif.Summary}");
+            AppendLog($"logged QSO with {adif.Summary}{portTag}");
+            // DXKeeper's externallog is fire-and-forget — response is almost
+            // always (none). We log it anyway in case the protocol ever changes.
             logger.DebugLog($"TCP send completed for {adif.Call}; response: {result.Response ?? "(none)"}");
             break;
          case DxKeeperTcpClient.SendOutcome.Busy:
@@ -277,8 +297,8 @@ public partial class MainForm : Form
             logger.Log($"TCP send busy when attempting to log {adif.Call}");
             break;
          case DxKeeperTcpClient.SendOutcome.Failed:
-            AppendLog($"FAILED to log QSO with {adif.Call}: {result.ErrorMessage}");
-            logger.Log($"TCP send failed for {adif.Call}: {result.ErrorMessage}");
+            AppendLog($"FAILED to log QSO with {adif.Call}{portTag}: {result.ErrorMessage}");
+            logger.Log($"TCP send failed for {adif.Call}{portTag}: {result.ErrorMessage}");
             break;
       }
    }
@@ -372,8 +392,12 @@ public partial class MainForm : Form
    private void OnInvalidMessage(string xml, string reason)
    {
       AppendLog($"INVALID: {reason}");
-      logger.Log($"Invalid UDP message: {reason}");
-      logger.DebugLog($"Invalid message body (truncated 500): {Preview(xml, 500)}");
+      // Log the full body so the user can see exactly what arrived. Single
+      // line keeps each ErrorLog entry on one timestamped row — fine even
+      // for long XML payloads. If this ever becomes too voluminous, move it
+      // to logger.DebugLog so it's gated by the "Log debugging information"
+      // checkbox.
+      logger.Log($"Invalid UDP message: {reason} -- body: {xml}");
    }
 
    private void OnLogWritten()
@@ -406,12 +430,6 @@ public partial class MainForm : Form
          items.RemoveAt(0);
       }
       operationLogListBox.TopIndex = items.Count - 1;
-   }
-
-   private static string Preview(string text, int maxLength)
-   {
-      var compact = System.Text.RegularExpressions.Regex.Replace(text, @"\s+", " ").Trim();
-      return compact.Length <= maxLength ? compact : compact[..maxLength] + "...";
    }
 
    private void UdpPortTextBox_Validating(object? sender, System.ComponentModel.CancelEventArgs e)

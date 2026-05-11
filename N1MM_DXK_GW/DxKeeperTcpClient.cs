@@ -47,6 +47,10 @@ public sealed class DxKeeperTcpClient
       public SendOutcome Outcome { get; init; }
       public string? Response { get; init; }
       public string? ErrorMessage { get; init; }
+      // The exact bytes (as a string) we wrote to the socket — surfaced so
+      // the UI's debug log can show the user the on-wire frame for diagnosis.
+      public string? WireFrame { get; init; }
+      public int? Port { get; init; }
    }
 
    public sealed class ExternalLogOptions
@@ -91,6 +95,8 @@ public sealed class DxKeeperTcpClient
             {
                Outcome = SendOutcome.Failed,
                ErrorMessage = $"Connection to DXKeeper at {DxkHost}:{port} timed out after {ConnectTimeout.TotalSeconds:0}s.",
+               WireFrame = frame,
+               Port = port,
             };
          }
          catch (SocketException ex)
@@ -99,6 +105,8 @@ public sealed class DxKeeperTcpClient
             {
                Outcome = SendOutcome.Failed,
                ErrorMessage = $"Cannot connect to DXKeeper at {DxkHost}:{port} — {ex.Message}. Is DXKeeper running with TCP enabled?",
+               WireFrame = frame,
+               Port = port,
             };
          }
 
@@ -109,13 +117,32 @@ public sealed class DxKeeperTcpClient
          await stream.WriteAsync(payload, cancel).ConfigureAwait(false);
          await stream.FlushAsync(cancel).ConfigureAwait(false);
 
-         // DXKeeper responds with a short acknowledgement but the VB6 client never
-         // reads it. We do a best-effort read with a short timeout so we can log
-         // the response at debug level — this addresses a known shortcoming
-         // documented in the project's turnover notes.
-         var response = await TryReadShortResponse(stream, cancel).ConfigureAwait(false);
+         // Graceful half-close: send FIN so DXKeeper knows our request is
+         // complete. Without this, DXKeeper's accept loop has no in-band
+         // signal that we're done writing — and there are documented VB6
+         // failures where DXKeeper was left in a non-listening state by
+         // clients that didn't terminate cleanly.
+         try
+         {
+            client.Client.Shutdown(SocketShutdown.Send);
+         }
+         catch (SocketException)
+         {
+            // Peer already closed — half-close not applicable; proceed to read.
+         }
 
-         return new SendResult { Outcome = SendOutcome.Sent, Response = response };
+         // Read until the peer closes (Read returns 0) or our timeout
+         // elapses. This both surfaces any response DXKeeper emits and
+         // completes the four-way close handshake before Dispose.
+         var response = await ReadUntilEofAsync(stream, cancel).ConfigureAwait(false);
+
+         return new SendResult
+         {
+            Outcome = SendOutcome.Sent,
+            Response = response,
+            WireFrame = frame,
+            Port = port,
+         };
       }
       catch (Exception ex)
       {
@@ -174,22 +201,39 @@ public sealed class DxKeeperTcpClient
 
    private static string BoolY(bool value) => value ? "Y" : string.Empty;
 
-   private static async Task<string?> TryReadShortResponse(NetworkStream stream, CancellationToken cancel)
+   private static async Task<string?> ReadUntilEofAsync(NetworkStream stream, CancellationToken cancel)
    {
+      // Loops until the peer half-closes (Read returns 0) or our timeout
+      // elapses. Receiving EOF is the explicit signal that DXKeeper has
+      // finished — we wait for it (up to ReadTimeout) before disposing so
+      // the four-way FIN/ACK handshake completes cleanly.
+      using var readCts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
+      readCts.CancelAfter(ReadTimeout);
+
+      var sb = new StringBuilder();
+      var buffer = new byte[1024];
       try
       {
-         using var readCts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
-         readCts.CancelAfter(ReadTimeout);
-
-         var buffer = new byte[1024];
-         var read = await stream.ReadAsync(buffer, readCts.Token).ConfigureAwait(false);
-         return read > 0 ? Encoding.ASCII.GetString(buffer, 0, read) : null;
+         while (true)
+         {
+            var read = await stream.ReadAsync(buffer, readCts.Token).ConfigureAwait(false);
+            if (read == 0)
+            {
+               break; // clean EOF — peer closed its send side
+            }
+            sb.Append(Encoding.ASCII.GetString(buffer, 0, read));
+         }
       }
-      catch
+      catch (OperationCanceledException)
       {
-         // No response is normal — DXKeeper closes the connection after
-         // consuming the command without echoing. Don't surface this as an error.
-         return null;
+         // Timed out waiting for peer's FIN. Not fatal — Dispose will RST
+         // and DXKeeper has already received our half-close FIN, so it
+         // won't be stranded waiting for input.
       }
+      catch (Exception)
+      {
+         // Any other I/O error — give up and let Dispose finish the teardown.
+      }
+      return sb.Length > 0 ? sb.ToString() : null;
    }
 }
