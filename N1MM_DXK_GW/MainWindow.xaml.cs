@@ -48,6 +48,39 @@ public partial class MainWindow : FluentWindow
    private Settings settings = new();
    private UdpListener? udpListener;
 
+   /// <summary>
+   /// Formats a localized string. CurrentCulture, not InvariantCulture: these
+   /// are sentences shown to a person, so counts and numbers should follow the
+   /// operator's Windows regional settings. Wire values never come through
+   /// here — those pin InvariantCulture at the point they are built.
+   ///
+   /// The catch is not defensive padding. Translations are produced outside
+   /// this repository, and a translator or a machine-translation pass can
+   /// easily damage a placeholder — "{0}" becoming "{ 0 }", or an index that
+   /// was never in the English appearing in the translation. string.Format
+   /// throws FormatException on both. Several callers run on the send-queue
+   /// worker or inside AppendLog, so an unhandled one would take the gateway
+   /// down mid-contest, in a language whoever is debugging it may not read.
+   ///
+   /// A damaged translation must degrade to something readable and keep the
+   /// gateway running. Showing the raw template is ugly and unmistakably
+   /// wrong, which is the right failure: visible, harmless, and diagnosable
+   /// from the line written to ErrorLog.txt.
+   /// </summary>
+   private string L(string format, params object?[] args)
+   {
+      try
+      {
+         return string.Format(CultureInfo.CurrentCulture, format, args);
+      }
+      catch (FormatException ex)
+      {
+         logger.Log($"Damaged translation, showing the raw template instead. " +
+                    $"Culture {CultureInfo.CurrentUICulture.Name}, {ex.Message}, template: {format}");
+         return format;
+      }
+   }
+
    // Suppresses the setting-changed handlers while loaded values are pushed
    // into the controls, so startup does not immediately re-save them.
    private bool loadingSettings;
@@ -221,11 +254,67 @@ public partial class MainWindow : FluentWindow
          ClubLogToggle.IsChecked = settings.DxkClubLogUpload;
          VerboseLogToggle.IsChecked = settings.VerboseLogging;
          DebugLogToggle.IsChecked = settings.DebugLogging;
+         PopulateLanguages();
       }
       finally
       {
          loadingSettings = false;
       }
+   }
+
+   /// <summary>
+   /// Fills the language list from the translations actually shipped, with
+   /// "Follow Windows" first and selected by default.
+   ///
+   /// Each entry shows the language in its own language (NativeName), because
+   /// the operator looking for it cannot necessarily read the current one —
+   /// which is the whole situation the setting exists to fix.
+   /// </summary>
+   private void PopulateLanguages()
+   {
+      LanguageCombo.Items.Clear();
+      LanguageCombo.Items.Add(new LanguageChoice(string.Empty, Strings.LanguageFollowWindows));
+
+      foreach (var culture in Localization.AvailableTranslations())
+      {
+         LanguageCombo.Items.Add(new LanguageChoice(culture.Name, culture.NativeName));
+      }
+
+      // Falls back to "Follow Windows" if the saved culture is no longer
+      // shipped — the same outcome Localization.Apply produces, so the box
+      // never claims a language the window is not actually drawn in.
+      var match = LanguageCombo.Items.Cast<LanguageChoice>().FirstOrDefault(
+         c => string.Equals(c.Culture, settings.Language, StringComparison.OrdinalIgnoreCase));
+      LanguageCombo.SelectedItem = match ?? LanguageCombo.Items[0];
+   }
+
+   /// <summary>One entry of the language list. ToString is what the ComboBox
+   /// displays, which keeps the markup free of a DisplayMemberPath.</summary>
+   private sealed record LanguageChoice(string Culture, string Display)
+   {
+      public override string ToString() => Display;
+   }
+
+   private void LanguageCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+   {
+      if (loadingSettings || LanguageCombo.SelectedItem is not LanguageChoice choice)
+      {
+         return;
+      }
+      if (string.Equals(choice.Culture, settings.Language, StringComparison.OrdinalIgnoreCase))
+      {
+         return;
+      }
+
+      settings.Language = choice.Culture;
+      settings.Save();
+
+      // Deliberately not re-applied live. The window's text comes from 45
+      // x:Static references resolved when the XAML was loaded, so nothing
+      // visible would change; saying "restart" is honest, and rebuilding the
+      // visual tree to fake it would be a lot of machinery for a setting
+      // touched once.
+      AppendLog(L(Strings.LanguageRestartNote, choice.Display), LogEntry.Level.Warning);
    }
 
    private void RefreshDxKeeperPortDisplay()
@@ -309,7 +398,7 @@ public partial class MainWindow : FluentWindow
       {
          return true;
       }
-      MessageBox.Show(this, "UDP port must be an integer between 1 and 65535.",
+      MessageBox.Show(this, Strings.DlgUdpPortInvalid,
          Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
       UdpPortBox.Text = settings.UdpPort.ToString(CultureInfo.InvariantCulture);
       UdpPortBox.SelectAll();
@@ -344,7 +433,7 @@ public partial class MainWindow : FluentWindow
          settings.UdpPort = oldPort;
          settings.Save();
          UdpPortBox.Text = oldPort.ToString(CultureInfo.InvariantCulture);
-         AppendLog($"Reverted UDP port to {oldPort}.");
+         AppendLog(L(Strings.AlertUdpPortReverted, oldPort), LogEntry.Level.Warning);
          StartListenerOnConfiguredPort();
       }
    }
@@ -381,8 +470,7 @@ public partial class MainWindow : FluentWindow
          ParseMulticastGroup(entered, out var error);
          if (error != null)
          {
-            MessageBox.Show(this,
-               $"{error}.\n\nLeave this blank unless the sending program is configured to send to a multicast group.",
+            MessageBox.Show(this, L(Strings.DlgMulticastInvalid, error),
                Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
             MulticastBox.Text = settings.MulticastGroup;
             MulticastBox.SelectAll();
@@ -406,7 +494,7 @@ public partial class MainWindow : FluentWindow
          settings.MulticastGroup = previous;
          settings.Save();
          MulticastBox.Text = previous;
-         AppendLog($"Reverted multicast group to '{previous}'.");
+         AppendLog(L(Strings.AlertMulticastReverted, previous), LogEntry.Level.Warning);
          StartListenerOnConfiguredPort();
       }
    }
@@ -417,7 +505,7 @@ public partial class MainWindow : FluentWindow
    /// usable group — the two must stay distinguishable so a typo is reported
    /// rather than silently treated as "disabled".
    /// </summary>
-   private static IPAddress? ParseMulticastGroup(string configured, out string? error)
+   private IPAddress? ParseMulticastGroup(string configured, out string? error)
    {
       error = null;
       var text = configured?.Trim() ?? string.Empty;
@@ -427,12 +515,12 @@ public partial class MainWindow : FluentWindow
       }
       if (!IPAddress.TryParse(text, out var address))
       {
-         error = $"'{text}' is not a valid IP address";
+         error = L(Strings.ErrNotAnIpAddress, text);
          return null;
       }
       if (!UdpListener.IsIPv4Multicast(address))
       {
-         error = $"'{text}' is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)";
+         error = L(Strings.ErrNotMulticast, text);
          return null;
       }
       return address;
@@ -447,7 +535,7 @@ public partial class MainWindow : FluentWindow
       {
          // Don't silently fall back to no multicast — the operator configured a
          // group and would otherwise see a healthy listener receiving nothing.
-         AppendLog($"ERROR: {groupError} — starting WITHOUT multicast.");
+         AppendLog(L(Strings.AlertMulticastRejected, groupError), LogEntry.Level.Error);
          logger.Log($"Multicast group rejected: {groupError}");
       }
 
@@ -474,9 +562,11 @@ public partial class MainWindow : FluentWindow
       catch (Exception ex)
       {
          listener.Dispose();
-         var msg = $"Failed to bind UDP port {settings.UdpPort}: {ex.Message}";
-         AppendLog("ERROR: " + msg);
-         logger.Log(msg);
+         var msg = L(Strings.MsgBindFailed, settings.UdpPort, ex.Message);
+         AppendLog(msg, LogEntry.Level.Error);
+         // English for the file, translated for the screen — ErrorLog.txt is
+         // the artefact that gets pasted into a support thread.
+         logger.Log($"Failed to bind UDP port {settings.UdpPort}: {ex.Message}");
          MessageBox.Show(this, msg, Strings.AppTitle,
             MessageBoxButton.OK, MessageBoxImage.Error);
       }
@@ -545,7 +635,7 @@ public partial class MainWindow : FluentWindow
       {
          // Without a usable pre-edit identity we cannot delete the right QSO,
          // and logging the edited copy alone would duplicate it.
-         AppendLog($"contactreplace for {key.Call}: no usable <oldcall>/<oldtimestamp> — edit NOT applied to DXKeeper");
+         AppendLog(L(Strings.AlertReplaceNoKey, key.Call), LogEntry.Level.Warning);
          logger.Log($"contactreplace ignored, cannot build delete key: {root}");
          return;
       }
@@ -579,7 +669,7 @@ public partial class MainWindow : FluentWindow
       var key = AdifBuilder.BuildDeleteRecord(root, useOldIdentity: false);
       if (!key.IsValid)
       {
-         AppendLog($"contactdelete for {key.Call}: missing call or timestamp — nothing sent to DXKeeper");
+         AppendLog(L(Strings.AlertDeleteNoKey, key.Call), LogEntry.Level.Warning);
          logger.Log($"contactdelete ignored, cannot build delete key: {root}");
          return;
       }
@@ -654,14 +744,18 @@ public partial class MainWindow : FluentWindow
    {
       // A defect, not bad input. Say so plainly and keep the full stack in the
       // error log — that is the evidence needed to fix it.
-      AppendLog($"INTERNAL ERROR handling a message ({fault.GetType().Name}: {fault.Message}) — see ErrorLog.txt. The gateway is still running.");
+      AppendLog(L(Strings.AlertInternalError, fault.GetType().Name, fault.Message),
+                LogEntry.Level.Error);
       logger.Log($"Unhandled exception while dispatching a UDP message: {fault}");
       logger.Log($"   message body: {xml}");
    }
 
    private void OnInvalidMessage(string xml, string reason)
    {
-      AppendLog($"INVALID: {reason}");
+      // The reason itself stays English: it describes malformed wire content
+      // (a parse error, an unrecognized root element) and is written to
+      // ErrorLog.txt unchanged.
+      AppendLog(L(Strings.AlertInvalidMessage, reason), LogEntry.Level.Warning);
       logger.Log($"Invalid UDP message: {reason} -- body: {xml}");
    }
 
@@ -708,35 +802,76 @@ public partial class MainWindow : FluentWindow
       // Failed, Unconfirmed and Busy all mean the same to the operator:
       // DXKeeper did not confirm this. Never retry — DXKeeper does not detect
       // duplicates, so retrying something it had processed would duplicate it.
+      // Two renderings of the same failure: `reason` for the operator's screen,
+      // in their language; `englishReason` for ErrorLog.txt and the recovery
+      // file, which stay English so they remain useful in a support thread.
       var reason = DescribeFailure(result);
+      var englishReason = DescribeFailureEnglish(result);
 
       if (op.DeletedButNotRelogged)
       {
          // The one case where DXKeeper is left worse off than before we
          // started: the original is gone and the replacement never arrived.
          var kept = op.PreserveAdif != null &&
-                    failedQsos.Save(op.PreserveAdif, $"replace failed after delete succeeded — {reason} (QSO with {op.Call})");
-         PostToOperationLog(kept
-            ? $"*** {op.Call}: DXKeeper DELETED the original but did not log the edit{portTag} — the edited QSO is in {failedQsos.FileName}, import it. Reason: {reason}"
-            : $"*** {op.Call}: DXKeeper DELETED the original, the edit was not logged{portTag}, AND it could not be saved to {failedQsos.FileName}. Reason: {reason}");
-         logger.Log($"REPLACE LEFT DXKEEPER WITHOUT THE QSO — {op.Call}{portTag}: delete succeeded, externallog did not ({reason})");
+                    failedQsos.Save(op.PreserveAdif, $"replace failed after delete succeeded — {englishReason} (QSO with {op.Call})");
+         PostToOperationLog(
+            L(kept ? Strings.AlertReplaceLostQso : Strings.AlertReplaceLostQsoNotSaved,
+              op.Call, portTag, failedQsos.FileName, reason),
+            LogEntry.Level.Error);
+         logger.Log($"REPLACE LEFT DXKEEPER WITHOUT THE QSO — {op.Call}{portTag}: delete succeeded, externallog did not ({englishReason})");
          return;
       }
 
       var savedNote = string.Empty;
       if (op.PreserveAdif != null)
       {
-         var saved = failedQsos.Save(op.PreserveAdif, $"{reason} ({op.Summary})");
-         savedNote = saved
-            ? $" — saved to {failedQsos.FileName}"
-            : $" — AND it could not be saved to {failedQsos.FileName}";
+         var saved = failedQsos.Save(op.PreserveAdif, $"{englishReason} ({op.Summary})");
+         savedNote = L(saved ? Strings.AlertSavedTo : Strings.AlertNotSavedTo,
+                       failedQsos.FileName);
       }
 
-      PostToOperationLog($"DXKeeper did not confirm {op.Summary}{portTag}{savedNote}: {reason}");
-      logger.Log($"{op.Kind} not confirmed for {op.Call}{portTag}: {reason}");
+      PostToOperationLog(
+         L(Strings.AlertNotConfirmed, op.Summary, portTag, savedNote, reason),
+         LogEntry.Level.Warning);
+      logger.Log($"{op.Kind} not confirmed for {op.Call}{portTag}: {englishReason}");
    }
 
-   private static string DescribeFailure(DxKeeperTcpClient.SendResult result) =>
+   /// <summary>
+   /// Why DXKeeper did not confirm, in the operator's language.
+   ///
+   /// Driven by <see cref="DxKeeperTcpClient.SendFailure"/> rather than by the
+   /// result's ErrorMessage, because that message is the English text bound for
+   /// ErrorLog.txt. The one case that still passes prose through is Exception,
+   /// where the detail comes from the operating system and is already in the
+   /// system language.
+   /// </summary>
+   private string DescribeFailure(DxKeeperTcpClient.SendResult result)
+   {
+      if (result.Outcome == DxKeeperTcpClient.SendOutcome.Busy)
+      {
+         return Strings.FailBusy;
+      }
+
+      return result.Failure switch
+      {
+         DxKeeperTcpClient.SendFailure.ConnectTimeout =>
+            L(Strings.FailConnectTimeout, DxKeeperTcpClient.ConnectTimeoutSeconds),
+         DxKeeperTcpClient.SendFailure.ConnectRefused =>
+            L(Strings.FailConnectRefused,
+              result.Port ?? DxKeeperTcpClient.GetDxKeeperBasePortInfo().ServicePort,
+              Strings.DxKeeperConfigNetworkService),
+         DxKeeperTcpClient.SendFailure.PeerCloseTimeout =>
+            L(Strings.FailNoPeerClose, DxKeeperTcpClient.PeerCloseTimeoutSeconds),
+         DxKeeperTcpClient.SendFailure.ShuttingDown => Strings.FailShuttingDown,
+         _ => result.ErrorMessage ?? Strings.FailSendFailed,
+      };
+   }
+
+   /// <summary>
+   /// The same failure in English, for ErrorLog.txt and the recovery file. A
+   /// translated support artefact helps nobody.
+   /// </summary>
+   private static string DescribeFailureEnglish(DxKeeperTcpClient.SendResult result) =>
       result.Outcome switch
       {
          DxKeeperTcpClient.SendOutcome.Busy => "another send was already in flight",
@@ -807,8 +942,7 @@ public partial class MainWindow : FluentWindow
    {
       if (!failedQsos.Exists)
       {
-         MessageBox.Show(this,
-            $"No stranded QSOs this session.\n\n{failedQsos.FilePath} does not exist.",
+         MessageBox.Show(this, L(Strings.DlgNoFailedQsos, failedQsos.FilePath),
             Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Information);
          RefreshFailedQsoStatus();
          return;
@@ -826,7 +960,7 @@ public partial class MainWindow : FluentWindow
          // .adi has no default handler on many machines — say so usefully
          // rather than reporting a bare Win32 error.
          MessageBox.Show(this,
-            $"Could not open {failedQsos.FileName}:\n\n{ex.Message}\n\nUse the folder link and import it into DXKeeper from there.",
+            L(Strings.DlgCouldNotOpenFile, failedQsos.FileName, ex.Message),
             Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
       }
    }
@@ -849,7 +983,7 @@ public partial class MainWindow : FluentWindow
       }
       catch (Exception ex)
       {
-         MessageBox.Show(this, $"Could not open the folder:\n\n{ex.Message}",
+         MessageBox.Show(this, L(Strings.DlgCouldNotOpenFolder, ex.Message),
             Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
       }
    }
@@ -866,7 +1000,7 @@ public partial class MainWindow : FluentWindow
    {
       if (!System.IO.File.Exists(logger.LogPath))
       {
-         MessageBox.Show(this, $"No error log yet at:\n{logger.LogPath}",
+         MessageBox.Show(this, L(Strings.DlgNoErrorLog, logger.LogPath),
             Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Information);
          return;
       }
@@ -880,7 +1014,7 @@ public partial class MainWindow : FluentWindow
       }
       catch (Exception ex)
       {
-         MessageBox.Show(this, $"Could not open ErrorLog.txt:\n\n{ex.Message}",
+         MessageBox.Show(this, L(Strings.DlgCouldNotOpenErrorLog, ex.Message),
             Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
       }
    }
@@ -898,7 +1032,7 @@ public partial class MainWindow : FluentWindow
       }
       catch (Exception ex)
       {
-         MessageBox.Show(this, $"Could not open help page:\n\n{ex.Message}",
+         MessageBox.Show(this, L(Strings.DlgCouldNotOpenHelp, ex.Message),
             Strings.AppTitle, MessageBoxButton.OK, MessageBoxImage.Warning);
       }
    }
@@ -917,12 +1051,28 @@ public partial class MainWindow : FluentWindow
       }
    }
 
-   private void AppendLog(string line)
+   /// <summary>
+   /// Appends a line whose severity is derived from its text. Correct only for
+   /// the routine English traffic lines — see the overload below.
+   /// </summary>
+   private void AppendLog(string line) => AppendLog(line, LogEntry.Classify(line));
+
+   /// <summary>
+   /// Appends a line with an explicitly stated severity.
+   ///
+   /// Every translated line must use this overload. LogEntry.Classify decides
+   /// severity by looking for English phrases ("ERROR", "***", "did not
+   /// confirm"), so a translated failure line would classify as Normal and
+   /// lose its colour — silently, and precisely in the languages whose readers
+   /// most need the failure to stand out. Stating severity at the call site
+   /// removes the text from the decision entirely.
+   /// </summary>
+   private void AppendLog(string line, LogEntry.Level severity)
    {
       var entry = new LogEntry
       {
          Text = $"{DateTime.Now:HH:mm:ss}  {line}",
-         Severity = LogEntry.Classify(line),
+         Severity = severity,
       };
 
       OperationLogList.Items.Add(entry);
@@ -1068,6 +1218,11 @@ public partial class MainWindow : FluentWindow
    /// window is gone — the durable record is already in ErrorLog.txt.
    /// </summary>
    private void PostToOperationLog(string line) => RunOnUi(() => AppendLog(line));
+
+   /// <summary>As <see cref="PostToOperationLog(string)"/>, with the severity
+   /// stated rather than derived — required for translated lines.</summary>
+   private void PostToOperationLog(string line, LogEntry.Level severity) =>
+      RunOnUi(() => AppendLog(line, severity));
 
    /// <summary>
    /// Marshals to the UI thread, tolerating a window that is closing or gone.

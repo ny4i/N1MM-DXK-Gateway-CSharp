@@ -58,6 +58,114 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper.
+        /// </summary>
+        public static string AlertDeleteNoKey {
+            get {
+                return ResourceManager.GetString("AlertDeleteNoKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running..
+        /// </summary>
+        public static string AlertInternalError {
+            get {
+                return ResourceManager.GetString("AlertInternalError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INVALID: {0}.
+        /// </summary>
+        public static string AlertInvalidMessage {
+            get {
+                return ResourceManager.GetString("AlertInvalidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - starting WITHOUT multicast..
+        /// </summary>
+        public static string AlertMulticastRejected {
+            get {
+                return ResourceManager.GetString("AlertMulticastRejected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reverted the multicast group to &quot;{0}&quot;..
+        /// </summary>
+        public static string AlertMulticastReverted {
+            get {
+                return ResourceManager.GetString("AlertMulticastReverted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DXKeeper did not confirm {0}{1}{2}: {3}.
+        /// </summary>
+        public static string AlertNotConfirmed {
+            get {
+                return ResourceManager.GetString("AlertNotConfirmed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  - AND it could not be saved to {0}.
+        /// </summary>
+        public static string AlertNotSavedTo {
+            get {
+                return ResourceManager.GetString("AlertNotSavedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}.
+        /// </summary>
+        public static string AlertReplaceLostQso {
+            get {
+                return ResourceManager.GetString("AlertReplaceLostQso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}.
+        /// </summary>
+        public static string AlertReplaceLostQsoNotSaved {
+            get {
+                return ResourceManager.GetString("AlertReplaceLostQsoNotSaved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper.
+        /// </summary>
+        public static string AlertReplaceNoKey {
+            get {
+                return ResourceManager.GetString("AlertReplaceNoKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  - saved to {0}.
+        /// </summary>
+        public static string AlertSavedTo {
+            get {
+                return ResourceManager.GetString("AlertSavedTo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reverted to UDP port {0}..
+        /// </summary>
+        public static string AlertUdpPortReverted {
+            get {
+                return ResourceManager.GetString("AlertUdpPortReverted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to N1MM-DXKeeper Gateway.
         /// </summary>
         public static string AppTitle {
@@ -229,6 +337,112 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to N1MM-DXKeeper Gateway is already running..
+        /// </summary>
+        public static string DlgAlreadyRunning {
+            get {
+                return ResourceManager.GetString("DlgAlreadyRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not open ErrorLog.txt:
+        ///
+        ///{0}.
+        /// </summary>
+        public static string DlgCouldNotOpenErrorLog {
+            get {
+                return ResourceManager.GetString("DlgCouldNotOpenErrorLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not open {0}:
+        ///
+        ///{1}
+        ///
+        ///Use the folder link and import the file into DXKeeper from there..
+        /// </summary>
+        public static string DlgCouldNotOpenFile {
+            get {
+                return ResourceManager.GetString("DlgCouldNotOpenFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not open the folder:
+        ///
+        ///{0}.
+        /// </summary>
+        public static string DlgCouldNotOpenFolder {
+            get {
+                return ResourceManager.GetString("DlgCouldNotOpenFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not open the help page:
+        ///
+        ///{0}.
+        /// </summary>
+        public static string DlgCouldNotOpenHelp {
+            get {
+                return ResourceManager.GetString("DlgCouldNotOpenHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        ///
+        ///Leave this blank unless the sending program is configured to send to a multicast group..
+        /// </summary>
+        public static string DlgMulticastInvalid {
+            get {
+                return ResourceManager.GetString("DlgMulticastInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing has been written to the error log yet:
+        ///
+        ///{0}.
+        /// </summary>
+        public static string DlgNoErrorLog {
+            get {
+                return ResourceManager.GetString("DlgNoErrorLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Every QSO this session was delivered to DXKeeper.
+        ///
+        ///{0} does not exist..
+        /// </summary>
+        public static string DlgNoFailedQsos {
+            get {
+                return ResourceManager.GetString("DlgNoFailedQsos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The UDP listening port must be a whole number between 1 and 65535..
+        /// </summary>
+        public static string DlgUdpPortInvalid {
+            get {
+                return ResourceManager.GetString("DlgUdpPortInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Config &gt; Defaults tab &gt; Network Service.
+        /// </summary>
+        public static string DxKeeperConfigNetworkService {
+            get {
+                return ResourceManager.GetString("DxKeeperConfigNetworkService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Config &gt; Defaults tab &gt; Network Service &gt; Base Port.
         /// </summary>
         public static string DxKeeperConfigPath {
@@ -261,6 +475,51 @@ namespace N1MM_DXK_GW {
         public static string DxKeeperPortTip {
             get {
                 return ResourceManager.GetString("DxKeeperPortTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; is not a valid IP address.
+        /// </summary>
+        public static string ErrNotAnIpAddress {
+            get {
+                return ResourceManager.GetString("ErrNotAnIpAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;{0}&quot; is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255).
+        /// </summary>
+        public static string ErrNotMulticast {
+            get {
+                return ResourceManager.GetString("ErrNotMulticast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to another send had not finished yet.
+        /// </summary>
+        public static string FailBusy {
+            get {
+                return ResourceManager.GetString("FailBusy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports &quot;Listening&quot;.
+        /// </summary>
+        public static string FailConnectRefused {
+            get {
+                return ResourceManager.GetString("FailConnectRefused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the connection to DXKeeper timed out after {0} seconds.
+        /// </summary>
+        public static string FailConnectTimeout {
+            get {
+                return ResourceManager.GetString("FailConnectTimeout", resourceCulture);
             }
         }
         
@@ -337,11 +596,74 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to DXKeeper never closed the connection within {0} seconds, so the QSO may never have been accepted.
+        /// </summary>
+        public static string FailNoPeerClose {
+            get {
+                return ResourceManager.GetString("FailNoPeerClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the send failed.
+        /// </summary>
+        public static string FailSendFailed {
+            get {
+                return ResourceManager.GetString("FailSendFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the gateway was shutting down and this was never sent.
+        /// </summary>
+        public static string FailShuttingDown {
+            get {
+                return ResourceManager.GetString("FailShuttingDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string Help {
             get {
                 return ResourceManager.GetString("Help", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Follow Windows.
+        /// </summary>
+        public static string LanguageFollowWindows {
+            get {
+                return ResourceManager.GetString("LanguageFollowWindows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        public static string LanguageLabel {
+            get {
+                return ResourceManager.GetString("LanguageLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language set to {0}. Restart the gateway to apply it..
+        /// </summary>
+        public static string LanguageRestartNote {
+            get {
+                return ResourceManager.GetString("LanguageRestartNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language of this window. &quot;Follow Windows&quot; uses the Windows display language. A change takes effect the next time the gateway starts..
+        /// </summary>
+        public static string LanguageTip {
+            get {
+                return ResourceManager.GetString("LanguageTip", resourceCulture);
             }
         }
         
@@ -396,6 +718,15 @@ namespace N1MM_DXK_GW {
         public static string LogHeader {
             get {
                 return ResourceManager.GetString("LogHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not listen on UDP port {0}: {1}.
+        /// </summary>
+        public static string MsgBindFailed {
+            get {
+                return ResourceManager.GetString("MsgBindFailed", resourceCulture);
             }
         }
         

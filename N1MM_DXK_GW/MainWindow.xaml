@@ -294,6 +294,21 @@
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckVerboseLoggingTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
+
+                        <!-- Language sits in the right half of this card's grid
+                             rather than in a card of its own. It is a rarely
+                             touched preference, and a fourth card for one row
+                             would cost more vertical space than the setting is
+                             worth. The list is built at run time from the
+                             satellite assemblies actually present, so it holds
+                             only "Follow Windows" when nothing is shipped. -->
+                        <TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.LanguageLabel}"
+                                   ToolTip="{x:Static local:Strings.LanguageTip}" />
+                        <ComboBox x:Name="LanguageCombo" Grid.Row="0" Grid.Column="4"
+                                  MinWidth="150" VerticalAlignment="Center"
+                                  ToolTip="{x:Static local:Strings.LanguageTip}"
+                                  SelectionChanged="LanguageCombo_SelectionChanged" />
                      </Grid>
                   </StackPanel>
                </ui:CardExpander>

@@ -24,12 +24,18 @@ public partial class App : Application
 
    protected override void OnStartup(StartupEventArgs e)
    {
+      // Before anything reads a string. XAML resolves its x:Static references
+      // at load time, so the culture has to be in place before the first
+      // window is constructed — and before the dialog below, which is the one
+      // piece of UI a second instance ever sees.
+      Localization.Apply(Settings.Load().Language);
+
       singleInstanceMutex = new Mutex(initiallyOwned: true, SingleInstanceMutexName, out var createdNew);
       if (!createdNew)
       {
          MessageBox.Show(
-            "N1MM-DXKeeper Gateway is already running.",
-            "N1MM-DXKeeper Gateway",
+            Strings.DlgAlreadyRunning,
+            Strings.AppTitle,
             MessageBoxButton.OK,
             MessageBoxImage.Information);
 

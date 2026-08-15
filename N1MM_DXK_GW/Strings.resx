@@ -16,7 +16,42 @@
     Menu paths inside OTHER programs must also stay in English. DXKeeper's own
     interface is English-only, so translating "Config > Defaults tab > Network
     Service" would send the operator hunting for a menu that does not exist.
-    Those paths are held in DxKeeperConfigPath and substituted into sentences.
+    Those paths are held in DxKeeperConfigPath and DxKeeperConfigNetworkService
+    and substituted into sentences.
+
+    WHAT IS AND IS NOT IN HERE
+
+    The Operation Log's routine traffic lines ("contactinfo: W1AW 20m CW ->
+    sending to DXKeeper...") are deliberately NOT in this file and stay in
+    English. They are mostly wire identifiers - contactinfo, contactreplace,
+    lookupinfo, ADIF, callsigns, port numbers - so a translated sentence around
+    them would be half English anyway, and that log is what an operator pastes
+    into a support thread. ErrorLog.txt is English for the same reason.
+
+    The log lines that ARE here are the ones reporting something the operator
+    must act on: a QSO DXKeeper did not confirm, a failed bind, an edit that
+    left DXKeeper without the QSO. Those are prefixed Alert* below.
+
+    Alert* strings carry their own marker where they need one ("***"). Do not
+    add a translated "ERROR:" prefix by concatenation - severity is passed to
+    the log explicitly in code and drives the colour, so the marker is part of
+    the sentence or not present at all.
+
+    WRITING SOURCE STRINGS
+
+    No idioms. "Another send was already in flight" machine-translated into
+    German as a literal statement about aviation; it now reads "another send
+    had not finished yet". Anything that cannot be translated word for word
+    will not survive a machine pass, and will puzzle a human translator who
+    has no screenshot to work from. Prefer plain, literal wording even where
+    it reads a little flatter in English.
+
+    Placeholders must keep their indices. A translation may reorder {0} and
+    {1} freely, but inventing an index the English string does not have makes
+    string.Format throw. MainWindow.L() catches that and shows the raw
+    template rather than letting it crash the gateway, and
+    tools/translate_resx.py rejects the string before it is ever written -
+    but the first line of defence is not writing one.
   -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
@@ -268,5 +303,178 @@
   <data name="FailedQsoTip" xml:space="preserve">
     <value>Import {0} into DXKeeper, then delete it. This count clears when the file is gone.</value>
     <comment>Tooltip. {0} is the full path of the ADIF file - do not translate it.</comment>
+  </data>
+
+  <!-- ============================ language picker ======================= -->
+
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Language:</value>
+    <comment>Label for the user-interface language selector.</comment>
+  </data>
+  <data name="LanguageTip" xml:space="preserve">
+    <value>Language of this window. "Follow Windows" uses the Windows display language. A change takes effect the next time the gateway starts.</value>
+  </data>
+  <data name="LanguageFollowWindows" xml:space="preserve">
+    <value>Follow Windows</value>
+    <comment>First entry of the language list, meaning "use the Windows display language".</comment>
+  </data>
+  <data name="LanguageRestartNote" xml:space="preserve">
+    <value>Language set to {0}. Restart the gateway to apply it.</value>
+    <comment>{0} is a language name, already in its own language - do not translate it.</comment>
+  </data>
+
+  <!-- ============================ dialogs ============================== -->
+
+  <data name="DlgAlreadyRunning" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway is already running.</value>
+    <comment>Shown when a second copy is launched. The product name stays in English.</comment>
+  </data>
+  <data name="DlgUdpPortInvalid" xml:space="preserve">
+    <value>The UDP listening port must be a whole number between 1 and 65535.</value>
+  </data>
+  <data name="DlgMulticastInvalid" xml:space="preserve">
+    <value>{0}.
+
+Leave this blank unless the sending program is configured to send to a multicast group.</value>
+    <comment>{0} is ErrNotAnIpAddress or ErrNotMulticast. Keep the blank line.</comment>
+  </data>
+  <data name="DlgNoFailedQsos" xml:space="preserve">
+    <value>Every QSO this session was delivered to DXKeeper.
+
+{0} does not exist.</value>
+    <comment>{0} is a full file path - do not translate it.</comment>
+  </data>
+  <data name="DlgCouldNotOpenFile" xml:space="preserve">
+    <value>Could not open {0}:
+
+{1}
+
+Use the folder link and import the file into DXKeeper from there.</value>
+    <comment>{0} is a filename, {1} is an operating-system error message. Do not translate either.</comment>
+  </data>
+  <data name="DlgCouldNotOpenFolder" xml:space="preserve">
+    <value>Could not open the folder:
+
+{0}</value>
+    <comment>{0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgNoErrorLog" xml:space="preserve">
+    <value>Nothing has been written to the error log yet:
+
+{0}</value>
+    <comment>{0} is the full path of ErrorLog.txt - do not translate it.</comment>
+  </data>
+  <data name="DlgCouldNotOpenErrorLog" xml:space="preserve">
+    <value>Could not open ErrorLog.txt:
+
+{0}</value>
+    <comment>"ErrorLog.txt" is a filename - do not translate it. {0} is an operating-system error message.</comment>
+  </data>
+  <data name="DlgCouldNotOpenHelp" xml:space="preserve">
+    <value>Could not open the help page:
+
+{0}</value>
+    <comment>{0} is an operating-system error message - do not translate it.</comment>
+  </data>
+
+  <!-- ====================== operator-input errors ====================== -->
+
+  <data name="ErrNotAnIpAddress" xml:space="preserve">
+    <value>"{0}" is not a valid IP address</value>
+    <comment>{0} is what the operator typed. Used inside DlgMulticastInvalid and AlertMulticastRejected, so it is a fragment, not a sentence - no full stop.</comment>
+  </data>
+  <data name="ErrNotMulticast" xml:space="preserve">
+    <value>"{0}" is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)</value>
+    <comment>Fragment, no full stop. Do not translate the address range or "IPv4".</comment>
+  </data>
+
+  <!-- ====================== operation-log alerts ======================= -->
+  <!-- Only lines reporting something the operator must act on. Routine
+       traffic lines stay in English - see the note at the top of this file. -->
+
+  <data name="MsgBindFailed" xml:space="preserve">
+    <value>Could not listen on UDP port {0}: {1}</value>
+    <comment>Used both as a dialog and as a log line. {0} is a port number, {1} is an operating-system error message.</comment>
+  </data>
+  <data name="AlertMulticastRejected" xml:space="preserve">
+    <value>{0} - starting WITHOUT multicast.</value>
+    <comment>{0} is ErrNotAnIpAddress or ErrNotMulticast. The emphasis on "without" matters: the gateway looks healthy but would receive nothing from that group.</comment>
+  </data>
+  <data name="AlertUdpPortReverted" xml:space="preserve">
+    <value>Reverted to UDP port {0}.</value>
+  </data>
+  <data name="AlertMulticastReverted" xml:space="preserve">
+    <value>Reverted the multicast group to "{0}".</value>
+    <comment>{0} may be empty, meaning no multicast.</comment>
+  </data>
+  <data name="AlertReplaceNoKey" xml:space="preserve">
+    <value>contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper</value>
+    <comment>"contactreplace", "&lt;oldcall&gt;" and "&lt;oldtimestamp&gt;" are wire-format names - do not translate them. {0} is a callsign.</comment>
+  </data>
+  <data name="AlertDeleteNoKey" xml:space="preserve">
+    <value>contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper</value>
+    <comment>"contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
+  </data>
+  <data name="AlertInternalError" xml:space="preserve">
+    <value>INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.</value>
+    <comment>A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
+  </data>
+  <data name="AlertInvalidMessage" xml:space="preserve">
+    <value>INVALID: {0}</value>
+    <comment>{0} describes what was wrong with a received datagram and stays in English - it is wire diagnostics that also goes to ErrorLog.txt.</comment>
+  </data>
+  <data name="AlertReplaceLostQso" xml:space="preserve">
+    <value>*** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}</value>
+    <comment>The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
+  </data>
+  <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
+    <value>*** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}</value>
+    <comment>As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.</comment>
+  </data>
+  <data name="AlertNotConfirmed" xml:space="preserve">
+    <value>DXKeeper did not confirm {0}{1}{2}: {3}</value>
+    <comment>{0} a short description of the QSO, {1} an optional " (TCP 52001)" tag, {2} AlertSavedTo or AlertNotSavedTo or empty, {3} a reason from the Fail* strings.</comment>
+  </data>
+  <data name="AlertSavedTo" xml:space="preserve">
+    <value> - saved to {0}</value>
+    <comment>Fragment appended inside AlertNotConfirmed. Keep the leading space. {0} is a filename.</comment>
+  </data>
+  <data name="AlertNotSavedTo" xml:space="preserve">
+    <value> - AND it could not be saved to {0}</value>
+    <comment>Fragment appended inside AlertNotConfirmed. Keep the leading space. {0} is a filename.</comment>
+  </data>
+
+  <!-- ======================== failure reasons ========================== -->
+  <!-- Substituted as {3} into AlertNotConfirmed / AlertReplaceLostQso, so
+       each is a lower-case fragment with no full stop. The English text kept
+       for ErrorLog.txt is separate and lives in the code. -->
+
+  <data name="FailBusy" xml:space="preserve">
+    <value>another send had not finished yet</value>
+    <comment>Deliberately plain. This read "another send was already in flight" and machine-translated into German as a literal statement about aviation - see the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="FailConnectTimeout" xml:space="preserve">
+    <value>the connection to DXKeeper timed out after {0} seconds</value>
+    <comment>{0} is a number of seconds.</comment>
+  </data>
+  <data name="FailConnectRefused" xml:space="preserve">
+    <value>cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"</value>
+    <comment>{0} is a port number. {1} is DxKeeperConfigNetworkService, an English menu path inside DXKeeper - it must stay untranslated because DXKeeper's own interface is English-only.</comment>
+  </data>
+  <data name="FailNoPeerClose" xml:space="preserve">
+    <value>DXKeeper never closed the connection within {0} seconds, so the QSO may never have been accepted</value>
+    <comment>{0} is a number of seconds. DXKeeper acknowledges only by closing the connection, so no close means the QSO cannot be claimed as delivered.</comment>
+  </data>
+  <data name="FailShuttingDown" xml:space="preserve">
+    <value>the gateway was shutting down and this was never sent</value>
+  </data>
+  <data name="FailSendFailed" xml:space="preserve">
+    <value>the send failed</value>
+    <comment>Last-resort wording when no more specific reason is available.</comment>
+  </data>
+
+  <data name="DxKeeperConfigNetworkService" xml:space="preserve">
+    <value>Config &gt; Defaults tab &gt; Network Service</value>
+    <comment>DO NOT TRANSLATE. A literal menu path inside DXKeeper, whose interface is English-only.</comment>
   </data>
 </root>

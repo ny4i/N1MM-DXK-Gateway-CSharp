@@ -156,6 +156,33 @@ Optional, off by default: the **Multicast group** field (registry value `Multica
 
 An earlier revision of this file argued the opposite — that `SO_REUSEADDR` must never be set — reasoning from the unicast rule alone. That was wrong for the broadcast traffic this gateway actually receives.
 
+### Localization
+
+Strings live in `Strings.resx` at the project root (**not** in a subfolder — see the `.csproj` comment; a `Resources\` folder embeds the class under a different name and throws `MissingManifestResourceException` at the first lookup). `Strings.Designer.cs` is **checked in**, because WPF runs `MarkupCompilePass1` before `PrepareResources` and forcing the reverse is circular. Regenerate it with `dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings`.
+
+Adding a language means dropping `Strings.<culture>.resx` alongside. No code change: the SDK compiles it to a satellite assembly, and `Localization.AvailableTranslations` finds it by scanning for `<culture>\N1MM_DXK_GW.resources.dll` next to the executable rather than from a list in code.
+
+**What is translated, and what is deliberately not:**
+
+| | Translated |
+|---|---|
+| Window chrome, dialogs | yes |
+| Operation-log lines reporting a problem the operator must act on | yes |
+| Operation-log routine traffic lines (`contactinfo: …`, `lookupinfo: …`) | **no** |
+| `ErrorLog.txt`, `FailedQSOs_*.adi` | **no** |
+| Menu paths inside DXKeeper | **no** — its interface is English-only, so a translated path names a menu that does not exist |
+
+The routine log lines are mostly wire identifiers, and the log is what an operator pastes into a support thread. Same reason `ErrorLog.txt` is English.
+
+- **Only `CurrentUICulture` is set, never `CurrentCulture`.** Windows regional settings keep deciding number and date formatting. This also keeps the invariant frequency formatting (the VB6 v1.2.0 bug) out of the blast radius.
+- **The language applies on restart, and the UI says so.** XAML resolves 45 `x:Static` references at load time, so a live switch would repaint nothing; rebuilding the visual tree to fake it is a lot of machinery for a setting touched once.
+- **`SendResult` carries a `SendFailure` enum, not just `ErrorMessage`.** The message is English and goes to `ErrorLog.txt` verbatim; the enum is what the UI maps to a translated sentence. Do not collapse them back into one string — that would translate the support artefact.
+- **Translated log lines must pass severity explicitly** to `AppendLog(line, level)`. `LogEntry.Classify` derives severity by grepping English phrases (`"ERROR"`, `"***"`, `"did not confirm"`); a translated failure line would classify as Normal and lose its colour, silently, in exactly the languages that most need it to stand out.
+- **`MainWindow.L()` catches `FormatException`** and shows the raw template. Translations are produced outside this repo and a damaged placeholder (`{ 0 }`, an invented `{2}`) would otherwise throw on the send-queue worker and kill the gateway mid-contest. `tools/translate_resx.py` rejects such a string before writing it; the catch is the second line of defence.
+- **No idioms in source strings.** "Another send was already in flight" machine-translated into German as a literal statement about aviation. It now reads "another send had not finished yet".
+
+`tools/translate_resx.py <culture>…` drives a local LibreTranslate, masking `{N}` placeholders and protected terms (product names, protocol names, wire identifiers) before each request and restoring them after. Measured behaviour it works around: LibreTranslate collapses a sentinel's doubled tail when it lands at the end of a segment (`QQ0ZZ` → `QQ0Z`) but leaves it intact mid-sentence. Any string whose placeholders or masked terms do not survive is left in English and reported. Output is machine quality and needs a native review; each entry carries its English source as a `<comment>` for that purpose.
+
 ---
 
 ## NuGet Packages
