@@ -4,12 +4,35 @@
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:local="clr-namespace:N1MM_DXK_GW"
                  Title="{x:Static local:Strings.AppTitle}"
-                 Width="720" Height="620"
-                 MinWidth="560" MinHeight="480"
+                 Width="760" Height="720"
+                 MinWidth="620" MinHeight="560"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
                  WindowCornerPreference="Round"
                  WindowStartupLocation="CenterScreen">
+
+   <Window.Resources>
+      <Thickness x:Key="RowMargin">0,0,0,10</Thickness>
+
+      <!-- Section heading inside each card. -->
+      <Style x:Key="SectionHeading" TargetType="TextBlock">
+         <Setter Property="FontSize" Value="14" />
+         <Setter Property="FontWeight" Value="SemiBold" />
+         <Setter Property="Margin" Value="0,0,0,10" />
+      </Style>
+
+      <!-- Left-hand label in the settings grid. Vertically centred against the
+           text box beside it, and never fixed-width: translated labels can be
+           30% longer than English and must be allowed to size themselves. -->
+      <Style x:Key="FieldLabel" TargetType="TextBlock">
+         <Setter Property="VerticalAlignment" Value="Center" />
+         <Setter Property="Margin" Value="0,0,12,0" />
+      </Style>
+
+      <Style x:Key="SettingCheck" TargetType="CheckBox">
+         <Setter Property="Margin" Value="0,0,16,6" />
+      </Style>
+   </Window.Resources>
 
    <Grid>
       <Grid.RowDefinitions>
@@ -21,14 +44,232 @@
                    Title="{x:Static local:Strings.AppTitle}"
                    ShowMaximize="True" />
 
-      <!-- Scaffold only. The settings, status, log and failed-QSO sections are
-           ported in the next step; this proves the shell builds, themes and
-           runs before any behaviour moves across. -->
-      <TextBlock Grid.Row="1"
-                 Margin="24"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center"
-                 FontSize="16"
-                 Text="WPF shell running." />
+      <Grid Grid.Row="1" Margin="16,4,16,12">
+         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+         </Grid.RowDefinitions>
+
+         <!-- ============================ Settings ============================ -->
+         <ui:Card Grid.Row="0" Margin="{StaticResource RowMargin}">
+            <StackPanel>
+               <TextBlock Style="{StaticResource SectionHeading}"
+                          Text="{x:Static local:Strings.SettingsHeader}" />
+
+               <Grid>
+                  <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="Auto" />
+                     <ColumnDefinition Width="Auto" />
+                     <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <TextBlock Grid.Row="0" Grid.Column="0"
+                             Style="{StaticResource FieldLabel}"
+                             Text="{x:Static local:Strings.UdpPortLabel}" />
+                  <ui:TextBox x:Name="UdpPortBox"
+                              Grid.Row="0" Grid.Column="1"
+                              Width="110" Margin="0,0,0,8"
+                              ToolTip="{x:Static local:Strings.UdpPortTip}"
+                              KeyDown="UdpPortBox_KeyDown"
+                              LostFocus="UdpPortBox_LostFocus" />
+
+                  <TextBlock Grid.Row="1" Grid.Column="0"
+                             Style="{StaticResource FieldLabel}"
+                             Text="{x:Static local:Strings.MulticastLabel}" />
+                  <ui:TextBox x:Name="MulticastBox"
+                              Grid.Row="1" Grid.Column="1"
+                              Width="190" Margin="0,0,0,8"
+                              PlaceholderText="{x:Static local:Strings.MulticastPlaceholder}"
+                              ToolTip="{x:Static local:Strings.MulticastTip}"
+                              KeyDown="MulticastBox_KeyDown"
+                              LostFocus="MulticastBox_LostFocus" />
+
+                  <TextBlock x:Name="DxkPortLabel"
+                             Grid.Row="2" Grid.Column="0"
+                             Style="{StaticResource FieldLabel}"
+                             Text="{x:Static local:Strings.DxKeeperPortLabel}" />
+                  <TextBlock x:Name="DxkPortValue"
+                             Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                             VerticalAlignment="Center"
+                             TextWrapping="Wrap"
+                             Text="{x:Static local:Strings.DxKeeperPortReading}" />
+               </Grid>
+
+               <Separator Margin="0,12,0,12" />
+
+               <!-- Explicit Grid, not a UniformGrid: "Verbose logging" is a
+                    sub-option of "Log debugging information" and has to sit
+                    indented directly beneath it. A UniformGrid ignores
+                    Grid.Column and just flows left to right, which put it under
+                    the wrong parent. Columns are equal-width star so a longer
+                    translated label cannot squeeze the other column. -->
+               <Grid>
+                  <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="*" />
+                     <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <CheckBox x:Name="DxkLookupCheck" Grid.Row="0" Grid.Column="0"
+                            Style="{StaticResource SettingCheck}"
+                            Content="{x:Static local:Strings.CheckDxkLookup}"
+                            ToolTip="{x:Static local:Strings.CheckDxkLookupTip}"
+                            Checked="SettingCheckChanged" Unchecked="SettingCheckChanged" />
+                  <CheckBox x:Name="CallbookCheck" Grid.Row="0" Grid.Column="1"
+                            Style="{StaticResource SettingCheck}"
+                            Content="{x:Static local:Strings.CheckCallbook}"
+                            ToolTip="{x:Static local:Strings.CheckCallbookTip}"
+                            Checked="SettingCheckChanged" Unchecked="SettingCheckChanged" />
+
+                  <CheckBox x:Name="EqslCheck" Grid.Row="1" Grid.Column="0"
+                            Style="{StaticResource SettingCheck}"
+                            Content="{x:Static local:Strings.CheckEqsl}"
+                            ToolTip="{x:Static local:Strings.CheckEqslTip}"
+                            Checked="SettingCheckChanged" Unchecked="SettingCheckChanged" />
+                  <CheckBox x:Name="LotwCheck" Grid.Row="1" Grid.Column="1"
+                            Style="{StaticResource SettingCheck}"
+                            Content="{x:Static local:Strings.CheckLotw}"
+                            ToolTip="{x:Static local:Strings.CheckLotwTip}"
+                            Checked="SettingCheckChanged" Unchecked="SettingCheckChanged" />
+
+                  <CheckBox x:Name="ClubLogCheck" Grid.Row="2" Grid.Column="0"
+                            Style="{StaticResource SettingCheck}"
+                            Content="{x:Static local:Strings.CheckClubLog}"
+                            ToolTip="{x:Static local:Strings.CheckClubLogTip}"
+                            Checked="SettingCheckChanged" Unchecked="SettingCheckChanged" />
+                  <CheckBox x:Name="DebugLogCheck" Grid.Row="2" Grid.Column="1"
+                            Style="{StaticResource SettingCheck}"
+                            Content="{x:Static local:Strings.CheckDebugLogging}"
+                            ToolTip="{x:Static local:Strings.CheckDebugLoggingTip}"
+                            Checked="DebugLogCheck_Changed" Unchecked="DebugLogCheck_Changed" />
+
+                  <CheckBox x:Name="VerboseLogCheck" Grid.Row="3" Grid.Column="1"
+                            Margin="24,0,16,6"
+                            Content="{x:Static local:Strings.CheckVerboseLogging}"
+                            ToolTip="{x:Static local:Strings.CheckVerboseLoggingTip}"
+                            Checked="SettingCheckChanged" Unchecked="SettingCheckChanged" />
+               </Grid>
+            </StackPanel>
+         </ui:Card>
+
+         <!-- ======================= Connection Status ======================== -->
+         <ui:Card Grid.Row="1" Margin="{StaticResource RowMargin}">
+            <StackPanel>
+               <TextBlock Style="{StaticResource SectionHeading}"
+                          Text="{x:Static local:Strings.StatusHeader}" />
+               <Grid>
+                  <Grid.ColumnDefinitions>
+                     <ColumnDefinition Width="Auto" />
+                     <ColumnDefinition Width="Auto" />
+                     <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="Auto" />
+                     <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <Ellipse x:Name="DxkDot" Grid.Row="0" Grid.Column="0"
+                           Width="10" Height="10" Margin="0,0,10,6" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="0" Grid.Column="1" Margin="0,0,12,6" Text="DXKeeper:" />
+                  <TextBlock x:Name="DxkStatus" Grid.Row="0" Grid.Column="2" Margin="0,0,0,6" />
+
+                  <Ellipse x:Name="DxvDot" Grid.Row="1" Grid.Column="0"
+                           Width="10" Height="10" Margin="0,0,10,6" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="1" Grid.Column="1" Margin="0,0,12,6" Text="DXView:" />
+                  <TextBlock x:Name="DxvStatus" Grid.Row="1" Grid.Column="2" Margin="0,0,0,6" />
+
+                  <Ellipse x:Name="PfDot" Grid.Row="2" Grid.Column="0"
+                           Width="10" Height="10" Margin="0,0,10,0" VerticalAlignment="Center" />
+                  <TextBlock Grid.Row="2" Grid.Column="1" Margin="0,0,12,0" Text="Pathfinder:" />
+                  <TextBlock x:Name="PfStatus" Grid.Row="2" Grid.Column="2" />
+               </Grid>
+            </StackPanel>
+         </ui:Card>
+
+         <!-- ========================= Operation log ========================== -->
+         <ui:Card Grid.Row="2" Margin="{StaticResource RowMargin}">
+            <Grid>
+               <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="*" />
+               </Grid.RowDefinitions>
+               <TextBlock Grid.Row="0" Style="{StaticResource SectionHeading}"
+                          Text="{x:Static local:Strings.LogHeader}" />
+               <!-- Monospace so timestamps and callsigns line up down the column. -->
+               <ListBox x:Name="OperationLogList" Grid.Row="1"
+                        FontFamily="Consolas" FontSize="12"
+                        BorderThickness="0" Background="Transparent"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        VirtualizingStackPanel.IsVirtualizing="True">
+                  <ListBox.ItemContainerStyle>
+                     <!-- Default item padding is sized for touch and wastes
+                          most of the visible log during a contest. Tighten it
+                          to a log-line, and drop the selection affordance:
+                          these lines are read, not picked. -->
+                     <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="2,0,2,0" />
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="MinHeight" Value="0" />
+                        <Setter Property="Focusable" Value="False" />
+                     </Style>
+                  </ListBox.ItemContainerStyle>
+               </ListBox>
+            </Grid>
+         </ui:Card>
+
+         <!-- =========================== Bottom bar =========================== -->
+         <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+               <ColumnDefinition Width="*" />
+               <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+               <ui:HyperlinkButton x:Name="ErrorLogLink"
+                                   Visibility="Collapsed"
+                                   Padding="0,0,12,0"
+                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                   Content="{x:Static local:Strings.SeeErrorLog}"
+                                   Click="ErrorLogLink_Click" />
+               <TextBlock x:Name="FailedQsoText"
+                          Visibility="Collapsed"
+                          VerticalAlignment="Center"
+                          Margin="0,0,6,0"
+                          Foreground="{DynamicResource SystemFillColorCautionBrush}" />
+               <ui:HyperlinkButton x:Name="FailedQsoFileLink"
+                                   Visibility="Collapsed"
+                                   Padding="0,0,8,0"
+                                   Content="{x:Static local:Strings.FailedQsoOpenFile}"
+                                   Click="FailedQsoFileLink_Click" />
+               <ui:HyperlinkButton x:Name="FailedQsoFolderLink"
+                                   Visibility="Collapsed"
+                                   Padding="0"
+                                   Content="{x:Static local:Strings.FailedQsoOpenFolder}"
+                                   Click="FailedQsoFolderLink_Click" />
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+               <ui:Button x:Name="ShowErrorLogButton" Margin="0,0,8,0"
+                          Content="{x:Static local:Strings.DisplayErrorLog}"
+                          Click="ShowErrorLogButton_Click" />
+               <ui:Button x:Name="HelpButton"
+                          Content="{x:Static local:Strings.Help}"
+                          Click="HelpButton_Click" />
+            </StackPanel>
+         </Grid>
+      </Grid>
    </Grid>
 </ui:FluentWindow>
