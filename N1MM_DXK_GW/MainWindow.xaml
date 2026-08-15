@@ -4,8 +4,8 @@
                  xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
                  xmlns:local="clr-namespace:N1MM_DXK_GW"
                  Title="{x:Static local:Strings.AppTitle}"
-                 Width="780" Height="930"
-                 MinWidth="640" MinHeight="600"
+                 Width="800" Height="620"
+                 MinWidth="660" MinHeight="520"
                  ExtendsContentIntoTitleBar="True"
                  WindowBackdropType="Mica"
                  WindowCornerPreference="Round"
@@ -88,41 +88,41 @@
          <!-- Settings and status scroll together; the log keeps the rest of the
               window. On a short window the operator can still reach every
               setting, and the log never collapses to nothing. -->
-         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" MaxHeight="565">
+         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" MaxHeight="320">
             <StackPanel>
 
                <!-- ========================= Network ========================= -->
-               <ui:Card Margin="0,0,0,10" Padding="16">
+               <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
+                                Icon="{ui:SymbolIcon Globe24}"
+                                IsExpanded="True">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.NetworkHeader}" />
+                  </ui:CardExpander.Header>
                   <StackPanel>
-                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                        <ui:SymbolIcon Symbol="Globe24" Style="{StaticResource HeadingIcon}" />
-                        <TextBlock Style="{StaticResource CardHeading}"
-                                   Text="{x:Static local:Strings.NetworkHeader}" />
-                     </StackPanel>
-
+                     <!-- Two fields per row rather than one. Column widths are
+                          Auto so a longer translated label still fits; the
+                          trailing star column absorbs the slack. -->
                      <Grid Style="{StaticResource SettingRow}">
                         <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" />
                            <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="28" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.UdpPortLabel}" />
                         <ui:TextBox x:Name="UdpPortBox" Grid.Column="1"
-                                    Width="120" VerticalAlignment="Center"
+                                    Width="110" VerticalAlignment="Center"
                                     ToolTip="{x:Static local:Strings.UdpPortTip}"
                                     KeyDown="UdpPortBox_KeyDown"
                                     LostFocus="UdpPortBox_LostFocus" />
-                     </Grid>
-
-                     <Grid Style="{StaticResource SettingRow}">
-                        <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" />
-                           <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                        <TextBlock Grid.Column="3" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.MulticastLabel}" />
-                        <ui:TextBox x:Name="MulticastBox" Grid.Column="1"
-                                    Width="200" VerticalAlignment="Center"
+                        <ui:TextBox x:Name="MulticastBox" Grid.Column="4"
+                                    Width="180" VerticalAlignment="Center"
                                     PlaceholderText="{x:Static local:Strings.MulticastPlaceholder}"
                                     ToolTip="{x:Static local:Strings.MulticastTip}"
                                     KeyDown="MulticastBox_KeyDown"
@@ -143,132 +143,144 @@
                                    Text="{x:Static local:Strings.DxKeeperPortReading}" />
                      </Grid>
                   </StackPanel>
-               </ui:Card>
+               </ui:CardExpander>
 
                <!-- ========================= Services ======================== -->
-               <ui:Card Margin="0,0,0,10" Padding="16">
+               <!-- Collapsed by default. These are set once when the station is
+                    configured and then left alone, so they should not cost
+                    vertical space every session at the expense of the log. -->
+               <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
+                                Icon="{ui:SymbolIcon CloudArrowUp24}"
+                                IsExpanded="False">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.ServicesHeader}" />
+                  </ui:CardExpander.Header>
                   <StackPanel>
-                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                        <ui:SymbolIcon Symbol="CloudArrowUp24" Style="{StaticResource HeadingIcon}" />
-                        <TextBlock Style="{StaticResource CardHeading}"
-                                   Text="{x:Static local:Strings.ServicesHeader}" />
-                     </StackPanel>
-
                      <!-- ToggleSwitch, not CheckBox: each of these takes effect
                           the instant it is changed (saved and applied, no OK
                           button), which is exactly when Fluent calls for a
-                          switch rather than a checkbox. -->
-                     <Grid Style="{StaticResource SettingRow}">
+                          switch rather than a checkbox.
+
+                          Two columns, not five stacked rows. These are five
+                          short independent options; one per row made the card
+                          twice as tall as it needed to be and pushed the log -
+                          the part actually watched during a contest - down the
+                          window. The star label columns stay equal so both
+                          halves keep their toggles aligned, and a longer
+                          translated label wraps rather than shoving the other
+                          column out of true. -->
+                     <Grid>
                         <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="28" />
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                        <Grid.RowDefinitions>
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.CheckDxkLookup}"
                                    ToolTip="{x:Static local:Strings.CheckDxkLookupTip}" />
-                        <ui:ToggleSwitch x:Name="DxkLookupToggle" Grid.Column="1"
+                        <ui:ToggleSwitch x:Name="DxkLookupToggle" Grid.Row="0" Grid.Column="1"
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckDxkLookupTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
-                     </Grid>
 
-                     <Grid Style="{StaticResource SettingRow}">
-                        <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                        <TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.CheckCallbook}"
                                    ToolTip="{x:Static local:Strings.CheckCallbookTip}" />
-                        <ui:ToggleSwitch x:Name="CallbookToggle" Grid.Column="1"
+                        <ui:ToggleSwitch x:Name="CallbookToggle" Grid.Row="0" Grid.Column="4"
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckCallbookTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
-                     </Grid>
 
-                     <Grid Style="{StaticResource SettingRow}">
-                        <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.CheckEqsl}"
                                    ToolTip="{x:Static local:Strings.CheckEqslTip}" />
-                        <ui:ToggleSwitch x:Name="EqslToggle" Grid.Column="1"
+                        <ui:ToggleSwitch x:Name="EqslToggle" Grid.Row="1" Grid.Column="1"
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckEqslTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
-                     </Grid>
 
-                     <Grid Style="{StaticResource SettingRow}">
-                        <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                        <TextBlock Grid.Row="1" Grid.Column="3" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.CheckLotw}"
                                    ToolTip="{x:Static local:Strings.CheckLotwTip}" />
-                        <ui:ToggleSwitch x:Name="LotwToggle" Grid.Column="1"
+                        <ui:ToggleSwitch x:Name="LotwToggle" Grid.Row="1" Grid.Column="4"
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckLotwTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
-                     </Grid>
 
-                     <Grid Style="{StaticResource SettingRow}">
-                        <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                        <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.CheckClubLog}"
                                    ToolTip="{x:Static local:Strings.CheckClubLogTip}" />
-                        <ui:ToggleSwitch x:Name="ClubLogToggle" Grid.Column="1"
+                        <ui:ToggleSwitch x:Name="ClubLogToggle" Grid.Row="2" Grid.Column="1"
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckClubLogTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
                      </Grid>
                   </StackPanel>
-               </ui:Card>
+               </ui:CardExpander>
 
                <!-- ======================= Diagnostics ======================= -->
-               <ui:Card Margin="0,0,0,10" Padding="16">
+               <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
+                                Icon="{ui:SymbolIcon DocumentBulletList24}"
+                                IsExpanded="False">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.DiagnosticsHeader}" />
+                  </ui:CardExpander.Header>
                   <StackPanel>
-                     <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
-                        <ui:SymbolIcon Symbol="DocumentBulletList24" Style="{StaticResource HeadingIcon}" />
-                        <TextBlock Style="{StaticResource CardHeading}"
-                                   Text="{x:Static local:Strings.DiagnosticsHeader}" />
-                     </StackPanel>
-
-                     <Grid Style="{StaticResource SettingRow}">
+                     <!-- Same five-column grid as Services, using only the left
+                          half. Diagnostics has two rows rather than four, but
+                          its toggles must land on the same vertical line as the
+                          ones above or the eye jumps between cards. Verbose
+                          logging stays on its own row, indented and dimmed:
+                          it is a sub-option of the row above it, and putting
+                          the two side by side would lose that. -->
+                     <Grid>
                         <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="28" />
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                        <Grid.RowDefinitions>
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource SettingLabel}"
                                    Text="{x:Static local:Strings.CheckDebugLogging}"
                                    ToolTip="{x:Static local:Strings.CheckDebugLoggingTip}" />
-                        <ui:ToggleSwitch x:Name="DebugLogToggle" Grid.Column="1"
+                        <ui:ToggleSwitch x:Name="DebugLogToggle" Grid.Row="0" Grid.Column="1"
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckDebugLoggingTip}"
                                          Checked="DebugLogToggle_Changed" Unchecked="DebugLogToggle_Changed" />
-                     </Grid>
 
-                     <!-- Indented and dimmed: a sub-option of the row above. -->
-                     <Grid Style="{StaticResource SettingRow}">
-                        <Grid.ColumnDefinitions>
-                           <ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Grid.Column="0" Style="{StaticResource SubSettingLabel}"
+                        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource SubSettingLabel}"
                                    Text="{x:Static local:Strings.CheckVerboseLogging}"
                                    ToolTip="{x:Static local:Strings.CheckVerboseLoggingTip}" />
-                        <ui:ToggleSwitch x:Name="VerboseLogToggle" Grid.Column="1"
+                        <ui:ToggleSwitch x:Name="VerboseLogToggle" Grid.Row="1" Grid.Column="1"
                                          Style="{StaticResource RowToggle}"
                                          ToolTip="{x:Static local:Strings.CheckVerboseLoggingTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
                      </Grid>
                   </StackPanel>
-               </ui:Card>
+               </ui:CardExpander>
             </StackPanel>
          </ScrollViewer>
 
          <!-- ====================== Connection Status ====================== -->
-         <ui:Card Grid.Row="1" Margin="0,0,0,10" Padding="16">
+         <ui:Card Grid.Row="1" Margin="0,0,0,8" Padding="14">
             <StackPanel>
-               <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+               <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                   <ui:SymbolIcon Symbol="PlugConnected24" Style="{StaticResource HeadingIcon}" />
                   <TextBlock Style="{StaticResource CardHeading}"
                              Text="{x:Static local:Strings.StatusHeader}" />
@@ -302,7 +314,7 @@
          </ui:Card>
 
          <!-- ========================= Operation log ======================== -->
-         <ui:Card Grid.Row="2" Margin="0,0,0,10" Padding="16">
+         <ui:Card Grid.Row="2" Margin="0,0,0,8" Padding="14" MinHeight="150">
             <Grid>
                <Grid.RowDefinitions>
                   <RowDefinition Height="Auto" />
