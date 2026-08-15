@@ -27,6 +27,8 @@ public partial class MainForm : Form
       toolTip = new ToolTip(components!);
       AttachToolTips();
 
+      ApplyApplicationIcon();
+
       failedQsos = new FailedQsoStore(logger);
       // Result callback runs on the send worker thread — see OnSendResult.
       sendQueue = new QsoSendQueue(tcpClient, OnSendResult);
@@ -101,6 +103,31 @@ public partial class MainForm : Form
       dxvDde.Dispose();
       pfDde.Dispose();
       base.OnFormClosed(e);
+   }
+
+   /// <summary>
+   /// Sets the window icon from the embedded copy of the original VB6 icon.
+   /// ApplicationIcon in the .csproj covers the .exe, but WinForms draws the
+   /// title bar and Alt-Tab entry from Form.Icon, which it does not inherit.
+   ///
+   /// A missing or unreadable icon is cosmetic, so it must never prevent the
+   /// gateway from starting — the form simply keeps the WinForms default.
+   /// </summary>
+   private void ApplyApplicationIcon()
+   {
+      const string resourceName = "N1MM_DXK_GW.N1MM_DXK_GW.ico";
+      try
+      {
+         using var stream = typeof(MainForm).Assembly.GetManifestResourceStream(resourceName);
+         if (stream != null)
+         {
+            Icon = new Icon(stream);
+         }
+      }
+      catch (Exception ex)
+      {
+         System.Diagnostics.Debug.WriteLine($"Could not load {resourceName}: {ex.Message}");
+      }
    }
 
    private void RefreshDxKeeperPortDisplay()

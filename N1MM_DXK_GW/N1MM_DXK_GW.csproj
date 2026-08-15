@@ -6,7 +6,17 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <!-- The original VB6 gateway's icon, extracted from the StdPicture blob in
+         N1MM_DXK_UI.frx. Sets the icon on the .exe itself (Explorer, taskbar
+         pinning); MainForm loads the same file as an embedded resource for its
+         title bar and Alt-Tab entry. -->
+    <ApplicationIcon>N1MM_DXK_GW.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="N1MM_DXK_GW.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
