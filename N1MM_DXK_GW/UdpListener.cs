@@ -27,24 +27,40 @@ public sealed class UdpListener : IDisposable
 
       var udp = new UdpClient();
 
-      // Deliberately NO SO_REUSEADDR here, and do not "restore" it.
+      // SO_REUSEADDR, set before Bind because Windows only honours it then.
       //
-      // SO_REUSEADDR does not give two programs a shared copy of each
-      // datagram. Windows delivers a given unicast datagram to exactly one
-      // bound socket, so a second listener on this port does not duplicate
-      // the stream — it steals an arbitrary share of it, and the QSOs that
-      // land in the other process are simply never logged, with no error
-      // anywhere. That failure is invisible until someone audits the log
-      // against the contest, which is the worst possible way to lose a QSO.
+      // Whether this shares the stream or splits it depends entirely on how
+      // the datagram is addressed, which is why it is easy to get wrong:
       //
-      // The exclusive bind is also the behaviour we want on startup: a
-      // second copy of the gateway then fails loudly with "Address already
-      // in use" instead of silently splitting traffic with the first.
+      //   unicast   - delivered to exactly ONE bound socket. A second
+      //               listener would steal an arbitrary share of the stream
+      //               and those QSOs would never be logged, silently.
+      //   broadcast - delivered to EVERY socket bound to the port.
+      //   multicast - delivered to every socket bound to the port that has
+      //               also joined the group.
       //
-      // If several programs genuinely need N1MM's data, solve it at the
-      // sender — N1MM Logger+ accepts multiple UDP destinations, so each
-      // program gets its own copy on its own port — or add real multicast
-      // (IP_ADD_MEMBERSHIP), which does duplicate to every member.
+      // Measured on this network (two sockets, one port, SO_REUSEADDR set):
+      // a subnet broadcast reached 2 of 2; a unicast reached 1 of 2. And a
+      // capture of N1MM Logger+ shows it sending to 192.168.x.255 — subnet
+      // broadcast, not unicast. TR4W's UDP BROADCAST ADDRESS is likewise a
+      // user-set destination, commonly a broadcast address.
+      //
+      // So for the traffic this gateway actually receives, SO_REUSEADDR lets
+      // it coexist with other consumers on the same port, each getting a full
+      // copy. Without it, the gateway takes the port exclusively and every
+      // other consumer on this machine fails to bind.
+      //
+      // What it costs: the exclusive bind used to be a backstop against a
+      // second copy of the gateway running and double-logging every QSO.
+      // That job now rests entirely on the single-instance mutex in
+      // Program.cs. The mutex is per-session, so two different Windows
+      // sessions on one machine could still both run a gateway and both log
+      // the same broadcast QSOs to DXKeeper.
+      //
+      // NOTE: receiving a MULTICAST stream needs more than this — the socket
+      // must also join the group (IP_ADD_MEMBERSHIP / JoinMulticastGroup).
+      // That is not done here because there is no configured group address.
+      udp.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
       udp.Client.Bind(new IPEndPoint(IPAddress.Any, port));
       client = udp;
 

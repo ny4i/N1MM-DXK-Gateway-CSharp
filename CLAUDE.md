@@ -112,11 +112,25 @@ Established by measurement against live DXKeeper on 2026-08-15 (see the VB6 repo
 
 Silently ignore UDP datagrams of length ≤ 1 (Microsoft KB Q260018 — a known Winsock quirk that also affects .NET `UdpClient`).
 
-### One receiver per UDP port — do not set `SO_REUSEADDR`
+### `SO_REUSEADDR` is set — and whether that shares or splits depends on the address
 
-`UdpListener` binds exclusively, on purpose. `SO_REUSEADDR` does not hand two programs a copy each: Windows delivers a unicast datagram to exactly one bound socket, so a second listener steals an arbitrary share of the stream and those QSOs are never logged, with no error anywhere. The exclusive bind also makes a second instance fail loudly with "Address already in use".
+`UdpListener` sets `SO_REUSEADDR` before `Bind` (Windows only honours it then). The behaviour differs by how the datagram is addressed:
 
-If multiple programs need N1MM's data, solve it at the sender (N1MM Logger+ supports multiple UDP destinations) or add real multicast (`IP_ADD_MEMBERSHIP`), which genuinely duplicates to every member.
+| Addressing | Delivered to |
+|---|---|
+| unicast | exactly **one** bound socket |
+| broadcast | **every** socket bound to the port |
+| multicast | every socket bound to the port **that joined the group** |
+
+Measured on the development network — two sockets, one port, `SO_REUSEADDR` set: a subnet broadcast reached 2 of 2, a unicast reached 1 of 2. A packet capture shows N1MM Logger+ sending to `192.168.x.255`, i.e. subnet broadcast; TR4W's `UDP BROADCAST ADDRESS` is a user-set destination, commonly also a broadcast address.
+
+So for the traffic this gateway actually receives, `SO_REUSEADDR` lets it coexist with other consumers on the same port, each getting a full copy — which is required, since the operator runs TR4W alongside.
+
+**What it costs:** the exclusive bind used to be a backstop against a second copy of the gateway double-logging every QSO. That now rests entirely on the single-instance mutex in `Program.cs`, which is per-session — two Windows sessions on one machine could each run a gateway and both log the same broadcast QSOs.
+
+**Multicast reception is not implemented.** It needs a group join (`JoinMulticastGroup`) in addition to `SO_REUSEADDR`, and there is no configured group address. If TR4W is ever pointed at a multicast group, this must be added or the gateway will receive nothing.
+
+An earlier revision of this file argued the opposite — that `SO_REUSEADDR` must never be set — reasoning from the unicast rule alone. That was wrong for the broadcast traffic this gateway actually receives.
 
 ---
 
