@@ -29,7 +29,7 @@ from pathlib import Path
 
 LIBRETRANSLATE = "http://127.0.0.1:5000/translate"
 
-RESX = Path(__file__).resolve().parent.parent / "N1MM_DXK_GW" / "Strings.resx"
+RESX = Path(__file__).resolve().parent.parent / "N1MM_DXK_GW" / "I18N" / "Strings.resx"
 
 # Keys that are menu paths inside other programs. Copied through verbatim.
 DO_NOT_TRANSLATE_KEYS = {

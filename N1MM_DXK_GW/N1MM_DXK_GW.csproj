@@ -48,26 +48,49 @@
        It is public because the markup compiler resolves x:Static against public
        types only.
 
-       Both files sit at the project root on purpose: the generated code looks
-       up "N1MM_DXK_GW.Strings", and a Resources\ subfolder would embed it as
-       "N1MM_DXK_GW.Resources.Strings" - a mismatch that throws
-       MissingManifestResourceException at the first string lookup.
+       LogicalName is load-bearing, not decoration. MSBuild derives a resource's
+       manifest name from its path, so I18N\Strings.resx would embed as
+       "N1MM_DXK_GW.I18N.Strings" while the generated code looks up
+       "N1MM_DXK_GW.Strings" - a mismatch that throws
+       MissingManifestResourceException at the first string lookup, at run time,
+       with a clean build. (The files sat at the project root until now for
+       exactly that reason.) Stating the name explicitly decouples it from the
+       folder, so the resources can be organised without the lookup caring.
 
-       Add a language by dropping Strings.<culture>.resx alongside; it compiles
-       to a satellite assembly and needs no code change. -->
+       The culture MUST be part of the name for the satellites. ResourceManager
+       composes what it looks for as BaseName + "." + culture + ".resources", so
+       inside the German satellite it asks for
+       "N1MM_DXK_GW.Strings.de.resources" - NOT the neutral name. Forcing every
+       culture file to the culture-less name produced a satellite that was
+       perfectly well-formed and loadable, with the right assembly identity and
+       all 85 strings in it, that ResourceManager then silently ignored: no
+       exception, just English. Measured, not assumed.
+
+       %(Filename) is what makes one rule cover both cases: MSBuild strips only
+       the final extension, so Strings.resx gives "Strings" and Strings.de.resx
+       gives "Strings.de", producing exactly the two names above.
+
+       Add a language by dropping I18N\Strings.<culture>.resx in. The rule below
+       names it correctly on its own, MSBuild reads the culture from the
+       filename and routes it into the matching satellite assembly, and
+       Localization.AvailableTranslations finds it at run time. No project or
+       code change. -->
   <ItemGroup>
-    <EmbeddedResource Update="Strings.resx">
+    <EmbeddedResource Update="I18N\*.resx">
+      <LogicalName>N1MM_DXK_GW.%(Filename).resources</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Update="I18N\Strings.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Update="Strings.Designer.cs">
+    <Compile Update="I18N\Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
-  <!-- Regenerates the checked-in Strings.Designer.cs after editing Strings.resx:
+  <!-- Regenerates the checked-in I18N\Strings.Designer.cs after editing the .resx:
            dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings
        Visual Studio does this automatically when the .resx is saved; this is
        the equivalent for anyone working from the command line. Deliberately a
@@ -76,9 +99,9 @@
   <Target Name="RegenerateStrings">
     <!-- ExecuteAsTool=false keeps this in-process: the out-of-process path
          shells out to ResGen.exe, which .NET Core MSBuild does not ship. -->
-    <GenerateResource Sources="Strings.resx"
+    <GenerateResource Sources="I18N\Strings.resx"
                       OutputResources="$(IntermediateOutputPath)Strings.regen.resources"
-                      StronglyTypedFileName="Strings.Designer.cs"
+                      StronglyTypedFileName="I18N\Strings.Designer.cs"
                       StronglyTypedLanguage="CSharp"
                       StronglyTypedNamespace="N1MM_DXK_GW"
                       StronglyTypedClassName="Strings"

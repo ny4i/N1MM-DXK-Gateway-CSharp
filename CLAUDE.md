@@ -158,9 +158,21 @@ An earlier revision of this file argued the opposite — that `SO_REUSEADDR` mus
 
 ### Localization
 
-Strings live in `Strings.resx` at the project root (**not** in a subfolder — see the `.csproj` comment; a `Resources\` folder embeds the class under a different name and throws `MissingManifestResourceException` at the first lookup). `Strings.Designer.cs` is **checked in**, because WPF runs `MarkupCompilePass1` before `PrepareResources` and forcing the reverse is circular. Regenerate it with `dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings`.
+Strings live in `N1MM_DXK_GW\I18N\`. `Strings.Designer.cs` is **checked in**, because WPF runs `MarkupCompilePass1` before `PrepareResources` and forcing the reverse is circular. Regenerate it with `dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings`.
 
-Adding a language means dropping `Strings.<culture>.resx` alongside. No code change: the SDK compiles it to a satellite assembly, and `Localization.AvailableTranslations` finds it by scanning for `<culture>\N1MM_DXK_GW.resources.dll` next to the executable rather than from a list in code.
+**The `LogicalName` rule in the `.csproj` is load-bearing.** MSBuild derives a manifest resource name from the file's path, so the subfolder alone would embed `N1MM_DXK_GW.I18N.Strings` while the generated code looks up `N1MM_DXK_GW.Strings`. One rule handles both the neutral file and every satellite:
+
+```xml
+<EmbeddedResource Update="I18N\*.resx">
+  <LogicalName>N1MM_DXK_GW.%(Filename).resources</LogicalName>
+</EmbeddedResource>
+```
+
+`%(Filename)` strips only the final extension, so `Strings.resx` → `N1MM_DXK_GW.Strings.resources` and `Strings.de.resx` → `N1MM_DXK_GW.Strings.de.resources`.
+
+**The culture must be in the satellite's resource name.** `ResourceManager` composes what it looks for as `BaseName + "." + culture + ".resources"`, so inside the German satellite it asks for `N1MM_DXK_GW.Strings.de.resources`, *not* the neutral name. Forcing every culture file to the culture-less name produced a satellite with the correct assembly identity (`Culture=de`), in the correct folder, loadable by identity, containing all 85 strings — that `ResourceManager` then silently ignored. No exception; the UI simply stayed English. Both failure modes here are runtime-only and survive a clean build with zero warnings, so **verify a language change actually renders** after touching any of this.
+
+Adding a language means dropping `I18N\Strings.<culture>.resx` in. No project or code change: the rule above names it correctly, MSBuild reads the culture from the filename and routes it into the matching satellite, and `Localization.AvailableTranslations` finds it by scanning for `<culture>\N1MM_DXK_GW.resources.dll` next to the executable rather than from a list in code.
 
 **What is translated, and what is deliberately not:**
 
