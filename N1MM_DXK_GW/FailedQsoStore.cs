@@ -1,10 +1,16 @@
+using System.Globalization;
 using System.Reflection;
 
 namespace N1MM_DXK_GW;
 
 /// <summary>
-/// Appends undeliverable QSOs to FailedQSOs.adi next to the executable, so the
-/// operator can import them into DXKeeper by hand.
+/// Appends undeliverable QSOs to a per-run FailedQSOs_yyyyMMdd_HHmmss.adi next
+/// to the executable, so the operator can import them into DXKeeper by hand.
+///
+/// One file per run, created lazily on the first failure. A run that loses
+/// nothing leaves no file at all, which is what makes the file's existence a
+/// reliable alert: anything present belongs to this session and has not been
+/// recovered yet.
 ///
 /// This exists because of a hard invariant carried over from the VB6 gateway
 /// (N1MM_DXK_Module.SaveFailedQSO, v1.3.3): <b>no QSO is ever discarded
@@ -23,19 +29,73 @@ namespace N1MM_DXK_GW;
 /// </summary>
 public sealed class FailedQsoStore
 {
-   public const string FileName = "FailedQSOs.adi";
-
    private readonly object writeLock = new();
    private readonly string path;
    private readonly Logger logger;
 
-   public FailedQsoStore(Logger logger, string? path = null)
+   /// <param name="runStartedAt">
+   /// Stamped into the filename so each run of the gateway gets its own file.
+   /// A single accumulating FailedQSOs.adi cannot answer the only question the
+   /// operator actually has — "did anything go wrong *this* time?" — because a
+   /// file left over from last week looks identical to one written a minute
+   /// ago, and importing it would re-add QSOs already recovered.
+   /// </param>
+   public FailedQsoStore(Logger logger, DateTime? runStartedAt = null, string? directory = null)
    {
       this.logger = logger;
-      this.path = path ?? Path.Combine(AppContext.BaseDirectory, FileName);
+      var stamp = (runStartedAt ?? DateTime.Now).ToString("yyyyMMdd_HHmmss",
+                                                          CultureInfo.InvariantCulture);
+      this.path = Path.Combine(directory ?? AppContext.BaseDirectory,
+                               $"FailedQSOs_{stamp}.adi");
    }
 
-   public string Path_ => path;
+   /// <summary>Full path of this run's file. It may not exist yet.</summary>
+   public string FilePath => path;
+
+   /// <summary>Bare filename, for messages telling the operator what to import.</summary>
+   public string FileName => Path.GetFileName(path);
+
+   /// <summary>
+   /// Raised on the calling thread after a record is appended, so the UI can
+   /// surface the file immediately rather than at the next restart. Saves
+   /// happen on the send-queue worker, so handlers must marshal.
+   /// </summary>
+   public event Action? RecordSaved;
+
+   public bool Exists => File.Exists(path);
+
+   /// <summary>
+   /// Number of stranded QSOs, counted by &lt;EOR&gt; markers. Only ever reads
+   /// a file this class wrote, so counting the record terminator is exact.
+   /// Returns 0 if the file is missing or unreadable — this drives a warning
+   /// banner, and failing to read it must not throw on the UI thread.
+   /// </summary>
+   public int RecordCount()
+   {
+      lock (writeLock)
+      {
+         try
+         {
+            if (!File.Exists(path))
+            {
+               return 0;
+            }
+            var text = File.ReadAllText(path);
+            var count = 0;
+            var at = 0;
+            while ((at = text.IndexOf("<EOR>", at, StringComparison.OrdinalIgnoreCase)) >= 0)
+            {
+               count++;
+               at += 5;
+            }
+            return count;
+         }
+         catch
+         {
+            return 0;
+         }
+      }
+   }
 
    /// <summary>
    /// Append one ADIF record. Returns true if the record reached the file.
@@ -70,9 +130,18 @@ public sealed class FailedQsoStore
          }
       }
 
-      // Logging here also drives the UI's "errors have been logged" link,
-      // so the operator is told the file exists without a separate event.
       logger.Log($"FailedQsoStore: {reason}; QSO saved to {path}");
+
+      // Raised outside the write lock so a handler is free to call
+      // RecordCount without contending with the write that triggered it.
+      try
+      {
+         RecordSaved?.Invoke();
+      }
+      catch
+      {
+         // A bad subscriber must not turn a recovered QSO into a crash.
+      }
       return true;
    }
 

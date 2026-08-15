@@ -47,6 +47,10 @@ partial class MainForm
       pfDot = new Label();
       pfNameLabel = new Label();
       pfStatusLabel = new Label();
+      leftStatusPanel = new FlowLayoutPanel();
+      failedQsoLabel = new Label();
+      failedQsoFileLink = new LinkLabel();
+      failedQsoFolderLink = new LinkLabel();
       logGroup = new GroupBox();
       operationLogListBox = new ListBox();
       bottomPanel = new TableLayoutPanel();
@@ -270,8 +274,51 @@ partial class MainForm
       bottomPanel.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
       bottomPanel.RowCount = 1;
       bottomPanel.Margin = new Padding(0, 6, 0, 0);
-      bottomPanel.Controls.Add(errorLogLink, 0, 0);
+      bottomPanel.Controls.Add(leftStatusPanel, 0, 0);
       bottomPanel.Controls.Add(buttonPanel, 1, 0);
+
+      //
+      // leftStatusPanel
+      //
+      // Standing status, bottom-left: the ErrorLog link and the count of QSOs
+      // this session could not deliver. A counter rather than a banner — it
+      // needs to be noticed, not acknowledged, and it clears itself when the
+      // file is imported and deleted.
+      leftStatusPanel.AutoSize = true;
+      leftStatusPanel.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+      leftStatusPanel.FlowDirection = FlowDirection.LeftToRight;
+      leftStatusPanel.WrapContents = false;
+      leftStatusPanel.Anchor = AnchorStyles.Left;
+      leftStatusPanel.Margin = new Padding(0);
+      leftStatusPanel.Controls.Add(errorLogLink);
+      leftStatusPanel.Controls.Add(failedQsoLabel);
+      leftStatusPanel.Controls.Add(failedQsoFileLink);
+      leftStatusPanel.Controls.Add(failedQsoFolderLink);
+
+      //
+      // failedQsoLabel / failedQsoFileLink / failedQsoFolderLink
+      //
+      // All three hidden together when nothing has been stranded.
+      failedQsoLabel.AutoSize = true;
+      failedQsoLabel.Anchor = AnchorStyles.Left;
+      failedQsoLabel.ForeColor = Color.FromArgb(150, 60, 0);
+      failedQsoLabel.Margin = new Padding(12, 8, 3, 3);
+      failedQsoLabel.Visible = false;
+      failedQsoLabel.Text = "0 QSOs not delivered — open";
+
+      failedQsoFileLink.Text = "file";
+      failedQsoFileLink.AutoSize = true;
+      failedQsoFileLink.Anchor = AnchorStyles.Left;
+      failedQsoFileLink.LinkBehavior = LinkBehavior.HoverUnderline;
+      failedQsoFileLink.Margin = new Padding(0, 8, 3, 3);
+      failedQsoFileLink.Visible = false;
+
+      failedQsoFolderLink.Text = "folder";
+      failedQsoFolderLink.AutoSize = true;
+      failedQsoFolderLink.Anchor = AnchorStyles.Left;
+      failedQsoFolderLink.LinkBehavior = LinkBehavior.HoverUnderline;
+      failedQsoFolderLink.Margin = new Padding(0, 8, 3, 3);
+      failedQsoFolderLink.Visible = false;
 
       //
       // errorLogLink
@@ -402,6 +449,10 @@ partial class MainForm
    private Label pfDot;
    private Label pfNameLabel;
    private Label pfStatusLabel;
+   private FlowLayoutPanel leftStatusPanel;
+   private Label failedQsoLabel;
+   private LinkLabel failedQsoFileLink;
+   private LinkLabel failedQsoFolderLink;
    private GroupBox logGroup;
    private ListBox operationLogListBox;
    private TableLayoutPanel bottomPanel;

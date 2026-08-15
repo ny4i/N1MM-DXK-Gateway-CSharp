@@ -164,7 +164,11 @@ public sealed class DxKeeperTcpClient
             return new SendResult
             {
                Outcome = SendOutcome.Failed,
-               ErrorMessage = $"Cannot connect to DXKeeper at {DxkHost}:{port} — {ex.Message}. Is DXKeeper running with TCP enabled?",
+               // Name the panel the operator can check, not the registry key
+               // this port was read from — that heading also reports whether
+               // the service is actually listening.
+               ErrorMessage = $"Cannot connect to DXKeeper at {DxkHost}:{port} — {ex.Message}. "
+                              + "In DXKeeper, check Config > Defaults tab > Network Service shows \"Listening\".",
                WireFrame = frame,
                Port = port,
             };

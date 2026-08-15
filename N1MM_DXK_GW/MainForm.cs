@@ -31,6 +31,10 @@ public partial class MainForm : Form
       ApplyApplicationIcon();
 
       failedQsos = new FailedQsoStore(logger);
+      failedQsos.RecordSaved += OnFailedQsoSaved;
+
+      failedQsoFileLink.LinkClicked += (_, _) => OpenFailedQsoFile();
+      failedQsoFolderLink.LinkClicked += (_, _) => OpenFailedQsoFolder();
       // Result callback runs on the send worker thread — see OnSendResult.
       sendQueue = new QsoSendQueue(tcpClient, OnSendResult);
 
@@ -80,6 +84,8 @@ public partial class MainForm : Form
 
       ApplySettingsToUi();
       RefreshDxKeeperPortDisplay();
+      // Normally hides itself - this run's file cannot exist yet.
+      RefreshFailedQsoStatus();
       RestoreWindowPosition();
       SetTitleWithVersion();
       StartListenerOnConfiguredPort();
@@ -138,7 +144,9 @@ public partial class MainForm : Form
    private void RefreshDxKeeperPortDisplay()
    {
       var info = DxKeeperTcpClient.GetDxKeeperBasePortInfo();
-      var suffix = info.FromRegistry ? string.Empty : " — default, DXKeeper not detected in registry";
+      var suffix = info.FromRegistry
+         ? string.Empty
+         : " — assumed default; check DXKeeper: Config > Defaults > Network Service";
       dxkPortValue.Text = $"{info.BasePort} (using TCP port {info.ServicePort}){suffix}";
    }
 
@@ -461,8 +469,8 @@ public partial class MainForm : Form
          var kept = op.PreserveAdif != null &&
                     failedQsos.Save(op.PreserveAdif, $"replace failed after delete succeeded — {reason} (QSO with {op.Call})");
          PostToOperationLog(kept
-            ? $"*** {op.Call}: DXKeeper DELETED the original but did not log the edit{portTag} — the edited QSO is in {FailedQsoStore.FileName}, import it. Reason: {reason}"
-            : $"*** {op.Call}: DXKeeper DELETED the original, the edit was not logged{portTag}, AND it could not be saved to {FailedQsoStore.FileName}. Reason: {reason}");
+            ? $"*** {op.Call}: DXKeeper DELETED the original but did not log the edit{portTag} — the edited QSO is in {failedQsos.FileName}, import it. Reason: {reason}"
+            : $"*** {op.Call}: DXKeeper DELETED the original, the edit was not logged{portTag}, AND it could not be saved to {failedQsos.FileName}. Reason: {reason}");
          logger.Log($"REPLACE LEFT DXKEEPER WITHOUT THE QSO — {op.Call}{portTag}: delete succeeded, externallog did not ({reason})");
          return;
       }
@@ -472,8 +480,8 @@ public partial class MainForm : Form
       {
          var saved = failedQsos.Save(op.PreserveAdif, $"{reason} ({op.Summary})");
          savedNote = saved
-            ? $" — saved to {FailedQsoStore.FileName}"
-            : $" — AND it could not be saved to {FailedQsoStore.FileName}";
+            ? $" — saved to {failedQsos.FileName}"
+            : $" — AND it could not be saved to {failedQsos.FileName}";
       }
 
       PostToOperationLog($"DXKeeper did not confirm {op.Summary}{portTag}{savedNote}: {reason}");
@@ -650,6 +658,118 @@ public partial class MainForm : Form
       // to logger.DebugLog so it's gated by the "Log debugging information"
       // checkbox.
       logger.Log($"Invalid UDP message: {reason} -- body: {xml}");
+   }
+
+   /// <summary>
+   /// Fires on the send-queue worker thread when a QSO is stranded. Marshals
+   /// to refresh the banner so the operator sees it immediately rather than at
+   /// the next restart.
+   /// </summary>
+   private void OnFailedQsoSaved()
+   {
+      if (IsDisposed || !IsHandleCreated)
+      {
+         return;
+      }
+      try
+      {
+         BeginInvoke(RefreshFailedQsoStatus);
+      }
+      catch (ObjectDisposedException) { }
+      catch (InvalidOperationException) { }
+   }
+
+   /// <summary>
+   /// Status line for QSOs this session could not deliver: a count plus links
+   /// to the file and its folder. Hidden entirely when nothing has failed.
+   ///
+   /// The count is read from the file every time rather than tracked in
+   /// memory. That matters: opening the file or the folder does NOT clear it,
+   /// because nothing we can observe tells us the operator actually imported
+   /// the records into DXKeeper. The count falls to zero only when the file
+   /// itself is gone — which is exactly what the operator is told to do once
+   /// the import is done, and is the only signal we can trust.
+   /// </summary>
+   private void RefreshFailedQsoStatus()
+   {
+      var count = failedQsos.RecordCount();
+      var show = count > 0;
+
+      failedQsoLabel.Visible = show;
+      failedQsoFileLink.Visible = show;
+      failedQsoFolderLink.Visible = show;
+
+      if (show)
+      {
+         failedQsoLabel.Text =
+            $"{count} QSO{(count == 1 ? string.Empty : "s")} not delivered — open";
+         toolTip.SetToolTip(failedQsoLabel,
+            $"Import {failedQsos.FilePath} into DXKeeper, then delete it. "
+            + "This count clears when the file is gone.");
+      }
+   }
+
+   /// <summary>
+   /// Re-checks the file when the window regains focus, so deleting it after
+   /// an import clears the count without needing a restart.
+   /// </summary>
+   protected override void OnActivated(EventArgs e)
+   {
+      base.OnActivated(e);
+      if (IsHandleCreated && !IsDisposed)
+      {
+         RefreshFailedQsoStatus();
+      }
+   }
+
+   private void OpenFailedQsoFile()
+   {
+      if (!failedQsos.Exists)
+      {
+         MessageBox.Show(this, $"No stranded QSOs this session.\n\n{failedQsos.FilePath} does not exist.",
+            "N1MM-DXKeeper Gateway", MessageBoxButtons.OK, MessageBoxIcon.Information);
+         RefreshFailedQsoStatus();
+         return;
+      }
+      try
+      {
+         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+         {
+            FileName = failedQsos.FilePath,
+            UseShellExecute = true,
+         });
+      }
+      catch (Exception ex)
+      {
+         // .adi has no default handler on many machines — say so usefully
+         // rather than reporting a bare Win32 error.
+         MessageBox.Show(this,
+            $"Could not open {failedQsos.FileName}:\n\n{ex.Message}\n\nUse Open Folder and import it into DXKeeper from there.",
+            "N1MM-DXKeeper Gateway", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+      }
+   }
+
+   private void OpenFailedQsoFolder()
+   {
+      try
+      {
+         // /select, highlights the file in Explorer so it can be dragged
+         // straight into DXKeeper's import.
+         var argument = failedQsos.Exists
+            ? $"/select,\"{failedQsos.FilePath}\""
+            : $"\"{Path.GetDirectoryName(failedQsos.FilePath)}\"";
+         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+         {
+            FileName = "explorer.exe",
+            Arguments = argument,
+            UseShellExecute = true,
+         });
+      }
+      catch (Exception ex)
+      {
+         MessageBox.Show(this, $"Could not open the folder:\n\n{ex.Message}",
+            "N1MM-DXKeeper Gateway", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+      }
    }
 
    private void OnLogWritten()
@@ -898,10 +1018,17 @@ public partial class MainForm : Form
          + "The group is joined on the interface the routing table selects.";
       toolTip.SetToolTip(multicastTextBox, multicastTip);
       toolTip.SetToolTip(multicastLabel, multicastTip);
-      toolTip.SetToolTip(dxkPortLabel,
-         @"Read-only. DXKeeper's TCP service base port from HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort. The gateway sends to base + 1.");
-      toolTip.SetToolTip(dxkPortValue,
-         @"Read-only. DXKeeper's TCP service base port from HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort. The gateway sends to base + 1.");
+      // Point the operator at the place they can actually change this, not at
+      // the registry key we happen to read it from.
+      const string dxkPortTip =
+         "Read-only here. Set it in DXKeeper: Config > Defaults tab > Network Service > Base Port. "
+         + "The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.";
+      toolTip.SetToolTip(dxkPortLabel, dxkPortTip);
+      toolTip.SetToolTip(dxkPortValue, dxkPortTip);
+      toolTip.SetToolTip(failedQsoFileLink,
+         "Open the failed-QSO ADIF file in the default text editor");
+      toolTip.SetToolTip(failedQsoFolderLink,
+         "Show the file in Explorer so it can be imported into DXKeeper");
       toolTip.SetToolTip(showErrorLogButton, "Open ErrorLog.txt in the default text editor");
       toolTip.SetToolTip(helpButton, "Open online documentation");
       toolTip.SetToolTip(errorLogLink, "Errors have been logged - click to open ErrorLog.txt");
