@@ -87,6 +87,7 @@ public partial class MainWindow : FluentWindow
       Closing += MainWindow_Closing;
       Closed += MainWindow_Closed;
       Activated += (_, _) => RefreshFailedQsoStatus();
+      SizeChanged += (_, _) => UpdateSettingsHeightCap();
    }
 
    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -930,6 +931,46 @@ public partial class MainWindow : FluentWindow
          OperationLogList.Items.RemoveAt(0);
       }
       OperationLogList.ScrollIntoView(OperationLogList.Items[^1]);
+   }
+
+   /// <summary>
+   /// Space the settings region must leave for everything below it: the
+   /// connection status card, the log at its minimum, and the footer.
+   /// </summary>
+   private const double ReservedBelowSettings = 340;
+
+   /// <summary>
+   /// Caps how tall the settings region may grow, as a function of the current
+   /// window height, so expanding a group can never squeeze the log away.
+   ///
+   /// This replaces an earlier attempt to resize the window itself on expand
+   /// and collapse. That raced the expander's animation — the measurement ran
+   /// while the content was still moving, so collapsing a group grew the
+   /// window instead of shrinking it. Sizing off the window rather than off
+   /// mid-animation content has no such race, and it adapts on its own when
+   /// the operator resizes: a taller window simply shows more settings.
+   ///
+   /// Past the cap the settings region scrolls, with a visible scrollbar. That
+   /// is honest; the earlier failure was not that it scrolled but that it
+   /// clipped mid-row with no indication it had done so.
+   /// </summary>
+   private void UpdateSettingsHeightCap()
+   {
+      SettingsScroll.MaxHeight = Math.Max(120, ActualHeight - ReservedBelowSettings);
+   }
+
+   /// <summary>
+   /// Scrolls a newly expanded group into view. Without this, opening the
+   /// bottom group reveals content below the fold and looks like nothing
+   /// happened.
+   /// </summary>
+   private void SettingsSection_ExpandChanged(object sender, RoutedEventArgs e)
+   {
+      if (sender is FrameworkElement section)
+      {
+         // After the expander's own layout pass, or the bounds are pre-expansion.
+         Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => section.BringIntoView()));
+      }
    }
 
    private void CopyLogButton_Click(object sender, RoutedEventArgs e)

@@ -88,12 +88,12 @@
          <!-- Settings and status scroll together; the log keeps the rest of the
               window. On a short window the operator can still reach every
               setting, and the log never collapses to nothing. -->
-         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" MaxHeight="320">
+         <ScrollViewer x:Name="SettingsScroll" Grid.Row="0" VerticalScrollBarVisibility="Auto">
             <StackPanel>
 
                <!-- ========================= Network ========================= -->
                <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
-                                Icon="{ui:SymbolIcon Globe24}"
+                                Icon="{ui:SymbolIcon Globe24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
                                 IsExpanded="True">
                   <ui:CardExpander.Header>
                      <TextBlock Style="{StaticResource CardHeading}"
@@ -150,7 +150,7 @@
                     configured and then left alone, so they should not cost
                     vertical space every session at the expense of the log. -->
                <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
-                                Icon="{ui:SymbolIcon CloudArrowUp24}"
+                                Icon="{ui:SymbolIcon CloudArrowUp24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
                                 IsExpanded="False">
                   <ui:CardExpander.Header>
                      <TextBlock Style="{StaticResource CardHeading}"
@@ -229,7 +229,7 @@
 
                <!-- ======================= Diagnostics ======================= -->
                <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
-                                Icon="{ui:SymbolIcon DocumentBulletList24}"
+                                Icon="{ui:SymbolIcon DocumentBulletList24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
                                 IsExpanded="False">
                   <ui:CardExpander.Header>
                      <TextBlock Style="{StaticResource CardHeading}"
@@ -314,7 +314,7 @@
          </ui:Card>
 
          <!-- ========================= Operation log ======================== -->
-         <ui:Card Grid.Row="2" Margin="0,0,0,8" Padding="14" MinHeight="150">
+         <ui:Card x:Name="LogCard" Grid.Row="2" Margin="0,0,0,8" Padding="14" MinHeight="150" VerticalAlignment="Stretch">
             <Grid>
                <Grid.RowDefinitions>
                   <RowDefinition Height="Auto" />
