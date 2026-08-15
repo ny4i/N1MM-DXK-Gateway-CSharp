@@ -1,26 +1,76 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <UseWPF>true</UseWPF>
+
+    <!-- Still true, and not a leftover: Specshell.NDde depends on
+         Specshell.WinForm.HiddenForm, because DDEML needs a hidden window with
+         a message pump. No WinForms control is ever shown; the assembly is
+         only there so DDE to DXKeeper, DXView and Pathfinder can work.
+         WinForms Screen is also used for multi-monitor window restore. -->
+    <UseWindowsForms>true</UseWindowsForms>
 
     <!-- The original VB6 gateway's icon, extracted from the StdPicture blob in
          N1MM_DXK_UI.frx. Sets the icon on the .exe itself (Explorer, taskbar
-         pinning); MainForm loads the same file as an embedded resource for its
-         title bar and Alt-Tab entry. -->
+         pinning); the window loads the same file for its title bar. -->
     <ApplicationIcon>N1MM_DXK_GW.ico</ApplicationIcon>
+
+    <!-- Neutral language of the strings compiled into the main assembly. Tells
+         the resource loader it need not probe for an "en" satellite before
+         falling back, and is the baseline every translation is made from. -->
+    <NeutralResourcesLanguage>en</NeutralResourcesLanguage>
   </PropertyGroup>
+
+  <!-- UseWindowsForms puts System.Windows.Forms into the implicit usings, which
+       collides with WPF on Application, MessageBox, Clipboard and more. We do
+       not write WinForms UI - the assembly is here only for NDde's hidden
+       window and for Screen during window restore - so take it out of the
+       global set and qualify it explicitly at the two places that need it. -->
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="N1MM_DXK_GW.ico" />
   </ItemGroup>
 
+  <!-- Strings.Designer.cs is CHECKED IN, not generated at build time, and must
+       stay that way. WPF runs MarkupCompilePass1 before PrepareResources, so a
+       build-generated resource class does not exist yet when XAML referencing
+       it is compiled - and making PrepareResources run first is a circular
+       dependency. Checking the file in is also what Visual Studio does with a
+       .Designer.cs, so VS regenerates it automatically when the .resx is saved.
+       It is public because the markup compiler resolves x:Static against public
+       types only.
+
+       Both files sit at the project root on purpose: the generated code looks
+       up "N1MM_DXK_GW.Strings", and a Resources\ subfolder would embed it as
+       "N1MM_DXK_GW.Resources.Strings" - a mismatch that throws
+       MissingManifestResourceException at the first string lookup.
+
+       Add a language by dropping Strings.<culture>.resx alongside; it compiles
+       to a satellite assembly and needs no code change. -->
+  <ItemGroup>
+    <EmbeddedResource Update="Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="Specshell.NDde" Version="4.0.0" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

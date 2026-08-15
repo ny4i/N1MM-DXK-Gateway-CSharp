@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Neutral (English) UI strings. Every operator-visible string belongs here.
+
+    TRANSLATOR NOTES
+
+    Do NOT translate these - they are product names, protocol names, or terms
+    of art that operators use in English worldwide, and several are wire-format
+    identifiers:
+
+      DXKeeper, N1MM Logger+, DXView, Pathfinder, Club Log, LoTW, eQSL, QRZ
+      QSO, ADIF, ARRL, RST, callsign, DX, UDP, TCP, multicast
+      any filename such as FailedQSOs_20260815_014645.adi
+
+    Menu paths inside OTHER programs must also stay in English. DXKeeper's own
+    interface is English-only, so translating "Config > Defaults tab > Network
+    Service" would send the operator hunting for a menu that does not exist.
+    Those paths are held in DxKeeperConfigPath and substituted into sentences.
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="AppTitle" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway</value>
+    <comment>Window title. "N1MM" and "DXKeeper" are product names - do not translate.</comment>
+  </data>
+
+  <data name="SettingsHeader" xml:space="preserve">
+    <value>Settings</value>
+    <comment>Heading of the settings section.</comment>
+  </data>
+  <data name="UdpPortLabel" xml:space="preserve">
+    <value>UDP listening port:</value>
+    <comment>Label for the port N1MM broadcasts QSO data to. "UDP" is a protocol name - do not translate.</comment>
+  </data>
+  <data name="UdpPortTip" xml:space="preserve">
+    <value>UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)</value>
+    <comment>Tooltip. Keep "N1MM Logger+", "UDP", "QSO" and "XML" in English.</comment>
+  </data>
+  <data name="MulticastLabel" xml:space="preserve">
+    <value>Multicast group (optional):</value>
+    <comment>Label for an optional IPv4 multicast group address.</comment>
+  </data>
+  <data name="MulticastPlaceholder" xml:space="preserve">
+    <value>blank = no multicast</value>
+    <comment>Placeholder shown inside the empty multicast text box.</comment>
+  </data>
+  <data name="MulticastTip" xml:space="preserve">
+    <value>Optional. Leave blank unless the sending program is configured to send to a multicast group (224.0.0.0 - 239.255.255.255). Unicast and broadcast are received either way. The group is joined on the interface the routing table selects.</value>
+    <comment>Tooltip. Do not translate the address range.</comment>
+  </data>
+  <data name="DxKeeperPortLabel" xml:space="preserve">
+    <value>DXKeeper TCP base port:</value>
+    <comment>Label. "DXKeeper" and "TCP" - do not translate.</comment>
+  </data>
+  <data name="DxKeeperPortTip" xml:space="preserve">
+    <value>Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.</value>
+    <comment>Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.</comment>
+  </data>
+  <data name="DxKeeperConfigPath" xml:space="preserve">
+    <value>Config &gt; Defaults tab &gt; Network Service &gt; Base Port</value>
+    <comment>DO NOT TRANSLATE. A literal menu path inside DXKeeper, whose interface is English-only. Translating it would describe a menu that does not exist.</comment>
+  </data>
+  <data name="DxKeeperPortReading" xml:space="preserve">
+    <value>(reading from registry…)</value>
+    <comment>Placeholder shown until DXKeeper's configured port has been read.</comment>
+  </data>
+
+  <data name="StatusHeader" xml:space="preserve">
+    <value>Connection Status</value>
+    <comment>Heading of the section showing whether each DXLab program is reachable.</comment>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>connected</value>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>disconnected</value>
+  </data>
+
+  <data name="LogHeader" xml:space="preserve">
+    <value>Operation Log</value>
+    <comment>Heading of the running list of what the gateway has done.</comment>
+  </data>
+  <data name="SeeErrorLog" xml:space="preserve">
+    <value>see ErrorLog</value>
+    <comment>Link shown when something has been written to the error log. "ErrorLog" is the filename ErrorLog.txt - do not translate.</comment>
+  </data>
+  <data name="DisplayErrorLog" xml:space="preserve">
+    <value>Display Error Log</value>
+    <comment>Button that opens ErrorLog.txt.</comment>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Help</value>
+  </data>
+
+  <data name="CheckDxkLookup" xml:space="preserve">
+    <value>Lookup previous QSOs</value>
+    <comment>"QSO" means a radio contact and is used in English worldwide - do not translate.</comment>
+  </data>
+  <data name="CheckDxkLookupTip" xml:space="preserve">
+    <value>Direct DXKeeper to display previous QSOs with the logged callsign</value>
+  </data>
+  <data name="CheckCallbook" xml:space="preserve">
+    <value>Query Callbook</value>
+    <comment>A callbook is a database of licensed operators.</comment>
+  </data>
+  <data name="CheckCallbookTip" xml:space="preserve">
+    <value>Direct DXKeeper to query its selected callbook</value>
+  </data>
+  <data name="CheckEqsl" xml:space="preserve">
+    <value>Upload to eQSL.cc</value>
+    <comment>"eQSL.cc" is a website name - do not translate.</comment>
+  </data>
+  <data name="CheckEqslTip" xml:space="preserve">
+    <value>Direct DXKeeper to upload logged QSO to eQSL.cc</value>
+  </data>
+  <data name="CheckLotw" xml:space="preserve">
+    <value>Upload to LoTW</value>
+    <comment>"LoTW" is the ARRL's Logbook of the World - do not translate.</comment>
+  </data>
+  <data name="CheckLotwTip" xml:space="preserve">
+    <value>Direct DXKeeper to upload logged QSO to LoTW</value>
+  </data>
+  <data name="CheckClubLog" xml:space="preserve">
+    <value>Upload to Club Log</value>
+    <comment>"Club Log" is a website name - do not translate.</comment>
+  </data>
+  <data name="CheckClubLogTip" xml:space="preserve">
+    <value>Direct DXKeeper to upload logged QSO to Club Log</value>
+  </data>
+  <data name="CheckDebugLogging" xml:space="preserve">
+    <value>Log debugging information</value>
+  </data>
+  <data name="CheckDebugLoggingTip" xml:space="preserve">
+    <value>Log debugging information to ErrorLog.txt</value>
+  </data>
+  <data name="CheckVerboseLogging" xml:space="preserve">
+    <value>Verbose logging</value>
+  </data>
+  <data name="CheckVerboseLoggingTip" xml:space="preserve">
+    <value>Show low-priority status events in the operation log (e.g. DDE connect/disconnect)</value>
+    <comment>"DDE" is a Windows protocol name - do not translate.</comment>
+  </data>
+
+  <data name="FailedQsoCount" xml:space="preserve">
+    <value>{0} QSOs not delivered — open</value>
+    <comment>Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
+  </data>
+  <data name="FailedQsoCountOne" xml:space="preserve">
+    <value>1 QSO not delivered — open</value>
+    <comment>Singular form of FailedQsoCount. Languages with more plural forms may need extra keys.</comment>
+  </data>
+  <data name="FailedQsoOpenFile" xml:space="preserve">
+    <value>file</value>
+    <comment>Link that opens the failed-QSO ADIF file.</comment>
+  </data>
+  <data name="FailedQsoOpenFolder" xml:space="preserve">
+    <value>folder</value>
+    <comment>Link that shows the failed-QSO file in Explorer.</comment>
+  </data>
+  <data name="FailedQsoTip" xml:space="preserve">
+    <value>Import {0} into DXKeeper, then delete it. This count clears when the file is gone.</value>
+    <comment>Tooltip. {0} is the full path of the ADIF file - do not translate it.</comment>
+  </data>
+</root>
