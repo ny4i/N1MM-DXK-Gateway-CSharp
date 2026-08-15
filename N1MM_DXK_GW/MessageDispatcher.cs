@@ -21,6 +21,7 @@ public sealed class MessageDispatcher
    private bool isDraining;
 
    public event Action<XElement>? ContactInfoReceived;
+   public event Action<XElement>? ContactReplaceReceived;
    public event Action<XElement>? LookupInfoReceived;
    public event Action<XElement>? ContactDeleteReceived;
    public event Action<string, string>? InvalidMessageReceived;   // (rawXml, reason)
@@ -41,7 +42,6 @@ public sealed class MessageDispatcher
       new(StringComparer.OrdinalIgnoreCase)
       {
          "radioinfo",       // radio state, broadcast continuously
-         "contactreplace",  // QSO edited in N1MM; the VB6 gateway never forwarded edits
          "dynamicresults",  // periodic score summary
       };
 
@@ -138,6 +138,21 @@ public sealed class MessageDispatcher
             }
             // Non-original contactinfo is N1MM's spotting broadcast — silently ignored,
             // matching the VB6 behaviour. Logging it as "invalid" would be noisy.
+            break;
+         case "contactreplace":
+            // A QSO edited in N1MM. Same element shape as contactinfo, plus
+            // <oldcall> and <oldtimestamp> giving the pre-edit identity.
+            //
+            // The isoriginal filter is applied here for the same reason as on
+            // contactinfo — a non-original copy is a spotting broadcast, not a
+            // logging instruction. N1MM's own contactreplace carries
+            // <IsOriginal>True</IsOriginal> in the capture we have; treating a
+            // non-original one as an edit would delete a real QSO on the
+            // strength of a spot, which is the more dangerous mistake.
+            if (XmlHelpers.TrueValue(root, "isoriginal"))
+            {
+               ContactReplaceReceived?.Invoke(root);
+            }
             break;
          case "lookupinfo":
             LookupInfoReceived?.Invoke(root);

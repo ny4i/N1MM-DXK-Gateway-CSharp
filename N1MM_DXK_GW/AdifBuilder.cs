@@ -111,6 +111,76 @@ public sealed class AdifBuilder
       };
    }
 
+   /// <summary>
+   /// The ADIF record identifying a QSO for deletion.
+   ///
+   /// DXKeeper's QSO identity is CALL + QSO_DATE + TIME_ON and nothing else —
+   /// confirmed against TR4W's BuildDXKeeperDeleteMessage, which sends exactly
+   /// these three. That is what makes this gateway able to handle deletes at
+   /// all: it is a stateless go-between with no access to either program's
+   /// database, and every field of the key arrives in the datagram that asks
+   /// for the delete.
+   ///
+   /// <paramref name="useOldIdentity"/> selects which call/timestamp to use.
+   /// A contactreplace carries both the current values and &lt;oldcall&gt; /
+   /// &lt;oldtimestamp&gt;; the delete must target the pre-edit record, so an
+   /// edit that changed the callsign or the time still matches. A
+   /// contactdelete carries only the current values.
+   /// </summary>
+   public static DeleteKey BuildDeleteRecord(XElement message, bool useOldIdentity)
+   {
+      var call = useOldIdentity ? FirstNonEmpty(message, "oldcall", "call")
+                                : Raw(message, "call");
+      var stamp = useOldIdentity ? FirstNonEmpty(message, "oldtimestamp", "timestamp")
+                                 : Raw(message, "timestamp");
+
+      if (string.IsNullOrWhiteSpace(call) || !TryParseTimestamp(stamp, out var ts))
+      {
+         return new DeleteKey { IsValid = false, Call = call.Trim() };
+      }
+
+      var sb = new StringBuilder();
+      AppendField(sb, "CALL", call);
+      AppendField(sb, "QSO_DATE", ts.ToString("yyyyMMdd", CultureInfo.InvariantCulture));
+      AppendField(sb, "TIME_ON", ts.ToString("HHmmss", CultureInfo.InvariantCulture));
+      sb.Append("<EOR>");
+
+      return new DeleteKey
+      {
+         IsValid = true,
+         AdifRecord = sb.ToString(),
+         Call = call.Trim(),
+         Summary = $"{call.Trim()} at {ts.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture)}Z",
+      };
+   }
+
+   public sealed class DeleteKey
+   {
+      public bool IsValid { get; init; }
+      public string AdifRecord { get; init; } = string.Empty;
+      public string Call { get; init; } = string.Empty;
+      public string Summary { get; init; } = string.Empty;
+   }
+
+   /// <summary>
+   /// First of <paramref name="names"/> with a non-blank value. N1MM emits
+   /// oldcall/oldtimestamp on every contactinfo and contactreplace, but a
+   /// blank one must fall back rather than produce a delete that matches
+   /// nothing — or, worse, matches the wrong QSO.
+   /// </summary>
+   private static string FirstNonEmpty(XElement parent, params string[] names)
+   {
+      foreach (var name in names)
+      {
+         var value = Raw(parent, name);
+         if (!string.IsNullOrWhiteSpace(value))
+         {
+            return value;
+         }
+      }
+      return string.Empty;
+   }
+
    private static void AppendField(StringBuilder sb, string fieldName, string value)
    {
       // Match VB6 Data_to_ADIF: only emit if Trim(value) is non-empty,

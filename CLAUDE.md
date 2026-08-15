@@ -51,7 +51,8 @@ N1MM Logger+ --[UDP XML : 12060]--> Gateway --[TCP : 52001]--> DXKeeper (log QSO
    - Dispatches:
      - `"contactinfo"` with `<isoriginal>true</isoriginal>` → build ADIF record → send to DXKeeper via TCP
      - `"lookupinfo"` → DDE callsign check/lookup
-     - `"contactdelete"` → parsed but **not forwarded** (unimplemented, matches VB6 behavior)
+     - `"contactreplace"` with `<isoriginal>true</isoriginal>` → delete the pre-edit QSO, then log the edited one (see *Editing and deleting QSOs*)
+     - `"contactdelete"` → build the delete key and send `deleteqso`
 4. **XML parsing**: use `System.Xml.Linq.XDocument` / `XElement` (replaces the VB6 manual string search approach).
 5. **ADIF construction**: produces `<FIELDNAME:N>value` framed fields for the DXKeeper TCP wire format `<command:N>externallog<parameters:N>...`.
 6. **Send queue** (`QsoSendQueue`): ADIF records are enqueued, not sent inline. A single worker sends one QSO at a time and waits for DXKeeper's acknowledgement before starting the next. This is not an optimisation — see *QSO delivery* below.
@@ -107,6 +108,18 @@ Established by measurement against live DXKeeper on 2026-08-15 (see the VB6 repo
 - **DXKeeper can be seconds behind** (4.5 s lags in its own log — it drains TCP commands through an internal DDE queue while doing callbook and award work). Hence `QsoSendQueue`: one send in flight, paced to DXKeeper's acknowledgement rather than to N1MM's send rate. Sending concurrently just produces rejected sends.
 - **No QSO is discarded silently.** Anything not confirmed — `Failed`, `Unconfirmed`, `Busy`, or still queued at shutdown — is appended to `FailedQSOs.adi` next to the executable by `FailedQsoStore`, for the operator to import by hand.
 - **Never retry automatically.** DXKeeper does not detect duplicate QSOs (40 sends of 20 distinct calls produced 39 records), so retrying a QSO it may already have processed would duplicate it. `FailedQSOs.adi` is the recovery path.
+- **An acknowledgement means enqueued, not executed.** DXKeeper closes the connection once it has put the command on its internal DDE queue. Verified in DXKeeper's own log during a replace: delete enqueued at `05:23:58.353`, re-log at `05:23:58.378`, delete *completed* at `05:24:05.573`, re-log parsed at `05:24:05.809`. Ordering across commands is therefore guaranteed by DXKeeper's FIFO queue, not by our waiting.
+
+### Editing and deleting QSOs
+
+`contactdelete` → `deleteqso`. `contactreplace` → `deleteqso` followed by `externallog`, queued as one inseparable operation.
+
+- **QSO identity is `CALL` + `QSO_DATE` + `TIME_ON`, and nothing else.** Confirmed against TR4W's `BuildDXKeeperDeleteMessage` (`c:\tr4w-d12\tr4w\src\uExternalLogger.pas`), which sends exactly those three. This is what lets a stateless go-between handle edits at all — the gateway cannot query either program's database, and every field of the key arrives in the datagram that asks for the change.
+- **`deleteqso` parameters are raw ADIF, NOT wrapped in `<ExternalLogADIF:N>`** — unlike `externallog`. Wrapping them makes DXKeeper match nothing.
+- **Delete must precede re-log.** An edit to a non-key field (name, comment, exchange) leaves the identity unchanged, so re-log-first would leave two identical records and the delete would remove an arbitrary one — or both.
+- **`contactreplace` supplies `<oldcall>` and `<oldtimestamp>`**, the pre-edit identity, so an edit that changes the callsign or the time still deletes the right record. Build the delete key from those, falling back to the current values only if blank.
+- **The delete-succeeded / re-log-failed window is unavoidable** — DXKeeper has no atomic replace. When it happens the QSO is gone from DXKeeper entirely: report it at the top of the operator's attention and preserve the edited record in `FailedQSOs.adi`.
+- **When the *delete* half fails, do not preserve the edited record.** DXKeeper still holds the original, so importing the edited copy later would duplicate it.
 
 ### 1-Byte UDP Spurious Wakeup
 
@@ -128,7 +141,7 @@ So for the traffic this gateway actually receives, `SO_REUSEADDR` lets it coexis
 
 **What it costs:** the exclusive bind used to be a backstop against a second copy of the gateway double-logging every QSO. That now rests entirely on the single-instance mutex in `Program.cs`, which is per-session — two Windows sessions on one machine could each run a gateway and both log the same broadcast QSOs.
 
-**Multicast reception is not implemented.** It needs a group join (`JoinMulticastGroup`) in addition to `SO_REUSEADDR`, and there is no configured group address. If TR4W is ever pointed at a multicast group, this must be added or the gateway will receive nothing.
+**Multicast reception is not implemented — and is a wanted feature, deferred.** It needs a group join (`JoinMulticastGroup`) in addition to `SO_REUSEADDR`, plus somewhere to configure the group address. TR4W's `UDP BROADCAST ADDRESS` is free-form and its sender-side multicast support is planned, so once that lands the gateway will receive nothing from a multicast group until this is added.
 
 An earlier revision of this file argued the opposite — that `SO_REUSEADDR` must never be set — reasoning from the unicast rule alone. That was wrong for the broadcast traffic this gateway actually receives.
 

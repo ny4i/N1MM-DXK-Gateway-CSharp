@@ -51,6 +51,7 @@ public partial class MainForm : Form
 
       dequeueTimer.Tick += (_, _) => dispatcher.Drain();
       dispatcher.ContactInfoReceived += OnContactInfo;
+      dispatcher.ContactReplaceReceived += OnContactReplace;
       dispatcher.LookupInfoReceived += OnLookupInfo;
       dispatcher.ContactDeleteReceived += OnContactDelete;
       dispatcher.InvalidMessageReceived += OnInvalidMessage;
@@ -293,7 +294,20 @@ public partial class MainForm : Form
       AppendLog($"contactinfo: {adif.Summary} -> sending to DXKeeper{backlog}...");
       logger.DebugLog($"ADIF: {adif.AdifRecord}");
 
-      var options = new DxKeeperTcpClient.ExternalLogOptions
+      var options = BuildLogOptions();
+
+      // Queued, not sent directly: QsoSendQueue serialises delivery so the
+      // gateway paces itself to DXKeeper instead of overrunning it.
+      sendQueue.EnqueueLog(adif, options);
+   }
+
+   /// <summary>
+   /// Per-QSO externallog flags, from the user's checkboxes. Shared by the
+   /// new-QSO path and the re-log half of a replace so an edited QSO is
+   /// uploaded and enriched exactly as the original was.
+   /// </summary>
+   private DxKeeperTcpClient.ExternalLogOptions BuildLogOptions() =>
+      new()
       {
          UploadEqsl = settings.DxkEqslUpload,
          UploadLotw = settings.DxkLotwUpload,
@@ -305,9 +319,39 @@ public partial class MainForm : Form
          CheckOverrides = true,
       };
 
-      // Queued, not sent directly: QsoSendQueue serialises delivery so the
-      // gateway paces itself to DXKeeper instead of overrunning it.
-      sendQueue.Enqueue(adif, options);
+   /// <summary>
+   /// A QSO edited in N1MM. DXKeeper has no replace command, so this becomes
+   /// delete-then-relog, queued as one inseparable operation.
+   /// </summary>
+   private void OnContactReplace(XElement root)
+   {
+      var key = AdifBuilder.BuildDeleteRecord(root, useOldIdentity: true);
+      if (!key.IsValid)
+      {
+         // Without a usable pre-edit identity we cannot delete the right QSO,
+         // and logging the edited copy alone would duplicate it. Refuse and say so.
+         AppendLog($"contactreplace for {key.Call}: no usable <oldcall>/<oldtimestamp> — edit NOT applied to DXKeeper");
+         logger.Log($"contactreplace ignored, cannot build delete key: {root}");
+         return;
+      }
+
+      AdifBuilder.Result adif;
+      try
+      {
+         adif = AdifBuilder.Build(root);
+      }
+      catch (Exception ex)
+      {
+         AppendLog($"ERROR building ADIF for contactreplace: {ex.Message}");
+         logger.Log($"AdifBuilder threw on contactreplace: {ex}");
+         return;
+      }
+
+      AppendLog($"contactreplace: {key.Summary} -> {adif.Summary} (delete then re-log)...");
+      logger.DebugLog($"replace delete key: {key.AdifRecord}");
+      logger.DebugLog($"replace new ADIF: {adif.AdifRecord}");
+
+      sendQueue.EnqueueReplace(key, adif, BuildLogOptions());
    }
 
    /// <summary>
@@ -316,41 +360,71 @@ public partial class MainForm : Form
    /// lost (the failed-QSO file, ErrorLog.txt) is written here directly; only
    /// the on-screen operation log is marshalled, and best-effort.
    /// </summary>
-   private void OnSendResult(AdifBuilder.Result adif, DxKeeperTcpClient.SendResult result)
+   private void OnSendResult(QsoSendQueue.OperationResult op)
    {
+      var result = op.Send;
       var portTag = result.Port.HasValue ? $" (TCP {result.Port.Value})" : string.Empty;
 
-      // Always log the wire frame at debug level — pairs with the ADIF and
-      // UDP-receive debug lines to give a full round-trip trace.
+      // Always log the wire frames at debug level — pairs with the ADIF and
+      // UDP-receive debug lines to give a full round-trip trace. A replace
+      // emits two, and the delete is logged first because that is the order
+      // they went out in.
+      if (op.DeleteSend?.WireFrame != null)
+      {
+         logger.DebugLog(
+            $"Sent to DXKeeper{portTag} [replace 1/2, delete -> {op.DeleteSend.Outcome}]: {op.DeleteSend.WireFrame}");
+      }
       if (result.WireFrame != null)
       {
-         logger.DebugLog($"Sent to DXKeeper{portTag}: {result.WireFrame}");
+         var stage = op.Kind == QsoSendQueue.OpKind.Replace ? " [replace 2/2, re-log]" : string.Empty;
+         logger.DebugLog($"Sent to DXKeeper{portTag}{stage}: {result.WireFrame}");
       }
 
-      string uiLine;
-      switch (result.Outcome)
+      if (result.Outcome == DxKeeperTcpClient.SendOutcome.Sent)
       {
-         case DxKeeperTcpClient.SendOutcome.Sent:
-            uiLine = $"logged QSO with {adif.Summary}{portTag}";
-            logger.DebugLog(
-               $"DXKeeper closed the connection for {adif.Call}; response: {result.Response ?? "(none)"}");
-            break;
-
-         default:
-            // Failed, Unconfirmed, and Busy all mean the same thing to the
-            // operator: DXKeeper did not confirm this QSO. Preserve it and
-            // never retry — DXKeeper does not detect duplicates, so a retry
-            // of a QSO it had in fact processed would duplicate the record.
-            var reason = DescribeFailure(result);
-            var saved = failedQsos.Save(adif.AdifRecord, $"{reason} (QSO with {adif.Call})");
-            uiLine = saved
-               ? $"DXKeeper did not confirm QSO with {adif.Call}{portTag} — saved to {FailedQsoStore.FileName}: {reason}"
-               : $"LOST QSO with {adif.Call}{portTag} — {reason}, and it could not be saved to {FailedQsoStore.FileName}";
-            logger.Log($"externallog not confirmed for {adif.Call}{portTag}: {reason}");
-            break;
+         var verb = op.Kind switch
+         {
+            QsoSendQueue.OpKind.Delete => "deleted from DXKeeper:",
+            QsoSendQueue.OpKind.Replace => string.Empty,
+            _ => "logged QSO with",
+         };
+         PostToOperationLog($"{verb} {op.Summary}{portTag}".TrimStart());
+         logger.DebugLog(
+            $"DXKeeper closed the connection for {op.Call}; response: {result.Response ?? "(none)"}");
+         return;
       }
 
-      PostToOperationLog(uiLine);
+      // Failed, Unconfirmed and Busy all mean the same thing to the operator:
+      // DXKeeper did not confirm this. Never retry — DXKeeper does not detect
+      // duplicates, so retrying something it had in fact processed would
+      // duplicate the record.
+      var reason = DescribeFailure(result);
+
+      if (op.DeletedButNotRelogged)
+      {
+         // The one case where DXKeeper is left worse off than before we
+         // started: the original is gone and the replacement never arrived.
+         // Say so first and in plain words.
+         var kept = op.PreserveAdif != null &&
+                    failedQsos.Save(op.PreserveAdif, $"replace failed after delete succeeded — {reason} (QSO with {op.Call})");
+         PostToOperationLog(kept
+            ? $"*** {op.Call}: DXKeeper DELETED the original but did not log the edit{portTag} — the edited QSO is in {FailedQsoStore.FileName}, import it. Reason: {reason}"
+            : $"*** {op.Call}: DXKeeper DELETED the original, the edit was not logged{portTag}, AND it could not be saved to {FailedQsoStore.FileName}. Reason: {reason}");
+         logger.Log($"REPLACE LEFT DXKEEPER WITHOUT THE QSO — {op.Call}{portTag}: delete succeeded, externallog did not ({reason})");
+         return;
+      }
+
+      var savedNote = string.Empty;
+      if (op.PreserveAdif != null)
+      {
+         var saved = failedQsos.Save(op.PreserveAdif, $"{reason} ({op.Summary})");
+         savedNote = saved
+            ? $" — saved to {FailedQsoStore.FileName}"
+            : $" — AND it could not be saved to {FailedQsoStore.FileName}";
+      }
+
+      PostToOperationLog($"DXKeeper did not confirm {op.Summary}{portTag}{savedNote}: {reason}");
+      logger.Log($"{op.Kind} not confirmed for {op.Call}{portTag}: {reason}");
    }
 
    private static string DescribeFailure(DxKeeperTcpClient.SendResult result) =>
@@ -465,13 +539,28 @@ public partial class MainForm : Form
       catch (InvalidOperationException) { }
    }
 
+   /// <summary>
+   /// A QSO deleted in N1MM. The VB6 gateway parsed these and never forwarded
+   /// them, so a deletion in N1MM left the QSO in DXKeeper; this now sends the
+   /// deleteqso command.
+   ///
+   /// contactdelete carries far fewer fields than contactinfo — no mode, no
+   /// frequency, no RST — but that does not matter: DXKeeper identifies a QSO
+   /// by CALL + QSO_DATE + TIME_ON, all of which are present.
+   /// </summary>
    private void OnContactDelete(XElement root)
    {
-      var call = XmlHelpers.GetValue(root, "call");
-      var ts = XmlHelpers.GetValue(root, "timestamp");
-      // VB6 captures contactdelete but never forwards to DXKeeper; we match that.
-      AppendLog($"contactdelete: {call} at {ts}  [not forwarded — matches VB6]");
-      logger.DebugLog($"contactdelete: {call} {ts}");
+      var key = AdifBuilder.BuildDeleteRecord(root, useOldIdentity: false);
+      if (!key.IsValid)
+      {
+         AppendLog($"contactdelete for {key.Call}: missing call or timestamp — nothing sent to DXKeeper");
+         logger.Log($"contactdelete ignored, cannot build delete key: {root}");
+         return;
+      }
+
+      AppendLog($"contactdelete: {key.Summary} -> deleting from DXKeeper...");
+      logger.DebugLog($"delete key: {key.AdifRecord}");
+      sendQueue.EnqueueDelete(key);
    }
 
    private readonly HashSet<string> reportedUnhandledTypes =

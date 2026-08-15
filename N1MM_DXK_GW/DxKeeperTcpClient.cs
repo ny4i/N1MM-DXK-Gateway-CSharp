@@ -49,6 +49,7 @@ public sealed class DxKeeperTcpClient
    private const int DxkPortOffset = 1;
    private const string DxkHost = "127.0.0.1";
    private const string ExternalLogCommand = "externallog";
+   private const string DeleteQsoCommand = "deleteqso";
 
    private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(10);
    private static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(10);
@@ -103,9 +104,31 @@ public sealed class DxKeeperTcpClient
       public bool CheckOverrides { get; init; } = true;
    }
 
-   public async Task<SendResult> ExternalLogAsync(
+   /// <summary>Logs a QSO. The ADIF is wrapped in an ExternalLogADIF field.</summary>
+   public Task<SendResult> ExternalLogAsync(
       string adifRecord,
       ExternalLogOptions options,
+      CancellationToken cancel = default) =>
+      SendCommandAsync(ExternalLogCommand, BuildExternalLogParameters(adifRecord, options), cancel);
+
+   /// <summary>
+   /// Deletes a QSO. DXKeeper identifies it by CALL + QSO_DATE + TIME_ON and
+   /// ignores any other field, so <paramref name="deleteAdif"/> carries just
+   /// those three plus &lt;EOR&gt;.
+   ///
+   /// Note the asymmetry with externallog: deleteqso's parameters are the raw
+   /// ADIF fields, NOT wrapped in &lt;ExternalLogADIF:N&gt;. Wrapping them
+   /// makes DXKeeper match nothing. (Confirmed against TR4W's
+   /// BuildDXKeeperDeleteMessage, where the wrapping lines are commented out.)
+   /// </summary>
+   public Task<SendResult> DeleteQsoAsync(
+      string deleteAdif,
+      CancellationToken cancel = default) =>
+      SendCommandAsync(DeleteQsoCommand, deleteAdif, cancel);
+
+   private async Task<SendResult> SendCommandAsync(
+      string command,
+      string parameters,
       CancellationToken cancel = default)
    {
       if (Interlocked.CompareExchange(ref sendInProgress, 1, 0) != 0)
@@ -115,8 +138,7 @@ public sealed class DxKeeperTcpClient
 
       try
       {
-         var parameters = BuildExternalLogParameters(adifRecord, options);
-         var frame = BuildFrame(ExternalLogCommand, parameters);
+         var frame = BuildFrame(command, parameters);
          var port = GetDxKeeperServicePort();
 
          using var client = new TcpClient();
