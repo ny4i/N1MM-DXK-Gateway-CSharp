@@ -24,6 +24,8 @@ partial class MainForm
       settingsLayout = new TableLayoutPanel();
       udpPortLabel = new Label();
       udpPortTextBox = new TextBox();
+      multicastLabel = new Label();
+      multicastTextBox = new TextBox();
       dxkPortLabel = new Label();
       dxkPortValue = new Label();
       checkboxLayout = new TableLayoutPanel();
@@ -101,16 +103,20 @@ partial class MainForm
       settingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
       settingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
       settingsLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-      settingsLayout.RowCount = 3;
+      settingsLayout.RowCount = 4;
+      settingsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
       settingsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
       settingsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
       settingsLayout.RowStyles.Add(new RowStyle(SizeType.AutoSize));
       settingsLayout.Controls.Add(udpPortLabel, 0, 0);
       settingsLayout.Controls.Add(udpPortTextBox, 1, 0);
-      settingsLayout.Controls.Add(dxkPortLabel, 0, 1);
-      settingsLayout.Controls.Add(dxkPortValue, 1, 1);
+      settingsLayout.Controls.Add(multicastLabel, 0, 1);
+      settingsLayout.Controls.Add(multicastTextBox, 1, 1);
+      settingsLayout.SetColumnSpan(multicastTextBox, 2);
+      settingsLayout.Controls.Add(dxkPortLabel, 0, 2);
+      settingsLayout.Controls.Add(dxkPortValue, 1, 2);
       settingsLayout.SetColumnSpan(dxkPortValue, 2);
-      settingsLayout.Controls.Add(checkboxLayout, 0, 2);
+      settingsLayout.Controls.Add(checkboxLayout, 0, 3);
       settingsLayout.SetColumnSpan(checkboxLayout, 3);
 
       //
@@ -127,6 +133,23 @@ partial class MainForm
       udpPortTextBox.Width = 80;
       udpPortTextBox.Anchor = AnchorStyles.Left;
       udpPortTextBox.Margin = new Padding(0, 3, 0, 6);
+
+      //
+      // multicastLabel
+      //
+      multicastLabel.Text = "Multicast group (optional):";
+      multicastLabel.AutoSize = true;
+      multicastLabel.Anchor = AnchorStyles.Left;
+      multicastLabel.Margin = new Padding(3, 6, 6, 6);
+
+      //
+      // multicastTextBox
+      //
+      // Wider than the port box: it holds a dotted-quad group address.
+      multicastTextBox.Width = 160;
+      multicastTextBox.Anchor = AnchorStyles.Left;
+      multicastTextBox.Margin = new Padding(0, 3, 0, 6);
+      multicastTextBox.PlaceholderText = "blank = no multicast";
 
       //
       // dxkPortLabel
@@ -356,6 +379,8 @@ partial class MainForm
    private TableLayoutPanel settingsLayout;
    private Label udpPortLabel;
    private TextBox udpPortTextBox;
+   private Label multicastLabel;
+   private TextBox multicastTextBox;
    private Label dxkPortLabel;
    private Label dxkPortValue;
    private TableLayoutPanel checkboxLayout;

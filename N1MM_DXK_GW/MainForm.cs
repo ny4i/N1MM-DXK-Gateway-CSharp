@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Net;
 using System.Xml.Linq;
 
 namespace N1MM_DXK_GW;
@@ -40,6 +41,9 @@ public partial class MainForm : Form
       udpPortTextBox.Validating += UdpPortTextBox_Validating;
       udpPortTextBox.Validated += UdpPortTextBox_Validated;
       udpPortTextBox.KeyDown += UdpPortTextBox_KeyDown;
+
+      multicastTextBox.Validated += (_, _) => ApplyMulticastChange();
+      multicastTextBox.KeyDown += MulticastTextBox_KeyDown;
 
       dxkLookupCheck.CheckedChanged += SettingCheckChanged;
       callbookCheck.CheckedChanged += SettingCheckChanged;
@@ -228,6 +232,7 @@ public partial class MainForm : Form
       logDebugInfoCheck.CheckedChanged -= LogDebugInfoCheck_CheckedChanged;
 
       udpPortTextBox.Text = settings.UdpPort.ToString(CultureInfo.InvariantCulture);
+      multicastTextBox.Text = settings.MulticastGroup;
       dxkLookupCheck.Checked = settings.DxkLookup;
       callbookCheck.Checked = settings.DxkCallbook;
       eqslCheck.Checked = settings.DxkEqslUpload;
@@ -245,15 +250,35 @@ public partial class MainForm : Form
 
    private void StartListenerOnConfiguredPort()
    {
-      AppendLog($"UDP listener starting on port {settings.UdpPort}...");
-      logger.DebugLog($"Binding UDP port {settings.UdpPort}");
+      var group = ParseMulticastGroup(settings.MulticastGroup, out var groupError);
+      if (groupError != null)
+      {
+         // Don't silently fall back to no multicast — the operator configured
+         // a group and would otherwise see a healthy-looking listener that
+         // receives nothing.
+         AppendLog($"ERROR: {groupError} — starting WITHOUT multicast.");
+         logger.Log($"Multicast group rejected: {groupError}");
+      }
 
-      var listener = new UdpListener(settings.UdpPort, OnUdpDatagram);
+      AppendLog($"UDP listener starting on port {settings.UdpPort}...");
+      logger.DebugLog($"Binding UDP port {settings.UdpPort}"
+                      + (group != null ? $", joining multicast group {group}" : string.Empty));
+
+      var listener = new UdpListener(settings.UdpPort, OnUdpDatagram, group);
       try
       {
          listener.Start();
          udpListener = listener;
-         AppendLog($"UDP listener bound to port {settings.UdpPort}.");
+
+         if (listener.JoinedGroup != null)
+         {
+            AppendLog($"UDP listener bound to port {settings.UdpPort}, joined multicast group {listener.JoinedGroup}.");
+            logger.Log($"Joined multicast group {listener.JoinedGroup} on port {settings.UdpPort}");
+         }
+         else
+         {
+            AppendLog($"UDP listener bound to port {settings.UdpPort}.");
+         }
       }
       catch (Exception ex)
       {
@@ -264,6 +289,34 @@ public partial class MainForm : Form
          MessageBox.Show(this, msg, "N1MM-DXKeeper Gateway",
             MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+   }
+
+   /// <summary>
+   /// Parses the configured group. Returns null for "no multicast", and sets
+   /// <paramref name="error"/> when the operator typed something that is not a
+   /// usable group — the two cases must stay distinguishable so a typo is
+   /// reported rather than treated as "disabled".
+   /// </summary>
+   private static IPAddress? ParseMulticastGroup(string configured, out string? error)
+   {
+      error = null;
+      var text = configured?.Trim() ?? string.Empty;
+      if (text.Length == 0)
+      {
+         return null;
+      }
+
+      if (!IPAddress.TryParse(text, out var address))
+      {
+         error = $"'{text}' is not a valid IP address";
+         return null;
+      }
+      if (!UdpListener.IsIPv4Multicast(address))
+      {
+         error = $"'{text}' is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)";
+         return null;
+      }
+      return address;
    }
 
    private void OnUdpDatagram(string xml)
@@ -725,6 +778,68 @@ public partial class MainForm : Form
       }
    }
 
+   private void MulticastTextBox_KeyDown(object? sender, KeyEventArgs e)
+   {
+      if (e.KeyCode != Keys.Enter)
+      {
+         return;
+      }
+      // Same reason as the port field: a single-line TextBox on a form with no
+      // AcceptButton answers an unhandled Enter with the system ding.
+      e.SuppressKeyPress = true;
+      e.Handled = true;
+      ApplyMulticastChange();
+   }
+
+   /// <summary>
+   /// Applies an edited multicast group. Joining a group is done at bind time,
+   /// so this rebinds the listener — the same path a port change takes.
+   /// </summary>
+   private void ApplyMulticastChange()
+   {
+      var entered = multicastTextBox.Text.Trim();
+      if (string.Equals(entered, settings.MulticastGroup, StringComparison.OrdinalIgnoreCase))
+      {
+         return;
+      }
+
+      // Reject bad input before tearing down a working listener.
+      if (entered.Length > 0)
+      {
+         ParseMulticastGroup(entered, out var error);
+         if (error != null)
+         {
+            MessageBox.Show(this,
+               $"{error}.\n\nLeave this blank unless the sending program is configured to send to a multicast group.",
+               "N1MM-DXKeeper Gateway", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            multicastTextBox.Text = settings.MulticastGroup;
+            multicastTextBox.SelectAll();
+            return;
+         }
+      }
+
+      var previous = settings.MulticastGroup;
+      udpListener?.Dispose();
+      udpListener = null;
+
+      settings.MulticastGroup = entered;
+      settings.Save();
+      AppendLog(entered.Length > 0
+         ? $"Multicast group set to {entered}, rebinding..."
+         : "Multicast disabled, rebinding...");
+      StartListenerOnConfiguredPort();
+
+      if (udpListener == null)
+      {
+         // Rebind failed — go back to the setting that was working.
+         settings.MulticastGroup = previous;
+         settings.Save();
+         multicastTextBox.Text = previous;
+         AppendLog($"Reverted multicast group to '{previous}'.");
+         StartListenerOnConfiguredPort();
+      }
+   }
+
    private void SettingCheckChanged(object? sender, EventArgs e)
    {
       settings.DxkLookup = dxkLookupCheck.Checked;
@@ -777,6 +892,12 @@ public partial class MainForm : Form
          }
       }
       toolTip.SetToolTip(udpPortTextBox, "UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)");
+      const string multicastTip =
+         "Optional. Leave blank unless the sending program is configured to send to a multicast group "
+         + "(224.0.0.0 - 239.255.255.255). Unicast and broadcast are received either way. "
+         + "The group is joined on the interface the routing table selects.";
+      toolTip.SetToolTip(multicastTextBox, multicastTip);
+      toolTip.SetToolTip(multicastLabel, multicastTip);
       toolTip.SetToolTip(dxkPortLabel,
          @"Read-only. DXKeeper's TCP service base port from HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort. The gateway sends to base + 1.");
       toolTip.SetToolTip(dxkPortValue,

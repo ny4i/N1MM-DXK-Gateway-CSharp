@@ -15,6 +15,13 @@ public sealed class Settings
    public const int WindowPositionUnset = int.MinValue;
 
    public int UdpPort { get; set; } = DefaultUdpPort;
+
+   /// <summary>
+   /// Optional IPv4 multicast group to join, as a dotted quad. Empty means
+   /// unicast and broadcast only, which is what N1MM Logger+ sends today.
+   /// Stored under our own key, not read from any other program's settings.
+   /// </summary>
+   public string MulticastGroup { get; set; } = string.Empty;
    public bool DxkLookup { get; set; }
    public bool DxkCallbook { get; set; }
    public bool DxkEqslUpload { get; set; }
@@ -40,6 +47,7 @@ public sealed class Settings
       }
 
       s.UdpPort = ReadInt(key, "N1MMUDPPort", DefaultUdpPort);
+      s.MulticastGroup = key.GetValue("MulticastGroup") as string ?? string.Empty;
       s.DxkLookup = ReadBool(key, "DXKeeperLookup");
       s.DxkCallbook = ReadBool(key, "DXKeeperCallbookQuery");
       s.DxkEqslUpload = ReadBool(key, "DXKeepereQSLUpload");
@@ -61,6 +69,7 @@ public sealed class Settings
       // All values are REG_SZ strings to remain interchangeable with VB6's
       // SaveSetting/GetSetting (which only writes string values).
       WriteString(key, "N1MMUDPPort", UdpPort.ToString(CultureInfo.InvariantCulture));
+      WriteString(key, "MulticastGroup", MulticastGroup);
       WriteString(key, "DXKeeperLookup", BoolToVb(DxkLookup));
       WriteString(key, "DXKeeperCallbookQuery", BoolToVb(DxkCallbook));
       WriteString(key, "DXKeepereQSLUpload", BoolToVb(DxkEqslUpload));

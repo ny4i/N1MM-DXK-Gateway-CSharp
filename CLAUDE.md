@@ -141,7 +141,14 @@ So for the traffic this gateway actually receives, `SO_REUSEADDR` lets it coexis
 
 **What it costs:** the exclusive bind used to be a backstop against a second copy of the gateway double-logging every QSO. That now rests entirely on the single-instance mutex in `Program.cs`, which is per-session — two Windows sessions on one machine could each run a gateway and both log the same broadcast QSOs.
 
-**Multicast reception is not implemented — and is a wanted feature, deferred.** It needs a group join (`JoinMulticastGroup`) in addition to `SO_REUSEADDR`, plus somewhere to configure the group address. TR4W's `UDP BROADCAST ADDRESS` is free-form and its sender-side multicast support is planned, so once that lands the gateway will receive nothing from a multicast group until this is added.
+### Multicast reception
+
+Optional, off by default: the **Multicast group** field (registry value `MulticastGroup` under our own key) takes an IPv4 group address, and blank means unicast and broadcast only — which is what N1MM Logger+ sends today. TR4W's `UDP BROADCAST ADDRESS` is free-form, so it can be pointed at a group once its sender-side support lands.
+
+- **The join is additive.** The socket binds `0.0.0.0:port` and then joins, so unicast and broadcast keep arriving. Enabling multicast never costs the operator traffic they were already receiving — verified: with a group joined, a unicast datagram still arrived and was logged.
+- **`SO_REUSEADDR` alone is not enough.** Verified: with no group joined, a multicast datagram to the listening port was *not* received at all (0 datagrams); with the group joined, it arrived and reached DXKeeper.
+- **One interface, deliberately.** The join uses the interface the routing table selects, not every interface. Joining on all of them is more forgiving on a multi-homed machine, but if the sender's datagrams then arrived on two interfaces every QSO would be received and logged **twice**, and DXKeeper does not detect duplicates. Receiving nothing is obvious within seconds; silent duplicates are found later, by hand. The accepted failure mode is a machine whose default route is not the radio LAN, which is why the joined group is reported in the operation log rather than joined silently. A per-interface setting is the fix if it ever bites.
+- **A bad group is reported, not ignored.** An address that is not in `224.0.0.0 – 239.255.255.255` is refused with a message and the listener still starts without multicast — a silent fallback would leave a healthy-looking gateway receiving nothing.
 
 An earlier revision of this file argued the opposite — that `SO_REUSEADDR` must never be set — reasoning from the unicast rule alone. That was wrong for the broadcast traffic this gateway actually receives.
 
