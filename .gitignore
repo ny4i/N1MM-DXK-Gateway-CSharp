@@ -488,3 +488,8 @@ $RECYCLE.BIN/
 # Not committed: they are large, and a real capture carries the operator's
 # callsign, station details and network addresses.
 pcap/
+
+# ADIF logs. FailedQSOs_*.adi is written next to the executable at runtime and
+# holds real QSOs the gateway could not deliver — the operator's log data, and
+# never ours to commit.
+*.adi
