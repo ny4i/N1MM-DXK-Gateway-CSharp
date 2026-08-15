@@ -23,7 +23,27 @@ public sealed class MessageDispatcher
    public event Action<XElement>? ContactInfoReceived;
    public event Action<XElement>? LookupInfoReceived;
    public event Action<XElement>? ContactDeleteReceived;
-   public event Action<string, string>? InvalidMessageReceived; // (rawXml, reason)
+   public event Action<string, string>? InvalidMessageReceived;   // (rawXml, reason)
+   public event Action<string>? UnhandledMessageReceived;         // (messageType)
+   public event Action<string, Exception>? DispatchFailed;        // (rawXml, fault)
+
+   /// <summary>
+   /// N1MM broadcast types this gateway knowingly does not act on. They are
+   /// not errors and must not be reported as such: N1MM emits RadioInfo
+   /// continuously while a radio is connected, so treating it as an invalid
+   /// message would bury genuine problems under thousands of false reports.
+   ///
+   /// Distinct from a root element we do not recognise at all, which stays a
+   /// reportable condition — that is how a misconfigured sender (e.g. another
+   /// program pointed at our port) becomes visible.
+   /// </summary>
+   private static readonly HashSet<string> KnownUnhandledTypes =
+      new(StringComparer.OrdinalIgnoreCase)
+      {
+         "radioinfo",       // radio state, broadcast continuously
+         "contactreplace",  // QSO edited in N1MM; the VB6 gateway never forwarded edits
+         "dynamicresults",  // periodic score summary
+      };
 
    public int PendingCount => queue.Count;
 
@@ -42,7 +62,20 @@ public sealed class MessageDispatcher
       {
          while (queue.TryDequeue(out var xml))
          {
-            ProcessOne(xml);
+            try
+            {
+               ProcessOne(xml);
+            }
+            catch (Exception ex)
+            {
+               // Drain runs on the UI thread, so an escaping exception is an
+               // unhandled WinForms exception: the gateway dies mid-contest and
+               // every subsequent QSO is lost. That actually happened — a
+               // NotSupportedException from ChannelReader.Count took the app
+               // down on the first contactinfo. One bad message, or one defect
+               // in a handler, must cost at most that message.
+               DispatchFailed?.Invoke(xml, ex);
+            }
          }
       }
       finally
@@ -113,7 +146,14 @@ public sealed class MessageDispatcher
             ContactDeleteReceived?.Invoke(root);
             break;
          default:
-            InvalidMessageReceived?.Invoke(xml, $"Unknown message type: {root.Name.LocalName}");
+            if (KnownUnhandledTypes.Contains(root.Name.LocalName))
+            {
+               UnhandledMessageReceived?.Invoke(root.Name.LocalName);
+            }
+            else
+            {
+               InvalidMessageReceived?.Invoke(xml, $"Unrecognized message type: {root.Name.LocalName}");
+            }
             break;
       }
    }

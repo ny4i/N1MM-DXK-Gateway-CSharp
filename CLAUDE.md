@@ -54,7 +54,8 @@ N1MM Logger+ --[UDP XML : 12060]--> Gateway --[TCP : 52001]--> DXKeeper (log QSO
      - `"contactdelete"` → parsed but **not forwarded** (unimplemented, matches VB6 behavior)
 4. **XML parsing**: use `System.Xml.Linq.XDocument` / `XElement` (replaces the VB6 manual string search approach).
 5. **ADIF construction**: produces `<FIELDNAME:N>value` framed fields for the DXKeeper TCP wire format `<command:N>externallog<parameters:N>...`.
-6. **TCP send**: connects to DXKeeper at registry base port + 1 (default 52001), sends framed message, fire-and-forget (no response expected but log at debug level).
+6. **Send queue** (`QsoSendQueue`): ADIF records are enqueued, not sent inline. A single worker sends one QSO at a time and waits for DXKeeper's acknowledgement before starting the next. This is not an optimisation — see *QSO delivery* below.
+7. **TCP send** (`DxKeeperTcpClient`): connects to DXKeeper at registry base port + 1 (default 52001), writes the framed message, then **waits for DXKeeper to close the connection**. That close is the only acknowledgement DXKeeper gives. Any other ending means the QSO was not delivered.
 
 ---
 
@@ -67,6 +68,10 @@ Use the same registry path as the VB6 app so existing user settings survive upgr
 - **DXKeeper TCP port:** `HKCU\Software\VB and VBA Program Settings\DXKeeper\TCPServer\ServiceBasePort` (default `52000`; actual port = base + 1)
 
 Use `Microsoft.Win32.Registry` (already a NuGet dep) for all registry access.
+
+**The DXKeeper TCP port is derived, never configured.** Read `ServiceBasePort` and add 1. Do not add a setting, command-line flag, or UI field to override it: the derivation is what guarantees the gateway is pointed wherever DXKeeper actually listens, and a settable port could aim at somewhere nothing serves. An override was proposed as a test affordance and rejected for this reason.
+
+**DXKeeper's registry hive is read-only to us.** Reading `ServiceBasePort` is the design; writing anything under DXKeeper's key is not ours to do — that is the live configuration of a working station. To test the delivery-failure path, stop DXKeeper.
 
 ### DDE Connections
 
@@ -89,11 +94,29 @@ N1MM sends frequency in **tens of hertz** (e.g., `1442000000` = 144.200 MHz). Th
 
 ### Queue Overflow
 
-Log to `ErrorLog.txt` on overflow; overwrite (data loss) rather than blocking — same behavior as VB6.
+Both queues (`MessageDispatcher`'s inbound `ConcurrentQueue<string>` and `QsoSendQueue`'s outbound channel) are **unbounded**, so there is no overflow path and no data loss.
+
+Earlier revisions of this file said to overwrite the oldest entry on overflow. That was wrong, and contradicted VB6, which discarded the *arriving* datagram at depth 256 so queued messages kept FIFO order. Bounding either queue would mean choosing a QSO to throw away; memory is not the constraint (a queued QSO is a few hundred bytes and DXKeeper drains in seconds).
+
+### QSO delivery — do not weaken these
+
+Established by measurement against live DXKeeper on 2026-08-15 (see the VB6 repo's `CLAUDE.md`), and they are properties of DXKeeper, not of VB6:
+
+- **DXKeeper acknowledges `externallog` by closing the connection, and by nothing else.** There is no reply body.
+- **A successful `Write` proves nothing.** Windows completes the handshake into the listen backlog, so a connection DXKeeper has not yet accepted still reports connected and accepts a write. Closing at that point destroys the command with no error at either end — measured at 5 of 20, then 12 of 20 QSOs silently lost. `DxKeeperTcpClient` therefore waits up to 10 s for a zero-length read and reports `Unconfirmed` otherwise.
+- **DXKeeper can be seconds behind** (4.5 s lags in its own log — it drains TCP commands through an internal DDE queue while doing callbook and award work). Hence `QsoSendQueue`: one send in flight, paced to DXKeeper's acknowledgement rather than to N1MM's send rate. Sending concurrently just produces rejected sends.
+- **No QSO is discarded silently.** Anything not confirmed — `Failed`, `Unconfirmed`, `Busy`, or still queued at shutdown — is appended to `FailedQSOs.adi` next to the executable by `FailedQsoStore`, for the operator to import by hand.
+- **Never retry automatically.** DXKeeper does not detect duplicate QSOs (40 sends of 20 distinct calls produced 39 records), so retrying a QSO it may already have processed would duplicate it. `FailedQSOs.adi` is the recovery path.
 
 ### 1-Byte UDP Spurious Wakeup
 
 Silently ignore UDP datagrams of length ≤ 1 (Microsoft KB Q260018 — a known Winsock quirk that also affects .NET `UdpClient`).
+
+### One receiver per UDP port — do not set `SO_REUSEADDR`
+
+`UdpListener` binds exclusively, on purpose. `SO_REUSEADDR` does not hand two programs a copy each: Windows delivers a unicast datagram to exactly one bound socket, so a second listener steals an arbitrary share of the stream and those QSOs are never logged, with no error anywhere. The exclusive bind also makes a second instance fail loudly with "Address already in use".
+
+If multiple programs need N1MM's data, solve it at the sender (N1MM Logger+ supports multiple UDP destinations) or add real multicast (`IP_ADD_MEMBERSHIP`), which genuinely duplicates to every member.
 
 ---
 
@@ -116,9 +139,12 @@ Silently ignore UDP datagrams of length ≤ 1 (Microsoft KB Q260018 — a known 
 | `GetSetting` / `SaveSetting` | `Microsoft.Win32.Registry` |
 | Manual XML string parsing | `System.Xml.Linq.XDocument` / `XElement` |
 | VB6 `Timer` control | `System.Windows.Forms.Timer` |
-| Circular queue (depth 64) | `System.Collections.Concurrent.ConcurrentQueue<string>` |
+| Circular queue (depth 256) | `System.Collections.Concurrent.ConcurrentQueue<string>` (unbounded) |
 | `Common.Log` / `Common.DebugLog` | Simple `Logger` class writing to `ErrorLog.txt` |
 | `HandlingDataFlag` re-entry guard | `bool` field on the form (UI thread only) |
+| Synchronous `SendCommand` (paced the queue implicitly) | `QsoSendQueue` — one send in flight, awaits acknowledgement |
+| `PeerClosedFlag` wait in `SendCommand` | `DxKeeperTcpClient.WaitForPeerCloseAsync`, 10 s |
+| `N1MM_DXK_Module.SaveFailedQSO` | `FailedQsoStore` → `FailedQSOs.adi` |
 
 ---
 
@@ -132,6 +158,21 @@ These bugs were fixed before the C# port began — do not reintroduce:
 - `SendLogNewQSO` and a duplicate `BooleanParamString` were dead code
 - DXKeeper TCP response was silently discarded (should log at debug level)
 - Unrecognized UDP message types fell through silently (should log at debug level)
+
+### Defects introduced by the C# port itself, since fixed
+
+- **A TCP send that timed out waiting for DXKeeper's close was reported as "logged QSO".** The wait existed but its timeout was swallowed, which is exactly the VB6 v1.3.3 bug — conflating "the local stack took the bytes" with "DXKeeper got it". Now surfaces as `SendOutcome.Unconfirmed`.
+- **The peer-close wait was 2 s**, below DXKeeper's measured 4.5 s queue lag. Now 10 s, matching VB6.
+- **A half-close (`Shutdown(SocketShutdown.Send)`) was sent after the write.** The VB6 client cannot do this and delivers reliably without it, and the command frame is self-delimiting, so DXKeeper needs no FIN to know the request is complete. Removed rather than left as untested behaviour against an unaccepted backlog connection.
+- **Sends were fire-and-forget from the dispatcher's drain loop**, so a burst started concurrent sends and the single-in-flight guard discarded all but the first. Now serialised through `QsoSendQueue`.
+- **Undeliverable QSOs were logged as text and dropped.** Now written to `FailedQSOs.adi`.
+- **`SO_REUSEADDR` was set on the UDP socket** with a comment claiming it enabled port sharing. It does not — see *One receiver per UDP port* above. Removed.
+- **`ChannelReader.Count` crashed the gateway on the first QSO.** `QsoSendQueue` created its channel with `SingleReader = true`, which selects `SingleConsumerUnboundedChannel`; that reader does not implement `Count` and throws `NotSupportedException: Specified method is not supported.` Reading it from `OnContactInfo` on the UI thread was an unhandled WinForms exception — the app died before building a single ADIF record, having received every datagram. `PendingCount` is now an explicit `Interlocked` counter, independent of which channel implementation the options select.
+- **`RadioInfo` was reported as an invalid message.** It is a known N1MM type the gateway simply does not handle, broadcast several times a second — reporting it as invalid would bury real problems. Known-but-unhandled types are now noted once per session at debug level and never surface in the operation log; a genuinely *unrecognized* root element is still reported, since that is how a misconfigured sender becomes visible.
+
+### Failure containment
+
+`MessageDispatcher.Drain` runs on the UI thread, so an exception escaping a handler is an unhandled WinForms exception: the gateway dies mid-contest and every later QSO is lost silently. `Drain` therefore wraps each message in a try/catch and raises `DispatchFailed`, which logs the fault and full body to `ErrorLog.txt` and tells the operator the gateway is still running. One bad message, or one defect in a handler, must cost at most that message. This guard was added after the `ChannelReader.Count` crash above, which it would have contained.
 
 ---
 

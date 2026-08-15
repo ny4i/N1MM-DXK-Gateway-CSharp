@@ -18,7 +18,28 @@ namespace N1MM_DXK_GW;
 ///
 /// Single in-flight send only: a second call while one is pending returns
 /// SendResult.Busy. Matches the VB6 SendCommandInProgressFlag semantics so
-/// the gateway never opens overlapping TCP sessions to DXKeeper.
+/// the gateway never opens overlapping TCP sessions to DXKeeper. Callers
+/// should serialise upstream (see <see cref="QsoSendQueue"/>) so Busy is a
+/// backstop rather than a routine outcome.
+///
+/// DELIVERY SEMANTICS — do not "optimise" these away. Established by
+/// measurement against DXKeeper on 2026-08-15, not by reading documentation:
+///
+///  * DXKeeper acknowledges externallog by CLOSING THE CONNECTION and by
+///    nothing else. It sends no reply body.
+///  * A successful write proves only that the local TCP stack accepted the
+///    bytes. Windows completes the three-way handshake into the listen
+///    backlog, so a connection DXKeeper has not yet accepted still reports
+///    Connected and still accepts a write. Closing at that point destroys
+///    the command with no error at either end — measured at 5 of 20 and
+///    then 12 of 20 QSOs silently lost.
+///  * DXKeeper can be seconds behind: it queues each TCP command onto an
+///    internal DDE queue and drains it while doing callbook and award work
+///    per QSO. Lags of 4.5 s appear in its own log.
+///
+/// Therefore a QSO counts as delivered only when we observe the peer close
+/// (a zero-length read). If that never arrives within PeerCloseTimeout the
+/// outcome is Unconfirmed, which the caller must treat as NOT delivered.
 /// </summary>
 public sealed class DxKeeperTcpClient
 {
@@ -31,15 +52,32 @@ public sealed class DxKeeperTcpClient
 
    private static readonly TimeSpan ConnectTimeout = TimeSpan.FromSeconds(10);
    private static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(10);
-   private static readonly TimeSpan ReadTimeout = TimeSpan.FromSeconds(2);
+
+   // How long to wait for DXKeeper's close, which is the only acknowledgement
+   // it gives. Must comfortably exceed DXKeeper's observed internal queue lag
+   // (4.5 s measured); the VB6 client waited 10 s. A shorter wait turns a busy
+   // DXKeeper into a stream of Unconfirmed QSOs.
+   private static readonly TimeSpan PeerCloseTimeout = TimeSpan.FromSeconds(10);
 
    private int sendInProgress; // 0 = idle, 1 = in flight
 
    public enum SendOutcome
    {
+      /// <summary>DXKeeper closed the connection — the QSO is logged.</summary>
       Sent,
+
+      /// <summary>Another send was in flight; nothing was transmitted.</summary>
       Busy,
+
+      /// <summary>Connect or write failed; the QSO was not delivered.</summary>
       Failed,
+
+      /// <summary>
+      /// Bytes were written but DXKeeper never closed the connection within
+      /// PeerCloseTimeout. Treat as NOT delivered: the command may still be
+      /// sitting in an unaccepted backlog and will be destroyed on close.
+      /// </summary>
+      Unconfirmed,
    }
 
    public sealed class SendResult
@@ -117,29 +155,35 @@ public sealed class DxKeeperTcpClient
          await stream.WriteAsync(payload, cancel).ConfigureAwait(false);
          await stream.FlushAsync(cancel).ConfigureAwait(false);
 
-         // Graceful half-close: send FIN so DXKeeper knows our request is
-         // complete. Without this, DXKeeper's accept loop has no in-band
-         // signal that we're done writing — and there are documented VB6
-         // failures where DXKeeper was left in a non-listening state by
-         // clients that didn't terminate cleanly.
-         try
-         {
-            client.Client.Shutdown(SocketShutdown.Send);
-         }
-         catch (SocketException)
-         {
-            // Peer already closed — half-close not applicable; proceed to read.
-         }
+         // No half-close here. The command frame is self-delimiting (both
+         // <command:N> and <parameters:N> carry explicit lengths), so DXKeeper
+         // does not need a FIN to know the request is complete, and the VB6
+         // client — the implementation these semantics were measured against —
+         // has no way to half-close a Winsock control and delivers reliably
+         // without one. Sending FIN to a connection still sitting in the
+         // listen backlog is untested behaviour we have no reason to risk.
+         //
+         // Wait for DXKeeper to close. That close IS the acknowledgement.
+         var peer = await WaitForPeerCloseAsync(stream, cancel).ConfigureAwait(false);
 
-         // Read until the peer closes (Read returns 0) or our timeout
-         // elapses. This both surfaces any response DXKeeper emits and
-         // completes the four-way close handshake before Dispose.
-         var response = await ReadUntilEofAsync(stream, cancel).ConfigureAwait(false);
+         if (!peer.SawClose)
+         {
+            return new SendResult
+            {
+               Outcome = SendOutcome.Unconfirmed,
+               Response = peer.Text,
+               ErrorMessage =
+                  $"DXKeeper did not close the connection within {PeerCloseTimeout.TotalSeconds:0}s. " +
+                  "The QSO may never have been accepted — treating it as undelivered.",
+               WireFrame = frame,
+               Port = port,
+            };
+         }
 
          return new SendResult
          {
             Outcome = SendOutcome.Sent,
-            Response = response,
+            Response = peer.Text,
             WireFrame = frame,
             Port = port,
          };
@@ -205,14 +249,17 @@ public sealed class DxKeeperTcpClient
 
    private static string BoolY(bool value) => value ? "Y" : string.Empty;
 
-   private static async Task<string?> ReadUntilEofAsync(NetworkStream stream, CancellationToken cancel)
+   private readonly record struct PeerCloseResult(bool SawClose, string? Text);
+
+   private static async Task<PeerCloseResult> WaitForPeerCloseAsync(
+      NetworkStream stream, CancellationToken cancel)
    {
-      // Loops until the peer half-closes (Read returns 0) or our timeout
-      // elapses. Receiving EOF is the explicit signal that DXKeeper has
-      // finished — we wait for it (up to ReadTimeout) before disposing so
-      // the four-way FIN/ACK handshake completes cleanly.
+      // Reads until the peer closes (Read returns 0) or PeerCloseTimeout
+      // elapses. The zero-length read is the delivery signal; any bytes
+      // received on the way are captured only for the debug log, since
+      // externallog has no reply body.
       using var readCts = CancellationTokenSource.CreateLinkedTokenSource(cancel);
-      readCts.CancelAfter(ReadTimeout);
+      readCts.CancelAfter(PeerCloseTimeout);
 
       var sb = new StringBuilder();
       var buffer = new byte[1024];
@@ -223,21 +270,27 @@ public sealed class DxKeeperTcpClient
             var read = await stream.ReadAsync(buffer, readCts.Token).ConfigureAwait(false);
             if (read == 0)
             {
-               break; // clean EOF — peer closed its send side
+               // Clean EOF — DXKeeper accepted, processed, and closed.
+               return new PeerCloseResult(true, sb.Length > 0 ? sb.ToString() : null);
             }
             sb.Append(Encoding.ASCII.GetString(buffer, 0, read));
          }
       }
       catch (OperationCanceledException)
       {
-         // Timed out waiting for peer's FIN. Not fatal — Dispose will RST
-         // and DXKeeper has already received our half-close FIN, so it
-         // won't be stranded waiting for input.
+         // Timed out. NOT benign: the connection may still be unaccepted in
+         // DXKeeper's listen backlog, in which case our Dispose destroys the
+         // command. Report it as unconfirmed so the caller preserves the QSO.
       }
-      catch (Exception)
+      catch (IOException)
       {
-         // Any other I/O error — give up and let Dispose finish the teardown.
+         // Peer reset, or the connection died mid-wait. Either way we never
+         // observed a clean close, so we cannot claim delivery.
       }
-      return sb.Length > 0 ? sb.ToString() : null;
+      catch (ObjectDisposedException)
+      {
+         // Socket torn down underneath us — same conclusion.
+      }
+      return new PeerCloseResult(false, sb.Length > 0 ? sb.ToString() : null);
    }
 }

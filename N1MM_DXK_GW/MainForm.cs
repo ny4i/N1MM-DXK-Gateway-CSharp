@@ -12,6 +12,8 @@ public partial class MainForm : Form
    private readonly Logger logger = new();
    private readonly MessageDispatcher dispatcher = new();
    private readonly DxKeeperTcpClient tcpClient = new();
+   private readonly FailedQsoStore failedQsos;
+   private readonly QsoSendQueue sendQueue;
    private readonly DdeChannel dxkDde = new("DXKeeper", "DDEServer");
    private readonly DdeChannel dxvDde = new("DXView", "DDEServer");
    private readonly DdeChannel pfDde = new("Pathfinder", "DDEServer");
@@ -25,12 +27,17 @@ public partial class MainForm : Form
       toolTip = new ToolTip(components!);
       AttachToolTips();
 
+      failedQsos = new FailedQsoStore(logger);
+      // Result callback runs on the send worker thread — see OnSendResult.
+      sendQueue = new QsoSendQueue(tcpClient, OnSendResult);
+
       showErrorLogButton.Click += (_, _) => OpenErrorLog();
       errorLogLink.LinkClicked += (_, _) => OpenErrorLog();
       helpButton.Click += HelpButton_Click;
 
       udpPortTextBox.Validating += UdpPortTextBox_Validating;
       udpPortTextBox.Validated += UdpPortTextBox_Validated;
+      udpPortTextBox.KeyDown += UdpPortTextBox_KeyDown;
 
       dxkLookupCheck.CheckedChanged += SettingCheckChanged;
       callbookCheck.CheckedChanged += SettingCheckChanged;
@@ -45,6 +52,8 @@ public partial class MainForm : Form
       dispatcher.LookupInfoReceived += OnLookupInfo;
       dispatcher.ContactDeleteReceived += OnContactDelete;
       dispatcher.InvalidMessageReceived += OnInvalidMessage;
+      dispatcher.UnhandledMessageReceived += OnUnhandledMessage;
+      dispatcher.DispatchFailed += OnDispatchFailed;
 
       dxkDde.Connected += () => OnDdeStatusChanged(dxkDde, dxkDot, dxkStatusLabel);
       dxkDde.Disconnected += () => OnDdeStatusChanged(dxkDde, dxkDot, dxkStatusLabel);
@@ -85,6 +94,9 @@ public partial class MainForm : Form
       dequeueTimer.Stop();
       udpListener?.Dispose();
       udpListener = null;
+      // Dispose before the DDE channels: it flushes any QSO it could not
+      // deliver through OnSendResult, which needs the logger and file store.
+      sendQueue.Dispose();
       dxkDde.Dispose();
       dxvDde.Dispose();
       pfDde.Dispose();
@@ -249,7 +261,9 @@ public partial class MainForm : Form
          return;
       }
 
-      AppendLog($"contactinfo: {adif.Summary} -> sending to DXKeeper...");
+      var queued = sendQueue.PendingCount;
+      var backlog = queued > 0 ? $" ({queued} ahead of it)" : string.Empty;
+      AppendLog($"contactinfo: {adif.Summary} -> sending to DXKeeper{backlog}...");
       logger.DebugLog($"ADIF: {adif.AdifRecord}");
 
       var options = new DxKeeperTcpClient.ExternalLogOptions
@@ -264,26 +278,18 @@ public partial class MainForm : Form
          CheckOverrides = true,
       };
 
-      _ = SendAdifAsync(adif, options);
+      // Queued, not sent directly: QsoSendQueue serialises delivery so the
+      // gateway paces itself to DXKeeper instead of overrunning it.
+      sendQueue.Enqueue(adif, options);
    }
 
-   private async Task SendAdifAsync(AdifBuilder.Result adif, DxKeeperTcpClient.ExternalLogOptions options)
-   {
-      var result = await tcpClient.ExternalLogAsync(adif.AdifRecord, options).ConfigureAwait(false);
-
-      try
-      {
-         if (IsDisposed || !IsHandleCreated)
-         {
-            return;
-         }
-         BeginInvoke(() => ReportSendResult(adif, result));
-      }
-      catch (ObjectDisposedException) { }
-      catch (InvalidOperationException) { }
-   }
-
-   private void ReportSendResult(AdifBuilder.Result adif, DxKeeperTcpClient.SendResult result)
+   /// <summary>
+   /// Called on the QsoSendQueue worker thread — including during shutdown,
+   /// after the form's handle may already be gone. Everything that must not be
+   /// lost (the failed-QSO file, ErrorLog.txt) is written here directly; only
+   /// the on-screen operation log is marshalled, and best-effort.
+   /// </summary>
+   private void OnSendResult(AdifBuilder.Result adif, DxKeeperTcpClient.SendResult result)
    {
       var portTag = result.Port.HasValue ? $" (TCP {result.Port.Value})" : string.Empty;
 
@@ -294,23 +300,65 @@ public partial class MainForm : Form
          logger.DebugLog($"Sent to DXKeeper{portTag}: {result.WireFrame}");
       }
 
+      string uiLine;
       switch (result.Outcome)
       {
          case DxKeeperTcpClient.SendOutcome.Sent:
-            AppendLog($"logged QSO with {adif.Summary}{portTag}");
-            // DXKeeper's externallog is fire-and-forget — response is almost
-            // always (none). We log it anyway in case the protocol ever changes.
-            logger.DebugLog($"TCP send completed for {adif.Call}; response: {result.Response ?? "(none)"}");
+            uiLine = $"logged QSO with {adif.Summary}{portTag}";
+            logger.DebugLog(
+               $"DXKeeper closed the connection for {adif.Call}; response: {result.Response ?? "(none)"}");
             break;
-         case DxKeeperTcpClient.SendOutcome.Busy:
-            AppendLog($"DXKeeper send busy — discarded QSO with {adif.Call}");
-            logger.Log($"TCP send busy when attempting to log {adif.Call}");
-            break;
-         case DxKeeperTcpClient.SendOutcome.Failed:
-            AppendLog($"FAILED to log QSO with {adif.Call}{portTag}: {result.ErrorMessage}");
-            logger.Log($"TCP send failed for {adif.Call}{portTag}: {result.ErrorMessage}");
+
+         default:
+            // Failed, Unconfirmed, and Busy all mean the same thing to the
+            // operator: DXKeeper did not confirm this QSO. Preserve it and
+            // never retry — DXKeeper does not detect duplicates, so a retry
+            // of a QSO it had in fact processed would duplicate the record.
+            var reason = DescribeFailure(result);
+            var saved = failedQsos.Save(adif.AdifRecord, $"{reason} (QSO with {adif.Call})");
+            uiLine = saved
+               ? $"DXKeeper did not confirm QSO with {adif.Call}{portTag} — saved to {FailedQsoStore.FileName}: {reason}"
+               : $"LOST QSO with {adif.Call}{portTag} — {reason}, and it could not be saved to {FailedQsoStore.FileName}";
+            logger.Log($"externallog not confirmed for {adif.Call}{portTag}: {reason}");
             break;
       }
+
+      PostToOperationLog(uiLine);
+   }
+
+   private static string DescribeFailure(DxKeeperTcpClient.SendResult result) =>
+      result.Outcome switch
+      {
+         DxKeeperTcpClient.SendOutcome.Busy =>
+            "another send was already in flight",
+         DxKeeperTcpClient.SendOutcome.Unconfirmed =>
+            result.ErrorMessage ?? "DXKeeper never closed the connection",
+         _ => result.ErrorMessage ?? "send failed",
+      };
+
+   /// <summary>
+   /// Append a line to the on-screen log from any thread. Silently gives up if
+   /// the form is gone — the durable record is already in ErrorLog.txt.
+   /// </summary>
+   private void PostToOperationLog(string line)
+   {
+      if (IsDisposed || !IsHandleCreated)
+      {
+         return;
+      }
+      try
+      {
+         if (InvokeRequired)
+         {
+            BeginInvoke(() => AppendLog(line));
+         }
+         else
+         {
+            AppendLog(line);
+         }
+      }
+      catch (ObjectDisposedException) { }
+      catch (InvalidOperationException) { }
    }
 
    private void OnLookupInfo(XElement root)
@@ -399,6 +447,31 @@ public partial class MainForm : Form
       logger.DebugLog($"contactdelete: {call} {ts}");
    }
 
+   private readonly HashSet<string> reportedUnhandledTypes =
+      new(StringComparer.OrdinalIgnoreCase);
+
+   private void OnUnhandledMessage(string messageType)
+   {
+      // A known N1MM message we don't act on — not an error, so nothing goes
+      // to the operation log. Note it once per type per session at debug level
+      // so a diagnostic run shows what is arriving; N1MM broadcasts RadioInfo
+      // several times a second, so logging every one would flood ErrorLog.txt
+      // and drown the entries that matter.
+      if (reportedUnhandledTypes.Add(messageType))
+      {
+         logger.DebugLog($"Ignoring <{messageType}> messages — known N1MM type this gateway does not handle (noted once per session)");
+      }
+   }
+
+   private void OnDispatchFailed(string xml, Exception fault)
+   {
+      // A defect, not bad input. Say so plainly and keep the full stack in the
+      // error log — this is the evidence needed to fix it.
+      AppendLog($"INTERNAL ERROR handling a message ({fault.GetType().Name}: {fault.Message}) — see ErrorLog.txt. The gateway is still running.");
+      logger.Log($"Unhandled exception while dispatching a UDP message: {fault}");
+      logger.Log($"   message body: {xml}");
+   }
+
    private void OnInvalidMessage(string xml, string reason)
    {
       AppendLog($"INVALID: {reason}");
@@ -454,21 +527,61 @@ public partial class MainForm : Form
       operationLogListBox.TopIndex = items.Count - 1;
    }
 
+   private void UdpPortTextBox_KeyDown(object? sender, KeyEventArgs e)
+   {
+      if (e.KeyCode != Keys.Enter)
+      {
+         return;
+      }
+
+      // A single-line TextBox on a form with no AcceptButton leaves Enter
+      // unhandled, and WinForms answers that with the system ding. Suppressing
+      // the keystroke silences it; committing here makes Enter do what the
+      // operator plainly means by it, rather than only Tab working.
+      e.SuppressKeyPress = true;
+      e.Handled = true;
+
+      if (IsUdpPortTextValid())
+      {
+         ApplyUdpPortChange();
+      }
+   }
+
    private void UdpPortTextBox_Validating(object? sender, System.ComponentModel.CancelEventArgs e)
+   {
+      e.Cancel = !IsUdpPortTextValid();
+   }
+
+   /// <summary>
+   /// True if the textbox holds a usable port. On bad input it tells the user,
+   /// restores the last good value and selects it, so the field is never left
+   /// holding something the gateway is not actually using.
+   /// </summary>
+   private bool IsUdpPortTextValid()
    {
       if (int.TryParse(udpPortTextBox.Text, NumberStyles.Integer, CultureInfo.InvariantCulture, out var n)
           && n >= 1 && n <= 65535)
       {
-         return;
+         return true;
       }
       MessageBox.Show(this, "UDP port must be an integer between 1 and 65535.",
          "N1MM-DXKeeper Gateway", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       udpPortTextBox.Text = settings.UdpPort.ToString(CultureInfo.InvariantCulture);
       udpPortTextBox.SelectAll();
-      e.Cancel = true;
+      return false;
    }
 
    private void UdpPortTextBox_Validated(object? sender, EventArgs e)
+   {
+      ApplyUdpPortChange();
+   }
+
+   /// <summary>
+   /// Rebinds the listener to the port now in the textbox. Safe to call more
+   /// than once for the same value — Enter commits immediately, and the Tab
+   /// that follows re-enters here with nothing left to do.
+   /// </summary>
+   private void ApplyUdpPortChange()
    {
       var newPort = int.Parse(udpPortTextBox.Text, CultureInfo.InvariantCulture);
       if (newPort == settings.UdpPort)

@@ -26,10 +26,25 @@ public sealed class UdpListener : IDisposable
       }
 
       var udp = new UdpClient();
-      // SO_REUSEADDR must be set BEFORE Bind on Windows for port sharing
-      // to take effect. Allows other apps on this machine to also bind
-      // the same port (e.g. another N1MM consumer running side-by-side).
-      udp.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+      // Deliberately NO SO_REUSEADDR here, and do not "restore" it.
+      //
+      // SO_REUSEADDR does not give two programs a shared copy of each
+      // datagram. Windows delivers a given unicast datagram to exactly one
+      // bound socket, so a second listener on this port does not duplicate
+      // the stream — it steals an arbitrary share of it, and the QSOs that
+      // land in the other process are simply never logged, with no error
+      // anywhere. That failure is invisible until someone audits the log
+      // against the contest, which is the worst possible way to lose a QSO.
+      //
+      // The exclusive bind is also the behaviour we want on startup: a
+      // second copy of the gateway then fails loudly with "Address already
+      // in use" instead of silently splitting traffic with the first.
+      //
+      // If several programs genuinely need N1MM's data, solve it at the
+      // sender — N1MM Logger+ accepts multiple UDP destinations, so each
+      // program gets its own copy on its own port — or add real multicast
+      // (IP_ADD_MEMBERSHIP), which does duplicate to every member.
       udp.Client.Bind(new IPEndPoint(IPAddress.Any, port));
       client = udp;
 
