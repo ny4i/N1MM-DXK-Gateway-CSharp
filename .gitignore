@@ -483,3 +483,8 @@ $RECYCLE.BIN/
 
 # Claude Code local config (permissions, session state)
 .claude/
+
+# Wireshark captures of live N1MM / TR4W traffic, kept locally as test input.
+# Not committed: they are large, and a real capture carries the operator's
+# callsign, station details and network addresses.
+pcap/
