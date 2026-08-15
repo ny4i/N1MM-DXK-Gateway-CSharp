@@ -213,13 +213,13 @@ public partial class MainWindow : FluentWindow
       {
          UdpPortBox.Text = settings.UdpPort.ToString(CultureInfo.InvariantCulture);
          MulticastBox.Text = settings.MulticastGroup;
-         DxkLookupCheck.IsChecked = settings.DxkLookup;
-         CallbookCheck.IsChecked = settings.DxkCallbook;
-         EqslCheck.IsChecked = settings.DxkEqslUpload;
-         LotwCheck.IsChecked = settings.DxkLotwUpload;
-         ClubLogCheck.IsChecked = settings.DxkClubLogUpload;
-         VerboseLogCheck.IsChecked = settings.VerboseLogging;
-         DebugLogCheck.IsChecked = settings.DebugLogging;
+         DxkLookupToggle.IsChecked = settings.DxkLookup;
+         CallbookToggle.IsChecked = settings.DxkCallbook;
+         EqslToggle.IsChecked = settings.DxkEqslUpload;
+         LotwToggle.IsChecked = settings.DxkLotwUpload;
+         ClubLogToggle.IsChecked = settings.DxkClubLogUpload;
+         VerboseLogToggle.IsChecked = settings.VerboseLogging;
+         DebugLogToggle.IsChecked = settings.DebugLogging;
       }
       finally
       {
@@ -244,28 +244,28 @@ public partial class MainWindow : FluentWindow
       DxkPortValue.ToolTip = tip;
    }
 
-   private void SettingCheckChanged(object sender, RoutedEventArgs e)
+   private void SettingToggleChanged(object sender, RoutedEventArgs e)
    {
       if (loadingSettings)
       {
          return;
       }
-      settings.DxkLookup = DxkLookupCheck.IsChecked == true;
-      settings.DxkCallbook = CallbookCheck.IsChecked == true;
-      settings.DxkEqslUpload = EqslCheck.IsChecked == true;
-      settings.DxkLotwUpload = LotwCheck.IsChecked == true;
-      settings.DxkClubLogUpload = ClubLogCheck.IsChecked == true;
-      settings.VerboseLogging = VerboseLogCheck.IsChecked == true;
+      settings.DxkLookup = DxkLookupToggle.IsChecked == true;
+      settings.DxkCallbook = CallbookToggle.IsChecked == true;
+      settings.DxkEqslUpload = EqslToggle.IsChecked == true;
+      settings.DxkLotwUpload = LotwToggle.IsChecked == true;
+      settings.DxkClubLogUpload = ClubLogToggle.IsChecked == true;
+      settings.VerboseLogging = VerboseLogToggle.IsChecked == true;
       settings.Save();
    }
 
-   private void DebugLogCheck_Changed(object sender, RoutedEventArgs e)
+   private void DebugLogToggle_Changed(object sender, RoutedEventArgs e)
    {
       if (loadingSettings)
       {
          return;
       }
-      settings.DebugLogging = DebugLogCheck.IsChecked == true;
+      settings.DebugLogging = DebugLogToggle.IsChecked == true;
       logger.DebugEnabled = settings.DebugLogging;
       settings.Save();
       logger.Log($"Debug logging {(settings.DebugLogging ? "enabled" : "disabled")} by user");
@@ -764,7 +764,10 @@ public partial class MainWindow : FluentWindow
          ? new SolidColorBrush(Color.FromRgb(0x2E, 0xA0, 0x43))
          : new SolidColorBrush(Color.FromRgb(0xC4, 0x2B, 0x1C));
       status.Text = connected ? Strings.Connected : Strings.Disconnected;
-      status.Opacity = connected ? 1.0 : 0.7;
+      // Disconnected is the resting state for DXView and Pathfinder on most
+      // stations — dim it rather than shouting, and let the dot carry the
+      // signal. Colour alone never conveys the state: the word is always there.
+      status.Opacity = connected ? 1.0 : 0.65;
    }
 
    // ------------------------------------------------------------ failed QSOs
@@ -783,20 +786,20 @@ public partial class MainWindow : FluentWindow
    private void RefreshFailedQsoStatus()
    {
       var count = failedQsos.RecordCount();
-      var visibility = count > 0 ? Visibility.Visible : Visibility.Collapsed;
-
-      FailedQsoText.Visibility = visibility;
-      FailedQsoFileLink.Visibility = visibility;
-      FailedQsoFolderLink.Visibility = visibility;
-
-      if (count > 0)
+      if (count == 0)
       {
-         FailedQsoText.Text = count == 1
-            ? Strings.FailedQsoCountOne
-            : string.Format(CultureInfo.CurrentCulture, Strings.FailedQsoCount, count);
-         FailedQsoText.ToolTip = string.Format(CultureInfo.CurrentCulture,
-                                               Strings.FailedQsoTip, failedQsos.FilePath);
+         FailedQsoBar.IsOpen = false;
+         return;
       }
+
+      FailedQsoBar.Message = count == 1
+         ? string.Format(CultureInfo.CurrentCulture, Strings.FailedQsoBarMessageOne, failedQsos.FileName)
+         : string.Format(CultureInfo.CurrentCulture, Strings.FailedQsoBarMessage, count, failedQsos.FileName);
+      FailedQsoBar.ToolTip = string.Format(CultureInfo.CurrentCulture,
+                                           Strings.FailedQsoTip, failedQsos.FilePath);
+      // Not closable: dismissing it would hide a standing condition that has
+      // not been dealt with. It closes itself when the file is gone.
+      FailedQsoBar.IsOpen = true;
    }
 
    private void FailedQsoFileLink_Click(object sender, RoutedEventArgs e)
@@ -915,13 +918,49 @@ public partial class MainWindow : FluentWindow
 
    private void AppendLog(string line)
    {
-      var stamped = $"{DateTime.Now:HH:mm:ss}  {line}";
-      OperationLogList.Items.Add(stamped);
+      var entry = new LogEntry
+      {
+         Text = $"{DateTime.Now:HH:mm:ss}  {line}",
+         Severity = LogEntry.Classify(line),
+      };
+
+      OperationLogList.Items.Add(entry);
       while (OperationLogList.Items.Count > OperationLogCap)
       {
          OperationLogList.Items.RemoveAt(0);
       }
       OperationLogList.ScrollIntoView(OperationLogList.Items[^1]);
+   }
+
+   private void CopyLogButton_Click(object sender, RoutedEventArgs e)
+   {
+      if (OperationLogList.Items.Count == 0)
+      {
+         return;
+      }
+      var text = string.Join(Environment.NewLine,
+         OperationLogList.Items.Cast<LogEntry>().Select(entry => entry.Text));
+      try
+      {
+         System.Windows.Clipboard.SetText(text);
+         AppendLog(string.Format(CultureInfo.CurrentCulture,
+                                 Strings.LogCopied, OperationLogList.Items.Count));
+      }
+      catch (Exception ex)
+      {
+         // The clipboard can be locked by another process; not worth a dialog.
+         logger.Log($"Could not copy the operation log to the clipboard: {ex.Message}");
+      }
+   }
+
+   /// <summary>
+   /// Clears the on-screen log only. ErrorLog.txt and the failed-QSO file are
+   /// untouched — this is a view, and clearing a view must never destroy the
+   /// durable record behind it.
+   /// </summary>
+   private void ClearLogButton_Click(object sender, RoutedEventArgs e)
+   {
+      OperationLogList.Items.Clear();
    }
 
    /// <summary>

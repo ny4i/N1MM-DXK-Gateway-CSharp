@@ -67,6 +67,26 @@
     </Compile>
   </ItemGroup>
 
+  <!-- Regenerates the checked-in Strings.Designer.cs after editing Strings.resx:
+           dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings
+       Visual Studio does this automatically when the .resx is saved; this is
+       the equivalent for anyone working from the command line. Deliberately a
+       named target rather than part of the build - see the note above on why
+       the file cannot be generated during a normal build. -->
+  <Target Name="RegenerateStrings">
+    <!-- ExecuteAsTool=false keeps this in-process: the out-of-process path
+         shells out to ResGen.exe, which .NET Core MSBuild does not ship. -->
+    <GenerateResource Sources="Strings.resx"
+                      OutputResources="$(IntermediateOutputPath)Strings.regen.resources"
+                      StronglyTypedFileName="Strings.Designer.cs"
+                      StronglyTypedLanguage="CSharp"
+                      StronglyTypedNamespace="N1MM_DXK_GW"
+                      StronglyTypedClassName="Strings"
+                      PublicClass="true"
+                      ExecuteAsTool="false" />
+    <Message Importance="high" Text="Regenerated Strings.Designer.cs from Strings.resx" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="Specshell.NDde" Version="4.0.0" />

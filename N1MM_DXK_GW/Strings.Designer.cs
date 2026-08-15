@@ -202,6 +202,15 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Diagnostics.
+        /// </summary>
+        public static string DiagnosticsHeader {
+            get {
+                return ResourceManager.GetString("DiagnosticsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to disconnected.
         /// </summary>
         public static string Disconnected {
@@ -252,6 +261,33 @@ namespace N1MM_DXK_GW {
         public static string DxKeeperPortTip {
             get {
                 return ResourceManager.GetString("DxKeeperPortTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone..
+        /// </summary>
+        public static string FailedQsoBarMessage {
+            get {
+                return ResourceManager.GetString("FailedQsoBarMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone..
+        /// </summary>
+        public static string FailedQsoBarMessageOne {
+            get {
+                return ResourceManager.GetString("FailedQsoBarMessageOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to QSOs not delivered.
+        /// </summary>
+        public static string FailedQsoBarTitle {
+            get {
+                return ResourceManager.GetString("FailedQsoBarTitle", resourceCulture);
             }
         }
         
@@ -310,6 +346,51 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string LogClear {
+            get {
+                return ResourceManager.GetString("LogClear", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear the on-screen log. ErrorLog.txt is not affected..
+        /// </summary>
+        public static string LogClearTip {
+            get {
+                return ResourceManager.GetString("LogClearTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation log copied to the clipboard ({0} lines)..
+        /// </summary>
+        public static string LogCopied {
+            get {
+                return ResourceManager.GetString("LogCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string LogCopy {
+            get {
+                return ResourceManager.GetString("LogCopy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy the operation log to the clipboard.
+        /// </summary>
+        public static string LogCopyTip {
+            get {
+                return ResourceManager.GetString("LogCopyTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Operation Log.
         /// </summary>
         public static string LogHeader {
@@ -346,11 +427,47 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Network.
+        /// </summary>
+        public static string NetworkHeader {
+            get {
+                return ResourceManager.GetString("NetworkHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open File.
+        /// </summary>
+        public static string OpenFileButton {
+            get {
+                return ResourceManager.GetString("OpenFileButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Folder.
+        /// </summary>
+        public static string OpenFolderButton {
+            get {
+                return ResourceManager.GetString("OpenFolderButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to see ErrorLog.
         /// </summary>
         public static string SeeErrorLog {
             get {
                 return ResourceManager.GetString("SeeErrorLog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Services.
+        /// </summary>
+        public static string ServicesHeader {
+            get {
+                return ResourceManager.GetString("ServicesHeader", resourceCulture);
             }
         }
         

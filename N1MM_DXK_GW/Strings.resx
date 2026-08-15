@@ -86,6 +86,56 @@
     <value>Settings</value>
     <comment>Heading of the settings section.</comment>
   </data>
+  <data name="NetworkHeader" xml:space="preserve">
+    <value>Network</value>
+    <comment>Heading of the card holding ports and the multicast group.</comment>
+  </data>
+  <data name="ServicesHeader" xml:space="preserve">
+    <value>Services</value>
+    <comment>Heading of the card holding what DXKeeper should do with each logged QSO.</comment>
+  </data>
+  <data name="DiagnosticsHeader" xml:space="preserve">
+    <value>Diagnostics</value>
+    <comment>Heading of the card holding logging options.</comment>
+  </data>
+
+  <data name="LogCopy" xml:space="preserve">
+    <value>Copy</value>
+    <comment>Button copying the visible operation log to the clipboard.</comment>
+  </data>
+  <data name="LogClear" xml:space="preserve">
+    <value>Clear</value>
+    <comment>Button clearing the on-screen operation log. Does not affect ErrorLog.txt.</comment>
+  </data>
+  <data name="LogCopyTip" xml:space="preserve">
+    <value>Copy the operation log to the clipboard</value>
+  </data>
+  <data name="LogClearTip" xml:space="preserve">
+    <value>Clear the on-screen log. ErrorLog.txt is not affected.</value>
+  </data>
+  <data name="LogCopied" xml:space="preserve">
+    <value>Operation log copied to the clipboard ({0} lines).</value>
+    <comment>{0} is a line count.</comment>
+  </data>
+
+  <data name="FailedQsoBarTitle" xml:space="preserve">
+    <value>QSOs not delivered</value>
+    <comment>Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
+  </data>
+  <data name="FailedQsoBarMessage" xml:space="preserve">
+    <value>{0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.</value>
+    <comment>{0} is a count, {1} is a filename. Do not translate the filename.</comment>
+  </data>
+  <data name="FailedQsoBarMessageOne" xml:space="preserve">
+    <value>1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.</value>
+    <comment>Singular form. {0} is a filename. Do not translate the filename.</comment>
+  </data>
+  <data name="OpenFileButton" xml:space="preserve">
+    <value>Open File</value>
+  </data>
+  <data name="OpenFolderButton" xml:space="preserve">
+    <value>Open Folder</value>
+  </data>
   <data name="UdpPortLabel" xml:space="preserve">
     <value>UDP listening port:</value>
     <comment>Label for the port N1MM broadcasts QSO data to. "UDP" is a protocol name - do not translate.</comment>
