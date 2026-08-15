@@ -954,23 +954,82 @@ public partial class MainWindow : FluentWindow
    /// is honest; the earlier failure was not that it scrolled but that it
    /// clipped mid-row with no indication it had done so.
    /// </summary>
+   /// <summary>
+   /// Height reserved for the settings region regardless of which group is
+   /// open: three collapsed headers plus the tallest group's content.
+   ///
+   /// This is what makes the panes below hold still. Because the accordion
+   /// keeps at most one group open, the region never needs more than this, and
+   /// pinning it as a minimum means opening or closing a group changes nothing
+   /// below it. The cost is some empty space when every group is collapsed,
+   /// which is a fair trade for a window that does not jump while the operator
+   /// is reading the log.
+   /// </summary>
+   private const double SettingsReservedHeight = 300;
+
    private void UpdateSettingsHeightCap()
    {
-      SettingsScroll.MaxHeight = Math.Max(120, ActualHeight - ReservedBelowSettings);
+      var cap = Math.Max(120, ActualHeight - ReservedBelowSettings);
+      SettingsScroll.MaxHeight = cap;
+
+      // Never reserve more than the cap allows, or a short window would give
+      // the settings region space the log needs.
+      SettingsScroll.MinHeight = Math.Min(SettingsReservedHeight, cap);
    }
 
    /// <summary>
-   /// Scrolls a newly expanded group into view. Without this, opening the
-   /// bottom group reveals content below the fold and looks like nothing
-   /// happened.
+   /// Guards against the accordion's own Collapse calls re-entering this
+   /// handler and fighting the expansion that triggered them.
+   /// </summary>
+   private bool adjustingSections;
+
+   /// <summary>
+   /// One group open at a time, and scroll it into view.
+   ///
+   /// Accordion behaviour is what stops the window feeling like it jumps.
+   /// With several groups open at once, opening another shifted the connection
+   /// status, the log and the footer down by a whole card. With at most one
+   /// open, the settings region only varies by the difference between one
+   /// group's content and another's — and the MinHeight below absorbs even
+   /// that, so nothing underneath moves at all.
    /// </summary>
    private void SettingsSection_ExpandChanged(object sender, RoutedEventArgs e)
    {
-      if (sender is FrameworkElement section)
+      if (adjustingSections || sender is not Wpf.Ui.Controls.CardExpander opened)
       {
-         // After the expander's own layout pass, or the bounds are pre-expansion.
-         Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => section.BringIntoView()));
+         return;
       }
+
+      // IsExpanded="True" in XAML raises Expanded DURING InitializeComponent,
+      // before the later named fields have been assigned - so the accordion
+      // loop below would dereference nulls and take the process down on
+      // startup. Nothing needs adjusting before the tree is built anyway.
+      if (NetworkSection is null || ServicesSection is null || DiagnosticsSection is null)
+      {
+         return;
+      }
+
+      if (opened.IsExpanded)
+      {
+         adjustingSections = true;
+         try
+         {
+            foreach (var other in new[] { NetworkSection, ServicesSection, DiagnosticsSection })
+            {
+               if (!ReferenceEquals(other, opened))
+               {
+                  other.IsExpanded = false;
+               }
+            }
+         }
+         finally
+         {
+            adjustingSections = false;
+         }
+      }
+
+      // After the expander's own layout pass, or the bounds are pre-expansion.
+      Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => opened.BringIntoView()));
    }
 
    private void CopyLogButton_Click(object sender, RoutedEventArgs e)

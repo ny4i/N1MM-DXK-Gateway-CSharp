@@ -55,6 +55,27 @@
          <Setter Property="VerticalAlignment" Value="Center" />
       </Style>
 
+      <!-- A settings group. When open it takes an accent border and a tinted
+           surface, which does two jobs: it says which group you opened, and it
+           draws a hard edge between the open group and the card below that it
+           has just pushed down. Without that edge the expansion reads as the
+           whole page jumping rather than as one section growing.
+
+           BasedOn, as ever - a keyed Style with no BasedOn would replace the
+           theme's template rather than extend it. -->
+      <Style x:Key="SettingsSection" TargetType="ui:CardExpander"
+             BasedOn="{StaticResource {x:Type ui:CardExpander}}">
+         <Setter Property="Margin" Value="0,0,0,8" />
+         <Setter Property="ContentPadding" Value="14" />
+         <Style.Triggers>
+            <Trigger Property="IsExpanded" Value="True">
+               <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+               <Setter Property="BorderThickness" Value="1.5" />
+               <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />
+            </Trigger>
+         </Style.Triggers>
+      </Style>
+
       <!-- Status chip: subtle filled pill so the three DXLab programs read as
            discrete states rather than as a bulleted list. -->
       <Style x:Key="StatusChip" TargetType="Border">
@@ -63,6 +84,8 @@
          <Setter Property="Margin" Value="0,0,8,0" />
          <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
          <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+         <!-- Deliberately thinner than the expanded-section accent: the chips
+              are ambient status, not the thing being pointed at. -->
          <Setter Property="BorderThickness" Value="1" />
       </Style>
    </Window.Resources>
@@ -92,7 +115,7 @@
             <StackPanel>
 
                <!-- ========================= Network ========================= -->
-               <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
+               <ui:CardExpander x:Name="NetworkSection" Style="{StaticResource SettingsSection}"
                                 Icon="{ui:SymbolIcon Globe24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
                                 IsExpanded="True">
                   <ui:CardExpander.Header>
@@ -149,7 +172,7 @@
                <!-- Collapsed by default. These are set once when the station is
                     configured and then left alone, so they should not cost
                     vertical space every session at the expense of the log. -->
-               <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
+               <ui:CardExpander x:Name="ServicesSection" Style="{StaticResource SettingsSection}"
                                 Icon="{ui:SymbolIcon CloudArrowUp24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
                                 IsExpanded="False">
                   <ui:CardExpander.Header>
@@ -228,7 +251,7 @@
                </ui:CardExpander>
 
                <!-- ======================= Diagnostics ======================= -->
-               <ui:CardExpander Margin="0,0,0,8" ContentPadding="14"
+               <ui:CardExpander x:Name="DiagnosticsSection" Style="{StaticResource SettingsSection}"
                                 Icon="{ui:SymbolIcon DocumentBulletList24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
                                 IsExpanded="False">
                   <ui:CardExpander.Header>
