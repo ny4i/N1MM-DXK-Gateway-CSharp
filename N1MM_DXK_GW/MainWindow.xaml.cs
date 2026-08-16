@@ -49,6 +49,38 @@ public partial class MainWindow : FluentWindow
    private Settings settings = new();
    private UdpListener? udpListener;
 
+   private readonly TrayIcon tray = new();
+
+   /// <summary>
+   /// Refreshes the tray while the window is hidden, and only then. A gateway
+   /// sits running for a whole contest, so a timer that ticked regardless
+   /// would spend the entire time waking the CPU to recompute text nobody can
+   /// see — the window shows all of this already when it is up.
+   /// </summary>
+   private readonly DispatcherTimer trayTimer = new()
+   {
+      Interval = TimeSpan.FromSeconds(1),
+   };
+
+   // Written from the UDP receive thread and the send-queue worker, read on
+   // the UI thread, so they go through Interlocked rather than being plain
+   // fields that happen to work.
+   private long datagramsReceived;
+   private long qsosLogged;
+   private string lastQsoSummary = string.Empty;
+   private bool errorLogWritten;
+
+   /// <summary>
+   /// Suppresses repeat failure notifications. During a DXKeeper outage every
+   /// QSO fails, and one balloon per QSO would bury the shack in popups for
+   /// a condition the operator already knows about.
+   /// </summary>
+   private DateTime lastFailureNotice = DateTime.MinValue;
+   private static readonly TimeSpan FailureNoticeInterval = TimeSpan.FromMinutes(1);
+
+   /// <summary>True once the "still running" notice has been shown.</summary>
+   private bool explainedTray;
+
    /// <summary>
    /// Formats a localized string. CurrentCulture, not InvariantCulture: these
    /// are sentences shown to a person, so counts and numbers should follow the
@@ -117,11 +149,70 @@ public partial class MainWindow : FluentWindow
       pfDde.Connected += () => OnDdeStatusChanged(pfDde, PfDot, PfStatus);
       pfDde.Disconnected += () => OnDdeStatusChanged(pfDde, PfDot, PfStatus);
 
+      tray.ShowRequested += RestoreFromTray;
+      tray.QuitRequested += Close;
+      tray.OpenFailedFileRequested += () => FailedQsoFileLink_Click(this, new RoutedEventArgs());
+      tray.OpenErrorLogRequested += OpenErrorLog;
+      trayTimer.Tick += (_, _) => RefreshTray();
+
       Loaded += MainWindow_Loaded;
       Closing += MainWindow_Closing;
       Closed += MainWindow_Closed;
       Activated += (_, _) => RefreshFailedQsoStatus();
       SizeChanged += (_, _) => UpdateSettingsHeightCap();
+      StateChanged += MainWindow_StateChanged;
+   }
+
+   // --------------------------------------------------------- notification area
+
+   /// <summary>
+   /// Minimising hides the window into the notification area rather than the
+   /// taskbar. Closing still quits — the two gestures keep their usual
+   /// meanings, so nobody discovers by accident that the gateway they thought
+   /// they shut down is still logging, or that the one they meant to tuck away
+   /// has stopped.
+   /// </summary>
+   private void MainWindow_StateChanged(object? sender, EventArgs e)
+   {
+      if (WindowState != WindowState.Minimized)
+      {
+         return;
+      }
+
+      tray.Visible = true;
+      RefreshTray();
+      Hide();
+      trayTimer.Start();
+
+      if (!explainedTray)
+      {
+         // Once per session. An operator who believes they closed the gateway
+         // stops watching for problems while it is still the only thing
+         // logging their contest.
+         explainedTray = true;
+         tray.Notify(Strings.TrayHiddenTitle, Strings.TrayHiddenMessage, warning: false);
+      }
+   }
+
+   private void RestoreFromTray()
+   {
+      trayTimer.Stop();
+      Show();
+      WindowState = WindowState.Normal;
+      Activate();
+      tray.Visible = false;
+      RefreshFailedQsoStatus();
+   }
+
+   private void RefreshTray()
+   {
+      tray.UpdateStatus(
+         Interlocked.Read(ref datagramsReceived),
+         Interlocked.Read(ref qsosLogged),
+         sendQueue.PendingCount,
+         failedQsos.RecordCount(),
+         lastQsoSummary,
+         errorLogWritten);
    }
 
    private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -154,6 +245,11 @@ public partial class MainWindow : FluentWindow
 
    private void MainWindow_Closed(object? sender, EventArgs e)
    {
+      // First, so the icon cannot outlive the window and leave a ghost in the
+      // notification area that only disappears when the mouse passes over it.
+      trayTimer.Stop();
+      tray.Dispose();
+
       dequeueTimer.Stop();
       udpListener?.Dispose();
       udpListener = null;
@@ -216,21 +312,34 @@ public partial class MainWindow : FluentWindow
 
    private void SaveWindowPosition()
    {
-      if (WindowState == WindowState.Minimized)
-      {
-         // Don't overwrite saved bounds when closed from the taskbar.
-         settings.WindowState = (int)WindowState.Normal;
-         settings.Save();
-         return;
-      }
+      // RestoreBounds carries the pre-minimise and pre-maximise rectangle, so
+      // un-maximising on the next launch returns to the size the operator
+      // actually chose.
+      //
+      // Minimized used to return early here without saving anything, to avoid
+      // recording a taskbar-minimised window's bogus coordinates. Quitting
+      // from the notification-area menu now makes that the ordinary path, and
+      // returning early would silently discard a resize made earlier in the
+      // session. RestoreBounds is valid while minimised and holds the right
+      // rectangle, so reading it is both correct and simpler than special
+      // casing the state.
+      var bounds = WindowState == WindowState.Normal
+         ? new Rect(Left, Top, Width, Height)
+         : RestoreBounds;
 
-      // RestoreBounds carries the pre-maximise rectangle, so un-maximising on
-      // the next launch returns to the size the operator actually chose.
-      var bounds = WindowState == WindowState.Maximized ? RestoreBounds
-                                                        : new Rect(Left, Top, Width, Height);
+      // Never persist Minimized: a window that launches hidden is a poor
+      // start, and with the tray in play it would launch invisible.
       settings.WindowState = (int)(WindowState == WindowState.Maximized
          ? WindowState.Maximized
          : WindowState.Normal);
+
+      if (bounds.IsEmpty || bounds.Width <= 0 || bounds.Height <= 0)
+      {
+         // Never realised a restore rectangle — keep whatever was saved before
+         // rather than writing a degenerate one the loader would reject.
+         settings.Save();
+         return;
+      }
 
       settings.WindowLeft = (int)bounds.Left;
       settings.WindowTop = (int)bounds.Top;
@@ -622,6 +731,10 @@ public partial class MainWindow : FluentWindow
       // Fires on UdpListener's background receive thread. Logger is
       // thread-safe, and DebugLog is cheap when debug is off.
       logger.DebugLog($"Received UDP on port {settings.UdpPort}: {xml}");
+      // Counts every datagram, not every QSO. That is the point: N1MM
+      // broadcasts RadioInfo continuously, so a rising count proves the
+      // network path is alive even during a quiet spell with no contacts.
+      Interlocked.Increment(ref datagramsReceived);
       dispatcher.Enqueue(xml);
    }
 
@@ -841,6 +954,12 @@ public partial class MainWindow : FluentWindow
          PostToOperationLog($"{verb} {op.Summary}{portTag}".TrimStart());
          logger.DebugLog(
             $"DXKeeper closed the connection for {op.Call}; response: {result.Response ?? "(none)"}");
+
+         if (op.Kind != QsoSendQueue.OpKind.Delete)
+         {
+            Interlocked.Increment(ref qsosLogged);
+            lastQsoSummary = $"{op.Call} {DateTime.Now:HH:mm}";
+         }
          return;
       }
 
@@ -953,7 +1072,42 @@ public partial class MainWindow : FluentWindow
 
    // ------------------------------------------------------------ failed QSOs
 
-   private void OnFailedQsoSaved() => RunOnUi(RefreshFailedQsoStatus);
+   private void OnFailedQsoSaved() => RunOnUi(() =>
+   {
+      RefreshFailedQsoStatus();
+      NotifyFailureIfHidden();
+   });
+
+   /// <summary>
+   /// Raises a notification-area balloon for an undelivered QSO, but only
+   /// while the window is hidden — the warning bar already says this when the
+   /// window is up, and a balloon over the top of it would be noise.
+   ///
+   /// Rate-limited: a DXKeeper outage fails every QSO, and one balloon each
+   /// would bury the operator in popups describing a condition they have
+   /// already been told about. The tray icon keeps its red badge throughout,
+   /// so the state stays visible between notices.
+   /// </summary>
+   private void NotifyFailureIfHidden()
+   {
+      if (IsVisible)
+      {
+         return;
+      }
+
+      RefreshTray();
+
+      var now = DateTime.UtcNow;
+      if (now - lastFailureNotice < FailureNoticeInterval)
+      {
+         return;
+      }
+      lastFailureNotice = now;
+
+      tray.Notify(Strings.TrayFailureTitle,
+                  L(Strings.TrayFailureMessage, failedQsos.RecordCount()),
+                  warning: true);
+   }
 
    /// <summary>
    /// Status line for QSOs this session could not deliver: a count plus links
@@ -1035,7 +1189,11 @@ public partial class MainWindow : FluentWindow
 
    // -------------------------------------------------------------- log & UI
 
-   private void OnLogWritten() => RunOnUi(() => ErrorLogLink.Visibility = Visibility.Visible);
+   private void OnLogWritten() => RunOnUi(() =>
+   {
+      ErrorLogLink.Visibility = Visibility.Visible;
+      errorLogWritten = true;
+   });
 
    private void ErrorLogLink_Click(object sender, RoutedEventArgs e) => OpenErrorLog();
 

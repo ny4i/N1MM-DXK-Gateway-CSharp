@@ -156,6 +156,20 @@ Optional, off by default: the **Multicast group** field (registry value `Multica
 
 An earlier revision of this file argued the opposite — that `SO_REUSEADDR` must never be set — reasoning from the unicast rule alone. That was wrong for the broadcast traffic this gateway actually receives.
 
+### Notification area
+
+`TrayIcon` wraps WinForms' `NotifyIcon`. WPF has no tray support of its own, but this project already references WinForms for NDde's hidden window, so this costs no new package and no new assembly. Everything on it must be touched from the UI thread — it needs a message pump.
+
+- **Minimise hides to the tray; close still quits.** Both gestures keep their usual meaning. Nobody should discover by accident that the gateway they thought they shut down is still the only thing logging their contest, or that the one they meant to tuck away has stopped.
+- **The refresh timer runs only while hidden.** A gateway sits up for a whole contest; a 1 Hz timer that ticked regardless would spend all of it waking the CPU to recompute text the window already shows.
+- **Failure balloons are rate-limited to one a minute.** A DXKeeper outage fails every QSO, and one balloon each would bury the shack describing a condition the operator has already been told about. The red badge on the icon persists between notices.
+- **The tooltip is clamped to 127 characters.** Windows caps it there and .NET throws rather than truncating. Measured on .NET 8: 127 accepted, 128 rejected (it was 63 on .NET Framework). Longest translated tooltip today is 78, so the clamp is a guard, not a routine path.
+- **`WithAlertBadge` must `DestroyIcon` the handle from `GetHicon`.** `Icon.FromHandle` does not take ownership, so the returned icon is `Clone`d and the handle released; otherwise every construction leaks a GDI handle.
+
+**Windows 11 puts new notification icons in the overflow flyout by default.** Verified on this machine: after minimising, the icon was not on the taskbar and was found only under "Show Hidden Icons". This is why the red badge alone cannot be the error indication — an operator who has not dragged the icon out will never see it. The balloon notification is the channel that reaches them, and the undelivered count is also in `FailedQSOs_*.adi` and the window's own warning bar. Worth telling operators to pin the icon.
+
+`SaveWindowPosition` reads `RestoreBounds` rather than returning early when minimised. It used to skip saving in that state to avoid recording a taskbar-minimised window's coordinates; quitting from the tray menu now makes minimised the ordinary path, and returning early would silently discard a resize made earlier in the session.
+
 ### Localization
 
 Strings live in `N1MM_DXK_GW\I18N\`. `Strings.Designer.cs` is **checked in**, because WPF runs `MarkupCompilePass1` before `PrepareResources` and forcing the reverse is circular. Regenerate it with `dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings`.

@@ -821,6 +821,141 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All QSOs delivered.
+        /// </summary>
+        public static string TrayAllDelivered {
+            get {
+                return ResourceManager.GetString("TrayAllDelivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand..
+        /// </summary>
+        public static string TrayFailureMessage {
+            get {
+                return ResourceManager.GetString("TrayFailureMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to QSO not delivered.
+        /// </summary>
+        public static string TrayFailureTitle {
+            get {
+                return ResourceManager.GetString("TrayFailureTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The gateway is still receiving QSOs here. Double-click this icon to bring the window back..
+        /// </summary>
+        public static string TrayHiddenMessage {
+            get {
+                return ResourceManager.GetString("TrayHiddenMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Still running.
+        /// </summary>
+        public static string TrayHiddenTitle {
+            get {
+                return ResourceManager.GetString("TrayHiddenTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last QSO: {0}.
+        /// </summary>
+        public static string TrayLastQso {
+            get {
+                return ResourceManager.GetString("TrayLastQso", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logged to DXKeeper: {0}.
+        /// </summary>
+        public static string TrayLogged {
+            get {
+                return ResourceManager.GetString("TrayLogged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No QSOs yet.
+        /// </summary>
+        public static string TrayNoQsoYet {
+            get {
+                return ResourceManager.GetString("TrayNoQsoYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to NOT delivered: {0}.
+        /// </summary>
+        public static string TrayNotDelivered {
+            get {
+                return ResourceManager.GetString("TrayNotDelivered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the undelivered QSO file.
+        /// </summary>
+        public static string TrayOpenFailedFile {
+            get {
+                return ResourceManager.GetString("TrayOpenFailedFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting to send: {0}.
+        /// </summary>
+        public static string TrayQueued {
+            get {
+                return ResourceManager.GetString("TrayQueued", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quit the gateway.
+        /// </summary>
+        public static string TrayQuit {
+            get {
+                return ResourceManager.GetString("TrayQuit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received from N1MM: {0}.
+        /// </summary>
+        public static string TrayReceived {
+            get {
+                return ResourceManager.GetString("TrayReceived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the gateway window.
+        /// </summary>
+        public static string TrayShow {
+            get {
+                return ResourceManager.GetString("TrayShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received {0}, logged {1}, not delivered {2}.
+        /// </summary>
+        public static string TrayTooltip {
+            get {
+                return ResourceManager.GetString("TrayTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to UDP listening port:.
         /// </summary>
         public static string UdpPortLabel {

@@ -547,6 +547,80 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="TrayShow" xml:space="preserve">
+    <value>Avaa porttiikkuna</value>
+    <comment>EN: Open the gateway window
+    NOTE: Notification area menu entry that brings the window back. Also the double-click action. Phrased as a full instruction rather than "Show gateway", which machine-translated into German as "Schaufenster" (a shop window) - a bare verb-noun pair gives a translator nothing to disambiguate against.</comment>
+  </data>
+  <data name="TrayQuit" xml:space="preserve">
+    <value>Lopeta portti</value>
+    <comment>EN: Quit the gateway
+    NOTE: Notification area menu entry that shuts the gateway down. Not the bare word "Quit", which machine-translated into German as "Quittung" (a receipt), Japanese as "login" and Korean as nonsense. Naming the object gives the model something to work with.</comment>
+  </data>
+  <data name="TrayHiddenTitle" xml:space="preserve">
+    <value>Yhä käynnissä.</value>
+    <comment>EN: Still running
+    NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
+  </data>
+  <data name="TrayHiddenMessage" xml:space="preserve">
+    <value>Portti vastaanottaa yhä QSOTässä. Napsauta tätä kuvaketta tuodaksesi ikkunan takaisin.</value>
+    <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
+    NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
+  </data>
+  <data name="TrayReceived" xml:space="preserve">
+    <value>Saatu N1MM: {0}</value>
+    <comment>EN: Received from N1MM: {0}
+    NOTE: Count of UDP datagrams received. Menu entry.</comment>
+  </data>
+  <data name="TrayLogged" xml:space="preserve">
+    <value>Kirjattu DXKeeper: {0}</value>
+    <comment>EN: Logged to DXKeeper: {0}
+    NOTE: Count of QSOs DXKeeper confirmed. Menu entry.</comment>
+  </data>
+  <data name="TrayQueued" xml:space="preserve">
+    <value>Odotetaan lähettämistä: {0}</value>
+    <comment>EN: Waiting to send: {0}
+    NOTE: Count of QSOs queued behind the one in flight. Menu entry.</comment>
+  </data>
+  <data name="TrayNotDelivered" xml:space="preserve">
+    <value>EI toimitettu: {0}</value>
+    <comment>EN: NOT delivered: {0}
+    NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
+  </data>
+  <data name="TrayAllDelivered" xml:space="preserve">
+    <value>Kaikki QSOs toimitettu</value>
+    <comment>EN: All QSOs delivered
+    NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
+  </data>
+  <data name="TrayLastQso" xml:space="preserve">
+    <value>Viimeinen QSO: {0}</value>
+    <comment>EN: Last QSO: {0}
+    NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
+  </data>
+  <data name="TrayNoQsoYet" xml:space="preserve">
+    <value>Ei QSOs vielä</value>
+    <comment>EN: No QSOs yet</comment>
+  </data>
+  <data name="TrayOpenFailedFile" xml:space="preserve">
+    <value>Avaa toimittamaton QSO tiedosto</value>
+    <comment>EN: Open the undelivered QSO file
+    NOTE: Menu entry that opens FailedQSOs_*.adi.</comment>
+  </data>
+  <data name="TrayFailureTitle" xml:space="preserve">
+    <value>QSO ei toimitettu</value>
+    <comment>EN: QSO not delivered
+    NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
+  </data>
+  <data name="TrayFailureMessage" xml:space="preserve">
+    <value>DXKeeper ei ole vahvistettu {0} QSOTämä istunto. Ne on säästetty tuotavaksi käsin.</value>
+    <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
+    NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
+  </data>
+  <data name="TrayTooltip" xml:space="preserve">
+    <value>Saatu {0}, kirjautunut {1}, ei toimitettu {2}</value>
+    <comment>EN: Received {0}, logged {1}, not delivered {2}
+    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.</comment>
+  </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service</value>
     <comment>EN: Config &gt; Defaults tab &gt; Network Service
