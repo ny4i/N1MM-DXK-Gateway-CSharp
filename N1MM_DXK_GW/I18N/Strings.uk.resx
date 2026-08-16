@@ -506,6 +506,11 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: Reverted the multicast group to "{0}".
     NOTE: {0} may be empty, meaning no multicast.</comment>
   </data>
+  <data name="AlertUploadAlreadySent" xml:space="preserve">
+    <value>Завантаження переключаються, тому {0} вже може бути в онлайн-магазині. Ця зміна не досягається.</value>
+    <comment>EN: Uploads are switched on, so {0} may already be at an online logbook. That upload cannot be undone, and this change does not reach it.
+    NOTE: Logged when a QSO is edited or deleted while any upload toggle is on. {0} describes the QSO. "may already be" is deliberate - the QSO was only uploaded if it was logged while the toggle was on, which this program cannot know for certain.</comment>
+  </data>
   <data name="AlertReplaceNoKey" xml:space="preserve">
     <value>contactreplace для {0}: Немає у використанні &lt;oldcall&gt;Українська&lt;oldtimestamp&gt; - редагування не було застосовано DXKeeper</value>
     <comment>EN: contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper

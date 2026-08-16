@@ -530,6 +530,34 @@ public partial class MainWindow : FluentWindow
    }
 
    /// <summary>
+   /// Names the QSO whose online upload this change will not reach.
+   ///
+   /// The warning on the toggle explains the hazard in the abstract, months
+   /// before it bites. This is the moment it actually bites, and it names the
+   /// contact — which is what the operator needs to go and fix the thing by
+   /// hand at LoTW or Club Log, or to decide it does not matter.
+   ///
+   /// Every occurrence, not once per session: the value here is the callsign,
+   /// so collapsing repeats would throw away the only part worth having.
+   /// Edits and deletes are rare enough that this cannot become noise.
+   ///
+   /// "May already be" is not hedging for its own sake. A QSO was only
+   /// uploaded if it was logged while the toggle was on, and an operator who
+   /// switched uploads on afterwards has QSOs in DXKeeper that never went
+   /// anywhere. Claiming otherwise would send them chasing a correction that
+   /// was never needed.
+   /// </summary>
+   private void WarnIfAlreadyUploaded(string summary)
+   {
+      if (!settings.DxkEqslUpload && !settings.DxkLotwUpload && !settings.DxkClubLogUpload)
+      {
+         return;
+      }
+
+      AppendLog(L(Strings.AlertUploadAlreadySent, summary), LogEntry.Level.Warning);
+   }
+
+   /// <summary>
    /// Warns that uploading as QSOs are logged does not survive a later edit.
    ///
    /// DXKeeper uploads a QSO the moment it is logged. An edit arriving
@@ -888,6 +916,7 @@ public partial class MainWindow : FluentWindow
       }
 
       AppendLog($"contactreplace: {key.Summary} -> {adif.Summary} (delete then re-log)...");
+      WarnIfAlreadyUploaded(key.Summary);
       logger.DebugLog($"replace delete key: {key.AdifRecord}");
       logger.DebugLog($"replace new ADIF: {adif.AdifRecord}");
 
@@ -910,6 +939,7 @@ public partial class MainWindow : FluentWindow
       }
 
       AppendLog($"contactdelete: {key.Summary} -> deleting from DXKeeper...");
+      WarnIfAlreadyUploaded(key.Summary);
       logger.DebugLog($"delete key: {key.AdifRecord}");
       sendQueue.EnqueueDelete(key);
    }

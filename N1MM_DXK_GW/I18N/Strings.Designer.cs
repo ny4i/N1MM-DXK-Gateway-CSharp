@@ -256,6 +256,15 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Uploads are switched on, so {0} may already be at an online logbook. That upload cannot be undone, and this change does not reach it..
+        /// </summary>
+        public static string AlertUploadAlreadySent {
+            get {
+                return ResourceManager.GetString("AlertUploadAlreadySent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to N1MM-DXKeeper Gateway.
         /// </summary>
         public static string AppTitle {
