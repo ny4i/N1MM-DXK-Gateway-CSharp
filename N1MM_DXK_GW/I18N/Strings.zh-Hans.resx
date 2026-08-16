@@ -162,12 +162,12 @@
     NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSO未交付</value>
+    <value>QSOs 未交付</value>
     <comment>EN: QSOs not delivered
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs 无法发送到 DXKeeper导入 {1} 输入 DXKeeper,然后删除它——当文件丢失时,该通知即可清除。</value>
+    <value>{0} QSOs 无法从本届会议交付到 DXKeeper导入 {1} 输入 DXKeeper,然后删除它——当文件丢失时,该通知即可清除。</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
     NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
@@ -263,12 +263,12 @@
     <comment>EN: Help</comment>
   </data>
   <data name="CheckDxkLookup" xml:space="preserve">
-    <value>上次查询 QSO编号</value>
+    <value>上次查询 QSOs</value>
     <comment>EN: Lookup previous QSOs
     NOTE: "QSO" means a radio contact and is used in English worldwide - do not translate.</comment>
   </data>
   <data name="CheckDxkLookupTip" xml:space="preserve">
-    <value>直接 DXKeeper 显示上一个 QSOs 与已登录的呼号</value>
+    <value>直接 DXKeeper 显示上一个 QSOs 带有已登录的呼号</value>
     <comment>EN: Direct DXKeeper to display previous QSOs with the logged callsign</comment>
   </data>
   <data name="CheckCallbook" xml:space="preserve">
@@ -562,7 +562,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
   </data>
   <data name="NoticeWarranty" xml:space="preserve">
-    <value>它来 与Absollely 没有WARANTY。 它的提出是希望它有用,但没有人保证它适合任何特定目的,任何捐助者都不对任何错误负责。 你的日志是你的责任: 检查一下 QSO伸展范围 DXKeeper。 。 。 。</value>
+    <value>它来 与Absollely 没有WARANTY。 它的提出是希望它有用,但没有人保证它适合任何特定目的,任何捐助者都不对任何错误负责。 你的日志是你的责任: 检查一下 QSOs 到达 DXKeeper。 。 。 。</value>
     <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
     NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
@@ -624,7 +624,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
   </data>
   <data name="TrayHiddenMessage" xml:space="preserve">
-    <value>网关还在接收中 QSO在这里。 双击此图标将窗口带回 。</value>
+    <value>网关还在接收中 QSOs 在这里。 双击此图标将窗口带回 。</value>
     <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
     NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
   </data>
@@ -649,7 +649,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
   </data>
   <data name="TrayAllDelivered" xml:space="preserve">
-    <value>全体 QSO已交付</value>
+    <value>全体 QSOs 已交付</value>
     <comment>EN: All QSOs delivered
     NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
   </data>
@@ -659,7 +659,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
   </data>
   <data name="TrayNoQsoYet" xml:space="preserve">
-    <value>没有 QSO还没有</value>
+    <value>没有 QSOs 现在</value>
     <comment>EN: No QSOs yet</comment>
   </data>
   <data name="TrayOpenFailedFile" xml:space="preserve">
@@ -673,7 +673,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
   </data>
   <data name="TrayFailureMessage" xml:space="preserve">
-    <value>DXKeeper 尚未确认 {0} QSO本届会议。 它们被保存下来让你用手进口。</value>
+    <value>DXKeeper 尚未确认 {0} QSOs 本届会议。 它们被保存下来让你用手进口。</value>
     <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>

@@ -167,7 +167,7 @@
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs aus dieser Sitzung konnte nicht geliefert werden DXKeeper. Einfuhr {1} in DXKeeper, dann löschen Sie es - diese Nachricht löscht, wenn die Datei weg ist.</value>
+    <value>{0} QSOs von dieser Sitzung konnte nicht geliefert werden DXKeeper. Einfuhr {1} in DXKeeper, dann löschen Sie es - diese Nachricht löscht, wenn die Datei weg ist.</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
     NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
@@ -345,9 +345,10 @@
     NOTE: Link that shows the failed-QSO file in Explorer.</comment>
   </data>
   <data name="FailedQsoTip" xml:space="preserve">
-    <value>Einfuhr {0} in DXKeeperund dann löschen. Diese Zählung löscht, wenn die Datei weg ist.</value>
+    <value>Einfuhr {0} in DXKeeper und dann löschen. Diese Zählung löscht, wenn die Datei weg ist.</value>
     <comment>EN: Import {0} into DXKeeper, then delete it. This count clears when the file is gone.
-    NOTE: Tooltip. {0} is the full path of the ADIF file - do not translate it.</comment>
+    NOTE: Tooltip. {0} is the full path of the ADIF file - do not translate it.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
     <value>Sprache:</value>
@@ -484,9 +485,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>INTERNER FEHLER, der eine Nachricht bearbeitet (){0}: {1}) - siehe ErrorLog.txtDas Gateway läuft noch.</value>
+    <value>INTERNER FEHLER, der eine Nachricht bearbeitet (){0}: {1}) - siehe ErrorLog.txt Das Gateway läuft noch.</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -530,9 +532,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: {0} is a number of seconds.</comment>
   </data>
   <data name="FailConnectRefused" xml:space="preserve">
-    <value>kann keine Verbindung herstellen DXKeeper am TCP Hafen {0}; in DXKeeper, überprüfen Sie, dass {1} BerichteListening„</value>
+    <value>kann keine Verbindung herstellen DXKeeper am TCP Hafen {0}; in DXKeeper, überprüfen Sie, dass {1} Berichte Listening„</value>
     <comment>EN: cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"
-    NOTE: {0} is a port number. {1} is DxKeeperConfigNetworkService, an English menu path inside DXKeeper - it must stay untranslated because DXKeeper's own interface is English-only.</comment>
+    NOTE: {0} is a port number. {1} is DxKeeperConfigNetworkService, an English menu path inside DXKeeper - it must stay untranslated because DXKeeper's own interface is English-only.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="FailNoPeerClose" xml:space="preserve">
     <value>DXKeeper Niemals die Verbindung innerhalb {0} Sekunden, also die QSO Vielleicht nie akzeptiert</value>
@@ -674,7 +677,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
   </data>
   <data name="TrayFailureMessage" xml:space="preserve">
-    <value>DXKeeper nicht bestätigt {0} QSOs diese Sitzung. Sie werden für Sie gespeichert, um von Hand zu importieren.</value>
+    <value>DXKeeper nicht bestätigt {0} QSOs dieser Sitzung. Sie werden für Sie gespeichert, um von Hand zu importieren.</value>
     <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>

@@ -162,12 +162,12 @@
     NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOs nebyla dodána</value>
+    <value>QSOs není dodán</value>
     <comment>EN: QSOs not delivered
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs z tohoto zasedání nebylo možné dodat do DXKeeper. Importovat {1} do DXKeeper, pak jej smazat - toto oznámení smaže, když je soubor pryč.</value>
+    <value>{0} QSOs z tohoto zasedání nebylo možné dodat DXKeeper. Importovat {1} do DXKeeper, pak jej smazat - toto oznámení smaže, když je soubor pryč.</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
     NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
@@ -268,7 +268,7 @@
     NOTE: "QSO" means a radio contact and is used in English worldwide - do not translate.</comment>
   </data>
   <data name="CheckDxkLookupTip" xml:space="preserve">
-    <value>Přímé DXKeeper zobrazovat předchozí QSOs s s logovanou volací značkou</value>
+    <value>Přímé DXKeeper zobrazovat předchozí QSOs s logovanou volací značkou</value>
     <comment>EN: Direct DXKeeper to display previous QSOs with the logged callsign</comment>
   </data>
   <data name="CheckCallbook" xml:space="preserve">
@@ -345,9 +345,10 @@
     NOTE: Link that shows the failed-QSO file in Explorer.</comment>
   </data>
   <data name="FailedQsoTip" xml:space="preserve">
-    <value>Importovat {0} do DXKeepera pak to smaž. Tento počet se vyjasní, když je soubor pryč.</value>
+    <value>Importovat {0} do DXKeeper a pak to smaž. Tento počet se vyjasní, když je soubor pryč.</value>
     <comment>EN: Import {0} into DXKeeper, then delete it. This count clears when the file is gone.
-    NOTE: Tooltip. {0} is the full path of the ADIF file - do not translate it.</comment>
+    NOTE: Tooltip. {0} is the full path of the ADIF file - do not translate it.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
     <value>Jazyk:</value>
@@ -484,9 +485,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>INTERNÍ ZPĚTNÝ ZPĚT ZPRÁVY ({0}: {1}) - viz ErrorLog.txtBrána stále běží.</value>
+    <value>INTERNÍ ZPĚTNÝ ZPĚT ZPRÁVY ({0}: {1}) - viz ErrorLog.txt Brána stále běží.</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -530,9 +532,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: {0} is a number of seconds.</comment>
   </data>
   <data name="FailConnectRefused" xml:space="preserve">
-    <value>nelze připojit k DXKeeper n TCP přístav {0}; v DXKeeperZkontroluj to. {1} zprávy "Listening"</value>
+    <value>nelze připojit k DXKeeper n TCP přístav {0}; v DXKeeper Zkontroluj to. {1} zprávy "Listening"</value>
     <comment>EN: cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"
-    NOTE: {0} is a port number. {1} is DxKeeperConfigNetworkService, an English menu path inside DXKeeper - it must stay untranslated because DXKeeper's own interface is English-only.</comment>
+    NOTE: {0} is a port number. {1} is DxKeeperConfigNetworkService, an English menu path inside DXKeeper - it must stay untranslated because DXKeeper's own interface is English-only.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="FailNoPeerClose" xml:space="preserve">
     <value>DXKeeper nikdy nezavřel spojení uvnitř {0} sekund, takže QSO možná nikdy nebyl přijat</value>
@@ -626,7 +629,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
   </data>
   <data name="TrayHiddenMessage" xml:space="preserve">
-    <value>Brána stále přijímá QSOTady. Double- klikněte na tuto ikonu a přineste okno zpět.</value>
+    <value>Brána stále přijímá QSOs Tady. Double- klikněte na tuto ikonu a přineste okno zpět.</value>
     <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
     NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
   </data>
@@ -651,7 +654,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
   </data>
   <data name="TrayAllDelivered" xml:space="preserve">
-    <value>Všechny QSOs dodáno</value>
+    <value>Všechny QSOs dodané</value>
     <comment>EN: All QSOs delivered
     NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
   </data>
@@ -661,7 +664,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
   </data>
   <data name="TrayNoQsoYet" xml:space="preserve">
-    <value>Ne. QSOs dosud</value>
+    <value>Ne. QSOs zatím.</value>
     <comment>EN: No QSOs yet</comment>
   </data>
   <data name="TrayOpenFailedFile" xml:space="preserve">
@@ -675,7 +678,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
   </data>
   <data name="TrayFailureMessage" xml:space="preserve">
-    <value>DXKeeper není potvrzeno {0} QSOJe to sezení. Jsou uloženy pro vás import ručně.</value>
+    <value>DXKeeper není potvrzeno {0} QSOs Tohle sezení. Jsou uloženy pro vás import ručně.</value>
     <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>

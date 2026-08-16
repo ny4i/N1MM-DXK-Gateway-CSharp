@@ -162,19 +162,21 @@
     NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOnão entregue</value>
+    <value>QSOs não entregue</value>
     <comment>EN: QSOs not delivered
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs desta sessão não pôde ser entregue DXKeeperImportar {1} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
+    <value>{0} QSOs desta sessão não foi possível entregar DXKeeper Importar {1} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
-    NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
+    NOTE: {0} is a count, {1} is a filename. Do not translate the filename.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="FailedQsoBarMessageOne" xml:space="preserve">
-    <value>1 QSO desta sessão não foi possível entregar DXKeeperImportar {0} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
+    <value>1 QSO desta sessão não foi possível entregar DXKeeper Importar {0} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
     <comment>EN: 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.
-    NOTE: Singular form. {0} is a filename. Do not translate the filename.</comment>
+    NOTE: Singular form. {0} is a filename. Do not translate the filename.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="OpenFileButton" xml:space="preserve">
     <value>Abrir arquivo</value>
@@ -325,7 +327,7 @@
     NOTE: "DDE" is a Windows protocol name - do not translate.</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
-    <value>{0} QSOnão entregue — aberto</value>
+    <value>{0} QSOs não entregue — aberto</value>
     <comment>EN: {0} QSOs not delivered — open
     NOTE: Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
   </data>
@@ -484,9 +486,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>ERRO INTERNO que manipula uma mensagem ({0}: {1}) - ver ErrorLog.txtO portal ainda está a funcionar.</value>
+    <value>ERRO INTERNO que manipula uma mensagem ({0}: {1}) - ver ErrorLog.txt O portal ainda está a funcionar.</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -625,7 +628,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
   </data>
   <data name="TrayHiddenMessage" xml:space="preserve">
-    <value>O portal ainda está a receber QSOEstá aqui. Clique duas vezes neste ícone para trazer a janela de volta.</value>
+    <value>O portal ainda está a receber QSOs Aqui. Clique duas vezes neste ícone para trazer a janela de volta.</value>
     <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
     NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
   </data>
@@ -650,7 +653,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
   </data>
   <data name="TrayAllDelivered" xml:space="preserve">
-    <value>Tudo QSOs entregues</value>
+    <value>Tudo QSOs entregue</value>
     <comment>EN: All QSOs delivered
     NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
   </data>
@@ -674,7 +677,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
   </data>
   <data name="TrayFailureMessage" xml:space="preserve">
-    <value>DXKeeper não confirmou {0} QSOÉ esta sessão. Eles são salvos para você importar à mão.</value>
+    <value>DXKeeper não confirmou {0} QSOs Esta sessão. Eles são salvos para você importar à mão.</value>
     <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>

@@ -77,7 +77,10 @@ PROTECTED_TERMS = sorted(
         # "メニュー" (menu) - which silently removed the one visual cue that says
         # "DXKeeper no longer holds this QSO at all".
         "***",
-        "QSO", "ADIF", "RST", "UDP", "TCP", "DDE", "XML", "IPv4",
+        # "QSOs" before "QSO" (the sort below is longest-first) so the plural is
+        # masked whole. Masking only "QSO" left a bare "s" stranded next to the
+        # sentinel, and Spanish came back as "QSOno entregados".
+        "QSOs", "QSO", "ADIF", "RST", "UDP", "TCP", "DDE", "XML", "IPv4",
         # The DXKeeper menu paths are whole entries in DO_NOT_TRANSLATE_KEYS
         # and reach sentences only through a {0}, so they need no term masking.
     ],
@@ -167,6 +170,85 @@ def placeholders(text):
     return sorted(PLACEHOLDER.findall(text))
 
 
+# Scripts that separate words with spaces. Deliberately excludes CJK: Japanese
+# and Chinese do not space between words, so "DXKeeper削除します" is ordinary
+# typography there and must not be treated as damage.
+SPACED_LETTER = r"[A-Za-zÀ-ÖØ-öø-ÿĀ-ſЀ-ӿΆ-ώ]"
+
+
+def glued(translated, english):
+    """Protected terms fused onto an adjacent word.
+
+    A translation model that moves a sentinel around often eats the separator
+    that followed it, so "into DXKeeper, then delete" comes back as
+    "in DXKeeperund dann". Placeholders and masked terms all survive intact, so
+    none of the other checks notice; the words are simply run together.
+
+    Only flagged where the English had a boundary at that point and the target
+    script actually uses spaces.
+    """
+    terms = [t for t in PROTECTED_TERMS if re.fullmatch(r"[A-Za-z0-9.+]+", t)]
+    alternation = "|".join(sorted(map(re.escape, terms), key=len, reverse=True))
+    pattern = re.compile(
+        rf"(?:({alternation}){SPACED_LETTER})|(?:{SPACED_LETTER}({alternation}))")
+
+    return [m.group(0) for m in _fusions(translated, english)]
+
+
+def _fusions(translated, english):
+    """Genuine term-to-word fusions, as match objects.
+
+    Both the check and the repair go through here, because they must agree
+    exactly on what counts as damage. They did not, once: the repair inserted a
+    space inside "QSOs" - the alternation backtracked from "QSOs" to "QSO" and
+    treated the plural "s" as the next word - producing "QSO s" in Russian. The
+    English comparison below is what prevents that, and it now guards both.
+    """
+    terms = [t for t in PROTECTED_TERMS if re.fullmatch(r"[A-Za-z0-9.+]+", t)]
+    alternation = "|".join(sorted(map(re.escape, terms), key=len, reverse=True))
+    pattern = re.compile(
+        rf"({alternation})({SPACED_LETTER})|({SPACED_LETTER})({alternation})")
+
+    for match in pattern.finditer(translated):
+        term = match.group(1) or match.group(4)
+        # Not damage if the English ran them together in the same way - which
+        # is exactly the case for a protected term with a plural suffix.
+        if re.search(rf"(?:{re.escape(term)}{SPACED_LETTER})"
+                     rf"|(?:{SPACED_LETTER}{re.escape(term)})", english):
+            continue
+        yield match
+
+
+def repair_glued(translated, english):
+    """Re-separate a fused term, and say whether anything was done.
+
+    The damage is a dropped separator, not a mistranslation: the English had
+    "DXKeeper, then" and the model returned "DXKeeperund". Putting a space back
+    is mechanical - it restores a boundary that was in the source and cannot
+    make the text worse than two words run together.
+
+    Deliberately a plain space rather than the English comma or full stop. The
+    translator may legitimately have restructured the sentence, so reinstating
+    English punctuation would be guessing at grammar; a space only guarantees
+    the words are readable. The entry is flagged for review either way.
+    """
+    # Insertion points only, taken from the same detector the check uses, so a
+    # space can never be inserted anywhere the check would not call damage.
+    cuts = []
+    for match in _fusions(translated, english):
+        # group(2) is the word fused after a term; group(3) the letter before.
+        cuts.append(match.start(2) if match.group(2) is not None
+                    else match.start(4))
+    if not cuts:
+        return translated, False
+
+    # Back to front, so earlier offsets stay valid as text is inserted.
+    fixed = translated
+    for at in sorted(set(cuts), reverse=True):
+        fixed = fixed[:at] + " " + fixed[at:]
+    return fixed, True
+
+
 # Pulls the English source back out of a satellite entry's comment. That
 # snapshot is what lets the tool tell "already translated" from "the English
 # changed underneath it" without keeping a separate state file.
@@ -214,6 +296,7 @@ def main(targets, force=False):
         existing = {} if force else load_existing(out)
         translated = {}
         problems = []
+        repaired = set()
         kept = 0
         sent = 0
 
@@ -274,19 +357,29 @@ def main(targets, force=False):
                     f"({len(english)} chars -> {len(restored)})")
                 translated[name] = english
             else:
+                restored, was_repaired = repair_glued(restored, english)
+                if was_repaired:
+                    repaired.add(name)
                 translated[name] = restored
 
             print(f"  [{target}] {i}/{len(entries)} {name}", flush=True)
             time.sleep(0.05)
 
-        write(out, translated, entries)
-        print(f"wrote {out.name} - {kept} kept, {sent} translated"
-              + (f", {len(problems)} left in English:" if problems else ""))
+        write(out, translated, entries, repaired)
+        # Rejected and repaired are counted apart on purpose. Reporting a
+        # repaired string as "left in English" was wrong and misleading - it
+        # had been translated, then mended.
+        summary = f"wrote {out.name} - {kept} kept, {sent} translated"
+        if repaired:
+            summary += f", {len(repaired)} repaired"
+        if problems:
+            summary += f", {len(problems)} left in English:"
+        print(summary)
         for p in problems:
             print(f"    {p}")
 
 
-def write(path, translated, entries):
+def write(path, translated, entries, repaired=frozenset()):
     """Emit a satellite .resx: the standard header, then values only.
 
     Each entry's <comment> carries the English source AND the neutral file's
@@ -311,6 +404,10 @@ def write(path, translated, entries):
             comment += ("\n    NOT TRANSLATED: left in English deliberately - "
                         "either a do-not-translate entry, or the machine pass "
                         "damaged it and was rejected.")
+        if name in repaired:
+            comment += ("\n    REVIEW: the machine pass ran a product name into "
+                        "the next word and a space was inserted to separate "
+                        "them. Check that the wording around it reads naturally.")
         parts.append(f'  <data name="{name}" xml:space="preserve">\n'
                      f"    <value>{esc(translated[name])}</value>\n"
                      f"    <comment>{comment}</comment>\n"

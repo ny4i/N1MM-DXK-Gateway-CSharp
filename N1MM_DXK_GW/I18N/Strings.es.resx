@@ -162,12 +162,12 @@
     NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOno entregados</value>
+    <value>QSOs no entregados</value>
     <comment>EN: QSOs not delivered
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs from this session could not be delivered to DXKeeper. Importación {1} en DXKeeper, luego eliminarlo - este aviso se aclara cuando el archivo se ha ido.</value>
+    <value>{0} QSOs de este período de sesiones no se podría DXKeeper. Importación {1} en DXKeeper, luego eliminarlo - este aviso se aclara cuando el archivo se ha ido.</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
     NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
@@ -328,7 +328,7 @@
     NOTE: "DDE" is a Windows protocol name - do not translate.</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
-    <value>{0} QSOno entregados - abierto</value>
+    <value>{0} QSOs no entregados - abierto</value>
     <comment>EN: {0} QSOs not delivered — open
     NOTE: Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
   </data>
@@ -487,9 +487,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>ERROR INTERNAL manejando un mensaje ({0}: {1}. ErrorLog.txtLa puerta sigue funcionando.</value>
+    <value>ERROR INTERNAL manejando un mensaje ({0}: {1}. ErrorLog.txt La puerta sigue funcionando.</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -566,7 +567,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
   </data>
   <data name="NoticeWarranty" xml:space="preserve">
-    <value>Viene con ABSOLUTELY NO WARRANTY. Se ofrece con la esperanza de que sea útil, pero nadie garantiza que sea adecuado para cualquier propósito particular, y ningún contribuyente es responsable de cualquier cosa que vaya mal. Su registro es su responsabilidad: comprobar que QSOalcance DXKeeper.</value>
+    <value>Viene con ABSOLUTELY NO WARRANTY. Se ofrece con la esperanza de que sea útil, pero nadie garantiza que sea adecuado para cualquier propósito particular, y ningún contribuyente es responsable de cualquier cosa que vaya mal. Su registro es su responsabilidad: comprobar que QSOs alcance DXKeeper.</value>
     <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
     NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
@@ -628,7 +629,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
   </data>
   <data name="TrayHiddenMessage" xml:space="preserve">
-    <value>La puerta sigue recibiendo QSOAquí. Haga doble clic en este icono para traer la ventana de vuelta.</value>
+    <value>La puerta sigue recibiendo QSOs Aquí. Haga doble clic en este icono para traer la ventana de vuelta.</value>
     <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
     NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
   </data>
@@ -653,7 +654,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
   </data>
   <data name="TrayAllDelivered" xml:space="preserve">
-    <value>Todos QSOentregados</value>
+    <value>Todos QSOs entregados</value>
     <comment>EN: All QSOs delivered
     NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
   </data>
@@ -663,9 +664,8 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
   </data>
   <data name="TrayNoQsoYet" xml:space="preserve">
-    <value>No QSOs yet</value>
-    <comment>EN: No QSOs yet
-    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
+    <value>No QSOs aún</value>
+    <comment>EN: No QSOs yet</comment>
   </data>
   <data name="TrayOpenFailedFile" xml:space="preserve">
     <value>Abrir el no entregado QSO archivo</value>

@@ -162,7 +162,7 @@
     NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOniet geleverd</value>
+    <value>QSOs niet geleverd</value>
     <comment>EN: QSOs not delivered
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
@@ -325,7 +325,7 @@
     NOTE: "DDE" is a Windows protocol name - do not translate.</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
-    <value>{0} QSOs niet geleverd</value>
+    <value>{0} QSOs niet geleverd </value>
     <comment>EN: {0} QSOs not delivered — open
     NOTE: Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
   </data>
@@ -484,9 +484,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>INTERNE FOUT dat een bericht behandelt ({0}: {1}) Zie ErrorLog.txtDe poort loopt nog.</value>
+    <value>INTERNE FOUT dat een bericht behandelt ({0}: {1}) Zie ErrorLog.txt De poort loopt nog.</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -563,7 +564,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
   </data>
   <data name="NoticeWarranty" xml:space="preserve">
-    <value>Het wordt geleverd met Absoluut geen garantie. Het wordt aangeboden in de hoop dat het nuttig is, maar niemand garandeert dat het geschikt is voor een bepaald doel, en geen enkele donateur is aansprakelijk voor alles wat mis gaat. Uw log is uw verantwoordelijkheid: controleer dat QSOBereik DXKeeper.</value>
+    <value>Het wordt geleverd met Absoluut geen garantie. Het wordt aangeboden in de hoop dat het nuttig is, maar niemand garandeert dat het geschikt is voor een bepaald doel, en geen enkele donateur is aansprakelijk voor alles wat mis gaat. Uw log is uw verantwoordelijkheid: controleer dat QSOs Bereik DXKeeper.</value>
     <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
     NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
@@ -625,7 +626,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
   </data>
   <data name="TrayHiddenMessage" xml:space="preserve">
-    <value>De gateway ontvangt nog steeds QSOHier. Dubbelklik op dit pictogram om het venster terug te brengen.</value>
+    <value>De gateway ontvangt nog steeds QSOs Hier. Dubbelklik op dit pictogram om het venster terug te brengen.</value>
     <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
     NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
   </data>
@@ -650,7 +651,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
   </data>
   <data name="TrayAllDelivered" xml:space="preserve">
-    <value>Alles QSOgeleverd</value>
+    <value>Alles QSOs geleverd</value>
     <comment>EN: All QSOs delivered
     NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
   </data>
@@ -660,7 +661,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
   </data>
   <data name="TrayNoQsoYet" xml:space="preserve">
-    <value>Nee QSOnog niet</value>
+    <value>Nee QSOs nog</value>
     <comment>EN: No QSOs yet</comment>
   </data>
   <data name="TrayOpenFailedFile" xml:space="preserve">
@@ -674,7 +675,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
   </data>
   <data name="TrayFailureMessage" xml:space="preserve">
-    <value>DXKeeper heeft niet bevestigd {0} QSODeze sessie. Ze worden voor u bewaard om met de hand te importeren.</value>
+    <value>DXKeeper heeft niet bevestigd {0} QSOs Deze sessie. Ze worden voor u bewaard om met de hand te importeren.</value>
     <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>

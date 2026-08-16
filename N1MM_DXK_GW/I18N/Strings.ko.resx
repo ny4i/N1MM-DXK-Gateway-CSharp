@@ -162,12 +162,12 @@
     NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSO배달되지 않음</value>
+    <value>QSOs 배송안내</value>
     <comment>EN: QSOs not delivered
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSO이 세션에서 s는 전달되지 않을 수 있습니다 DXKeeper. 수입 {1} 로그인 DXKeeper, 그런 다음 삭제 — 이 통지는 파일이 사라질 때.</value>
+    <value>{0} QSOs 이 세션에서 전달할 수 없습니다. DXKeeper. 수입 {1} 로그인 DXKeeper, 그런 다음 삭제 — 이 통지는 파일이 사라질 때.</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
     NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
@@ -263,12 +263,12 @@
     <comment>EN: Help</comment>
   </data>
   <data name="CheckDxkLookup" xml:space="preserve">
-    <value>이전보기 QSO₢ 킹</value>
+    <value>이전보기 QSOs</value>
     <comment>EN: Lookup previous QSOs
     NOTE: "QSO" means a radio contact and is used in English worldwide - do not translate.</comment>
   </data>
   <data name="CheckDxkLookupTip" xml:space="preserve">
-    <value>제품정보 DXKeeper 이전 표시 QSO로그인된 callsign과 함께</value>
+    <value>제품정보 DXKeeper 이전 표시 QSOs 비밀번호</value>
     <comment>EN: Direct DXKeeper to display previous QSOs with the logged callsign</comment>
   </data>
   <data name="CheckCallbook" xml:space="preserve">
@@ -325,7 +325,7 @@
     NOTE: "DDE" is a Windows protocol name - do not translate.</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
-    <value>{0} QSOs 전달되지 않음 - 오픈</value>
+    <value>{0} QSOs 전달되지 않음 — open</value>
     <comment>EN: {0} QSOs not delivered — open
     NOTE: Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
   </data>
@@ -562,7 +562,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
   </data>
   <data name="NoticeWarranty" xml:space="preserve">
-    <value>ABSOLUTELY NO WARRANTY와 함께 제공됩니다. 그것은 유용 한 희망에서 제공, 하지만 아무도 특정 목적에 적합 하지 않습니다 보장, 그리고 기여자는 잘못 간다 아무것도에 대 한 책임을. 귀하의 로그는 귀하의 책임입니다: 확인 QSOs 범위 DXKeeper·</value>
+    <value>ABSOLUTELY NO WARRANTY와 함께 제공됩니다. 그것은 유용 한 희망에서 제공, 하지만 아무도 특정 목적에 적합 하지 않습니다 보장, 그리고 기여자는 잘못 간다 아무것도에 대 한 책임을. 귀하의 로그는 귀하의 책임입니다: 확인 QSOs 제품정보 DXKeeper·</value>
     <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
     NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
@@ -624,7 +624,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
   </data>
   <data name="TrayHiddenMessage" xml:space="preserve">
-    <value>게이트웨이는 여전히 수신 QSO₢ 킹 이 아이콘을 더블클릭하여 창을 다시 가져옵니다.</value>
+    <value>게이트웨이는 여전히 수신 QSOs 이름 * 이 아이콘을 더블클릭하여 창을 다시 가져옵니다.</value>
     <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
     NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
   </data>
@@ -649,7 +649,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
   </data>
   <data name="TrayAllDelivered" xml:space="preserve">
-    <value>모든 것 QSOs 배달</value>
+    <value>모든 것 QSOs 제품정보</value>
     <comment>EN: All QSOs delivered
     NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
   </data>
@@ -659,7 +659,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
   </data>
   <data name="TrayNoQsoYet" xml:space="preserve">
-    <value>이름 * QSOs 아직</value>
+    <value>이름 * QSOs 이름 *</value>
     <comment>EN: No QSOs yet</comment>
   </data>
   <data name="TrayOpenFailedFile" xml:space="preserve">
@@ -673,7 +673,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
   </data>
   <data name="TrayFailureMessage" xml:space="preserve">
-    <value>DXKeeper 확인되지 않았습니다 {0} QSO이 세션. 그들은 손으로 가져 오기 위해 저장됩니다.</value>
+    <value>DXKeeper 확인되지 않았습니다 {0} QSOs 이 세션. 그들은 손으로 가져 오기 위해 저장됩니다.</value>
     <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>

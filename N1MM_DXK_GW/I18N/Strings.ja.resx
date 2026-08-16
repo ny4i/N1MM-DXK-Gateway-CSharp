@@ -162,12 +162,12 @@
     NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSO配達されないs</value>
+    <value>QSOs 配達無し</value>
     <comment>EN: QSOs not delivered
     NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOこのセッションからのsは配信できませんでした DXKeeper. 輸入 {1} お問い合わせ DXKeeper, それからそれを削除します。 — この通知は、ファイルがなくなったときにクリアします。</value>
+    <value>{0} QSOs このセッションでは配信できません。 DXKeeper. 輸入 {1} お問い合わせ DXKeeper, それからそれを削除します。 — この通知は、ファイルがなくなったときにクリアします。</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
     NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
@@ -263,12 +263,12 @@
     <comment>EN: Help</comment>
   </data>
   <data name="CheckDxkLookup" xml:space="preserve">
-    <value>前の検索 QSOツイート</value>
+    <value>前の検索 QSOs</value>
     <comment>EN: Lookup previous QSOs
     NOTE: "QSO" means a radio contact and is used in English worldwide - do not translate.</comment>
   </data>
   <data name="CheckDxkLookupTip" xml:space="preserve">
-    <value>ダイレクト DXKeeper 前の表示に QSOs と記録されたコールサイン</value>
+    <value>ダイレクト DXKeeper 前の表示に QSOs 記録されたコールサインを使って</value>
     <comment>EN: Direct DXKeeper to display previous QSOs with the logged callsign</comment>
   </data>
   <data name="CheckCallbook" xml:space="preserve">
@@ -325,7 +325,7 @@
     NOTE: "DDE" is a Windows protocol name - do not translate.</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
-    <value>{0} QSOs が配信されていない — オープン</value>
+    <value>{0} QSOs 配信されていない — オープン</value>
     <comment>EN: {0} QSOs not delivered — open
     NOTE: Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
   </data>
@@ -562,7 +562,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
   </data>
   <data name="NoticeWarranty" xml:space="preserve">
-    <value>ABSOLUTELY NOの保証が付属しています。 それは有用であるという願望で提供されていますが、誰もがそれが特定の目的のために合っていることを保証しません、そして反対者は間違って行く何でも責任を負いません。 ログはお客様の責任です。 QSOs リーチ DXKeeperお問い合わせ</value>
+    <value>ABSOLUTELY NOの保証が付属しています。 それは有用であるという願望で提供されていますが、誰もがそれが特定の目的のために合っていることを保証しません、そして反対者は間違って行く何でも責任を負いません。 ログはお客様の責任です。 QSOs アクセス DXKeeperお問い合わせ</value>
     <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
     NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
@@ -624,7 +624,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
   </data>
   <data name="TrayHiddenMessage" xml:space="preserve">
-    <value>ゲートウェイは、まだ受信しています QSO詳細はこちら このアイコンをダブルクリックしてウィンドウを戻します。</value>
+    <value>ゲートウェイは、まだ受信しています QSOs 詳しくはこちら このアイコンをダブルクリックしてウィンドウを戻します。</value>
     <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
     NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
   </data>
@@ -649,7 +649,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
   </data>
   <data name="TrayAllDelivered" xml:space="preserve">
-    <value>すべて QSO配達されるs</value>
+    <value>すべて QSOs 納入実績</value>
     <comment>EN: All QSOs delivered
     NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
   </data>
@@ -659,7 +659,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
   </data>
   <data name="TrayNoQsoYet" xml:space="preserve">
-    <value>なし QSOsはまだ</value>
+    <value>なし QSOs お問い合わせ</value>
     <comment>EN: No QSOs yet</comment>
   </data>
   <data name="TrayOpenFailedFile" xml:space="preserve">
@@ -673,7 +673,7 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
   </data>
   <data name="TrayFailureMessage" xml:space="preserve">
-    <value>DXKeeper 未確認 {0} QSOこのセッション。 手でインポートするために保存されます。</value>
+    <value>DXKeeper 未確認 {0} QSOs このセッション。 手でインポートするために保存されます。</value>
     <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>
