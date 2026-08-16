@@ -56,6 +56,10 @@
               BorderThickness="0,1,0,0">
          <Grid>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+               <ui:Button x:Name="ReadmeButton"
+                          Content="{x:Static local:Strings.ReadmeButton}"
+                          Icon="{ui:SymbolIcon BookOpen24}"
+                          Click="Readme_Click" Margin="0,0,8,0" />
                <ui:Button Content="{x:Static local:Strings.NoticeViewLicence}"
                           Icon="{ui:SymbolIcon DocumentText24}"
                           Click="ViewLicence_Click" Margin="0,0,8,0" />

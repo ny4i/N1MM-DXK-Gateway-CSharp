@@ -47,6 +47,12 @@
               BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
               BorderThickness="0,1,0,0">
          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <!-- The read-me is offered here as well as in About because this
+                 is the one moment we know the operator is new to the program
+                 and has not yet been told anything. -->
+            <ui:Button Content="{x:Static local:Strings.ReadmeButton}"
+                       Icon="{ui:SymbolIcon BookOpen24}"
+                       Click="Readme_Click" Margin="0,0,10,0" />
             <ui:Button Content="{x:Static local:Strings.NoticeViewLicence}"
                        Icon="{ui:SymbolIcon DocumentText24}"
                        Click="ViewLicence_Click" Margin="0,0,10,0" />

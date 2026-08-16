@@ -629,6 +629,24 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: A rewrite of the original VB6 gateway. The DXLab Suite message formats are the work of AA6YQ.
     NOTE: "VB6", "DXLab Suite" and the callsign AA6YQ stay in English.</comment>
   </data>
+  <data name="ReadmeButton" xml:space="preserve">
+    <value>Läs mig</value>
+    <comment>EN: Read me
+    NOTE: Button that opens README.txt. Short - it sits beside other buttons.</comment>
+  </data>
+  <data name="DlgReadmeMissing" xml:space="preserve">
+    <value>Läs-me-filen är inte där den ska vara:
+
+{0}
+
+Allt i det är också på webben på https://ny4i.com/n1mm-dxkeeper-gateway/</value>
+    <comment>EN: The read-me file is not where it should be:
+
+{0}
+
+Everything in it is also on the web at https://ny4i.com/n1mm-dxkeeper-gateway/
+    NOTE: Shown when README.txt is missing beside the program - a broken install. {0} is a file path. Do not translate the path or the address.</comment>
+  </data>
   <data name="AboutClose" xml:space="preserve">
     <value>Nära</value>
     <comment>EN: Close</comment>

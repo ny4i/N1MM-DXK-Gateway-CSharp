@@ -118,8 +118,16 @@ PLACEHOLDER = re.compile(r"\{\d+\}")
 SENTINEL = re.compile(r'<x\s+id="(\d+)"\s*/?>(?:</x>)?')
 
 
-def mask(text):
-    """Replace placeholders and protected terms with empty HTML elements."""
+def mask(text, extra_patterns=(), extra_terms=()):
+    """Replace placeholders and protected terms with empty HTML elements.
+
+    extra_patterns and extra_terms let a caller protect more without inventing
+    its own marker. translate_readme.py needs URLs, file paths and port numbers
+    protected, and its first attempt used private-use control characters for
+    the job — which the engine stripped, leaving bare digits scattered through
+    the German text. There is one masking mechanism here for a reason: an HTML
+    element survives translation and nothing else reliably does.
+    """
     originals = []
     marker = "\x00%d\x00"
 
@@ -128,7 +136,9 @@ def mask(text):
         return marker % (len(originals) - 1)
 
     text = PLACEHOLDER.sub(take, text)
-    for term in PROTECTED_TERMS:
+    for pattern in extra_patterns:
+        text = pattern.sub(take, text)
+    for term in list(extra_terms) + PROTECTED_TERMS:
         while term in text:
             originals.append(term)
             text = text.replace(term, marker % (len(originals) - 1), 1)

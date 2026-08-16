@@ -60,7 +60,12 @@
        7-Zip and Adobe Acrobat, rather than showing the licence. An operator
        asked to read the terms should get Notepad, not a chooser. -->
   <ItemGroup>
+    <!-- The English and every translation of it. ReadmeFile picks the one for
+         the running language, and falls back to English when a translation was
+         made from an older English README. -->
     <Content Include="..\README.txt" Link="README.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\README.*.txt" Link="%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\COPYING" Link="COPYING.txt" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\NOTICE.md" Link="NOTICE.txt" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\third-party-licenses\**"

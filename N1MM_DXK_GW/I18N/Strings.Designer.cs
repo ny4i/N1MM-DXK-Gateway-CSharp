@@ -548,6 +548,19 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The read-me file is not where it should be:
+        ///
+        ///{0}
+        ///
+        ///Everything in it is also on the web at https://ny4i.com/n1mm-dxkeeper-gateway/.
+        /// </summary>
+        public static string DlgReadmeMissing {
+            get {
+                return ResourceManager.GetString("DlgReadmeMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The UDP listening port must be a whole number between 1 and 65535..
         /// </summary>
         public static string DlgUdpPortInvalid {
@@ -960,6 +973,15 @@ namespace N1MM_DXK_GW {
         public static string NoticeWhereToFind {
             get {
                 return ResourceManager.GetString("NoticeWhereToFind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Read me.
+        /// </summary>
+        public static string ReadmeButton {
+            get {
+                return ResourceManager.GetString("ReadmeButton", resourceCulture);
             }
         }
         

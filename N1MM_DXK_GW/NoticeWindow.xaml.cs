@@ -115,6 +115,8 @@ public partial class NoticeWindow : FluentWindow
 
    private void ViewLicence_Click(object sender, RoutedEventArgs e) => ShowLicence(this);
 
+   private void Readme_Click(object sender, RoutedEventArgs e) => ReadmeFile.Show(this);
+
    private void Understood_Click(object sender, RoutedEventArgs e)
    {
       DialogResult = true;

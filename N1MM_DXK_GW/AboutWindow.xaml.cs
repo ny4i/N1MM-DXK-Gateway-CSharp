@@ -170,6 +170,8 @@ public partial class AboutWindow : FluentWindow
    private void ViewLicence_Click(object sender, RoutedEventArgs e) =>
       NoticeWindow.ShowLicence(this);
 
+   private void Readme_Click(object sender, RoutedEventArgs e) => ReadmeFile.Show(this);
+
    /// <summary>
    /// Puts the build and environment on the clipboard, in English.
    ///
