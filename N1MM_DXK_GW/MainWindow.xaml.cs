@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Net;
+using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -314,7 +315,51 @@ public partial class MainWindow : FluentWindow
       // visible would change; saying "restart" is honest, and rebuilding the
       // visual tree to fake it would be a lot of machinery for a setting
       // touched once.
-      AppendLog(L(Strings.LanguageRestartNote, choice.Display), LogEntry.Level.Warning);
+      //
+      // It has to be a dialog rather than only a log line. Choosing a language
+      // is a deliberate act that produces no visible change whatsoever, and an
+      // operator who sees nothing happen reasonably concludes the setting is
+      // broken. The log line stays as the record of the change.
+      var message = L(RestartNoticeIn(choice.Culture), choice.Display);
+      AppendLog(message, LogEntry.Level.Warning);
+      MessageBox.Show(this, message, Strings.AppTitle,
+         MessageBoxButton.OK, MessageBoxImage.Information);
+   }
+
+   /// <summary>
+   /// The restart notice, resolved in the language the operator just picked
+   /// rather than the one still on screen.
+   ///
+   /// That is deliberate: it is the first and only text they see in the new
+   /// language, so it doubles as proof the translation actually loaded — which
+   /// matters here, because a missing satellite fails silently by falling back
+   /// to English rather than by raising anything. Reading it back in the wrong
+   /// language would hide exactly that.
+   ///
+   /// Falls back to the neutral string if the culture has no satellite, which
+   /// is also what the operator will get after the restart.
+   /// </summary>
+   private static string RestartNoticeIn(string cultureName)
+   {
+      try
+      {
+         // Blank means "follow Windows", so preview the Windows display
+         // language — that is what will be in force on the next start.
+         var culture = string.IsNullOrEmpty(cultureName)
+            ? CultureInfo.InstalledUICulture
+            : CultureInfo.GetCultureInfo(cultureName);
+
+         return Strings.ResourceManager.GetString(nameof(Strings.LanguageRestartNote), culture)
+                ?? Strings.LanguageRestartNote;
+      }
+      catch (CultureNotFoundException)
+      {
+         return Strings.LanguageRestartNote;
+      }
+      catch (MissingManifestResourceException)
+      {
+         return Strings.LanguageRestartNote;
+      }
    }
 
    private void RefreshDxKeeperPortDisplay()

@@ -114,31 +114,39 @@
 
   <data name="AppTitle" xml:space="preserve">
     <value>N1MM-DXKeeper Gateway</value>
-    <comment>EN: N1MM-DXKeeper Gateway</comment>
+    <comment>EN: N1MM-DXKeeper Gateway
+    NOTE: Window title. "N1MM" and "DXKeeper" are product names - do not translate.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
   </data>
   <data name="SettingsHeader" xml:space="preserve">
     <value>Configurações</value>
-    <comment>EN: Settings</comment>
+    <comment>EN: Settings
+    NOTE: Heading of the settings section.</comment>
   </data>
   <data name="NetworkHeader" xml:space="preserve">
     <value>Rede</value>
-    <comment>EN: Network</comment>
+    <comment>EN: Network
+    NOTE: Heading of the card holding ports and the multicast group.</comment>
   </data>
   <data name="ServicesHeader" xml:space="preserve">
     <value>Serviços</value>
-    <comment>EN: Services</comment>
+    <comment>EN: Services
+    NOTE: Heading of the card holding what DXKeeper should do with each logged QSO.</comment>
   </data>
   <data name="DiagnosticsHeader" xml:space="preserve">
     <value>Diagnósticos</value>
-    <comment>EN: Diagnostics</comment>
+    <comment>EN: Diagnostics
+    NOTE: Heading of the card holding logging options.</comment>
   </data>
   <data name="LogCopy" xml:space="preserve">
     <value>Copiar</value>
-    <comment>EN: Copy</comment>
+    <comment>EN: Copy
+    NOTE: Button copying the visible operation log to the clipboard.</comment>
   </data>
   <data name="LogClear" xml:space="preserve">
     <value>Limpar</value>
-    <comment>EN: Clear</comment>
+    <comment>EN: Clear
+    NOTE: Button clearing the on-screen operation log. Does not affect ErrorLog.txt.</comment>
   </data>
   <data name="LogCopyTip" xml:space="preserve">
     <value>Copiar o registo da operação para a área de transferência</value>
@@ -150,19 +158,23 @@
   </data>
   <data name="LogCopied" xml:space="preserve">
     <value>Registro de operação copiado para a área de transferência ({0} linhas).</value>
-    <comment>EN: Operation log copied to the clipboard ({0} lines).</comment>
+    <comment>EN: Operation log copied to the clipboard ({0} lines).
+    NOTE: {0} is a line count.</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
     <value>QSOnão entregue</value>
-    <comment>EN: QSOs not delivered</comment>
+    <comment>EN: QSOs not delivered
+    NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
     <value>{0} QSOs desta sessão não pôde ser entregue DXKeeperImportar {1} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
-    <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.</comment>
+    <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
+    NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
   <data name="FailedQsoBarMessageOne" xml:space="preserve">
     <value>1 QSO desta sessão não foi possível entregar DXKeeperImportar {0} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
-    <comment>EN: 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.</comment>
+    <comment>EN: 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.
+    NOTE: Singular form. {0} is a filename. Do not translate the filename.</comment>
   </data>
   <data name="OpenFileButton" xml:space="preserve">
     <value>Abrir arquivo</value>
@@ -174,43 +186,54 @@
   </data>
   <data name="UdpPortLabel" xml:space="preserve">
     <value>UDP porto de escuta:</value>
-    <comment>EN: UDP listening port:</comment>
+    <comment>EN: UDP listening port:
+    NOTE: Label for the port N1MM broadcasts QSO data to. "UDP" is a protocol name - do not translate.</comment>
   </data>
   <data name="UdpPortTip" xml:space="preserve">
     <value>UDP porto que N1MM Logger+ emissões QSO XML a (padrão 12060)</value>
-    <comment>EN: UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)</comment>
+    <comment>EN: UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)
+    NOTE: Tooltip. Keep "N1MM Logger+", "UDP", "QSO" and "XML" in English.</comment>
   </data>
   <data name="MulticastLabel" xml:space="preserve">
     <value>Grupo multicast (opcional):</value>
-    <comment>EN: Multicast group (optional):</comment>
+    <comment>EN: Multicast group (optional):
+    NOTE: Label for an optional IPv4 multicast group address.</comment>
   </data>
   <data name="MulticastPlaceholder" xml:space="preserve">
     <value>em branco = sem multicast</value>
-    <comment>EN: blank = no multicast</comment>
+    <comment>EN: blank = no multicast
+    NOTE: Placeholder shown inside the empty multicast text box.</comment>
   </data>
   <data name="MulticastTip" xml:space="preserve">
     <value>Opcional. Deixe em branco, a menos que o programa de envio esteja configurado para enviar para um grupo multicast (224.0.0 - 239.255.255.255). Unicast e transmissão são recebidos de qualquer forma. O grupo é unido na interface que a tabela de roteamento seleciona.</value>
-    <comment>EN: Optional. Leave blank unless the sending program is configured to send to a multicast group (224.0.0.0 - 239.255.255.255). Unicast and broadcast are received either way. The group is joined on the interface the routing table selects.</comment>
+    <comment>EN: Optional. Leave blank unless the sending program is configured to send to a multicast group (224.0.0.0 - 239.255.255.255). Unicast and broadcast are received either way. The group is joined on the interface the routing table selects.
+    NOTE: Tooltip. Do not translate the address range.</comment>
   </data>
   <data name="DxKeeperPortLabel" xml:space="preserve">
     <value>DXKeeper TCP porto base:</value>
-    <comment>EN: DXKeeper TCP base port:</comment>
+    <comment>EN: DXKeeper TCP base port:
+    NOTE: Label. "DXKeeper" and "TCP" - do not translate.</comment>
   </data>
   <data name="DxKeeperPortTip" xml:space="preserve">
     <value>Só para ler aqui. Defina-o. DXKeeper: {0}. O gateway envia para a Porta Base + 1, que é a porta DXKeeper mostra o rumo do painel.</value>
-    <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.</comment>
+    <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.
+    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.</comment>
   </data>
   <data name="DxKeeperConfigPath" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service &gt; Base Port</value>
-    <comment>EN: Config &gt; Defaults tab &gt; Network Service &gt; Base Port</comment>
+    <comment>EN: Config &gt; Defaults tab &gt; Network Service &gt; Base Port
+    NOTE: DO NOT TRANSLATE. A literal menu path inside DXKeeper, whose interface is English-only. Translating it would describe a menu that does not exist.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
   </data>
   <data name="DxKeeperPortReading" xml:space="preserve">
     <value>(leitura do registo...)</value>
-    <comment>EN: (reading from registry…)</comment>
+    <comment>EN: (reading from registry…)
+    NOTE: Placeholder shown until DXKeeper's configured port has been read.</comment>
   </data>
   <data name="StatusHeader" xml:space="preserve">
     <value>Estado da Ligação</value>
-    <comment>EN: Connection Status</comment>
+    <comment>EN: Connection Status
+    NOTE: Heading of the section showing whether each DXLab program is reachable.</comment>
   </data>
   <data name="Connected" xml:space="preserve">
     <value>ligado</value>
@@ -222,15 +245,18 @@
   </data>
   <data name="LogHeader" xml:space="preserve">
     <value>Registo da Operação</value>
-    <comment>EN: Operation Log</comment>
+    <comment>EN: Operation Log
+    NOTE: Heading of the running list of what the gateway has done.</comment>
   </data>
   <data name="SeeErrorLog" xml:space="preserve">
     <value>ver ErrorLog</value>
-    <comment>EN: see ErrorLog</comment>
+    <comment>EN: see ErrorLog
+    NOTE: Link shown when something has been written to the error log. "ErrorLog" is the filename ErrorLog.txt - do not translate.</comment>
   </data>
   <data name="DisplayErrorLog" xml:space="preserve">
     <value>Mostrar Registo de Erros</value>
-    <comment>EN: Display Error Log</comment>
+    <comment>EN: Display Error Log
+    NOTE: Button that opens ErrorLog.txt.</comment>
   </data>
   <data name="Help" xml:space="preserve">
     <value>Ajuda</value>
@@ -238,7 +264,8 @@
   </data>
   <data name="CheckDxkLookup" xml:space="preserve">
     <value>Procurar anteriormente QSOs</value>
-    <comment>EN: Lookup previous QSOs</comment>
+    <comment>EN: Lookup previous QSOs
+    NOTE: "QSO" means a radio contact and is used in English worldwide - do not translate.</comment>
   </data>
   <data name="CheckDxkLookupTip" xml:space="preserve">
     <value>Directo DXKeeper para mostrar o anterior QSOs com o sinal de chamada registado</value>
@@ -246,7 +273,8 @@
   </data>
   <data name="CheckCallbook" xml:space="preserve">
     <value>Consultar livro de chamadas</value>
-    <comment>EN: Query Callbook</comment>
+    <comment>EN: Query Callbook
+    NOTE: A callbook is a database of licensed operators.</comment>
   </data>
   <data name="CheckCallbookTip" xml:space="preserve">
     <value>Directo DXKeeper para consultar seu callbook selecionado</value>
@@ -254,7 +282,8 @@
   </data>
   <data name="CheckEqsl" xml:space="preserve">
     <value>Enviar para eQSL.cc</value>
-    <comment>EN: Upload to eQSL.cc</comment>
+    <comment>EN: Upload to eQSL.cc
+    NOTE: "eQSL.cc" is a website name - do not translate.</comment>
   </data>
   <data name="CheckEqslTip" xml:space="preserve">
     <value>Directo DXKeeper para enviar registrado QSO para eQSL.cc</value>
@@ -262,7 +291,8 @@
   </data>
   <data name="CheckLotw" xml:space="preserve">
     <value>Enviar para LoTW</value>
-    <comment>EN: Upload to LoTW</comment>
+    <comment>EN: Upload to LoTW
+    NOTE: "LoTW" is the ARRL's Logbook of the World - do not translate.</comment>
   </data>
   <data name="CheckLotwTip" xml:space="preserve">
     <value>Directo DXKeeper para enviar registrado QSO para LoTW</value>
@@ -270,7 +300,8 @@
   </data>
   <data name="CheckClubLog" xml:space="preserve">
     <value>Enviar para Club Log</value>
-    <comment>EN: Upload to Club Log</comment>
+    <comment>EN: Upload to Club Log
+    NOTE: "Club Log" is a website name - do not translate.</comment>
   </data>
   <data name="CheckClubLogTip" xml:space="preserve">
     <value>Directo DXKeeper para enviar registrado QSO para Club Log</value>
@@ -290,31 +321,38 @@
   </data>
   <data name="CheckVerboseLoggingTip" xml:space="preserve">
     <value>Mostrar eventos de status de baixa prioridade no registro de operação (por exemplo: DDE ligar/desligar)</value>
-    <comment>EN: Show low-priority status events in the operation log (e.g. DDE connect/disconnect)</comment>
+    <comment>EN: Show low-priority status events in the operation log (e.g. DDE connect/disconnect)
+    NOTE: "DDE" is a Windows protocol name - do not translate.</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
     <value>{0} QSOnão entregue — aberto</value>
-    <comment>EN: {0} QSOs not delivered — open</comment>
+    <comment>EN: {0} QSOs not delivered — open
+    NOTE: Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
   </data>
   <data name="FailedQsoCountOne" xml:space="preserve">
     <value>1 QSO não entregue — aberto</value>
-    <comment>EN: 1 QSO not delivered — open</comment>
+    <comment>EN: 1 QSO not delivered — open
+    NOTE: Singular form of FailedQsoCount. Languages with more plural forms may need extra keys.</comment>
   </data>
   <data name="FailedQsoOpenFile" xml:space="preserve">
     <value>arquivo</value>
-    <comment>EN: file</comment>
+    <comment>EN: file
+    NOTE: Link that opens the failed-QSO ADIF file.</comment>
   </data>
   <data name="FailedQsoOpenFolder" xml:space="preserve">
     <value>pasta</value>
-    <comment>EN: folder</comment>
+    <comment>EN: folder
+    NOTE: Link that shows the failed-QSO file in Explorer.</comment>
   </data>
   <data name="FailedQsoTip" xml:space="preserve">
     <value>Importar {0} em DXKeeper, então apague-o. Esta contagem limpa quando o ficheiro desaparecer.</value>
-    <comment>EN: Import {0} into DXKeeper, then delete it. This count clears when the file is gone.</comment>
+    <comment>EN: Import {0} into DXKeeper, then delete it. This count clears when the file is gone.
+    NOTE: Tooltip. {0} is the full path of the ADIF file - do not translate it.</comment>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
     <value>Língua:</value>
-    <comment>EN: Language:</comment>
+    <comment>EN: Language:
+    NOTE: Label for the user-interface language selector.</comment>
   </data>
   <data name="LanguageTip" xml:space="preserve">
     <value>A linguagem desta janela. "Siga o Windows" usa o idioma de exibição do Windows. Uma mudança produz efeito na próxima vez que o gateway começar.</value>
@@ -322,15 +360,18 @@
   </data>
   <data name="LanguageFollowWindows" xml:space="preserve">
     <value>Seguir as janelas</value>
-    <comment>EN: Follow Windows</comment>
+    <comment>EN: Follow Windows
+    NOTE: First entry of the language list, meaning "use the Windows display language".</comment>
   </data>
   <data name="LanguageRestartNote" xml:space="preserve">
-    <value>Língua definida como {0}. Reinicie o gateway para aplicá-lo.</value>
-    <comment>EN: Language set to {0}. Restart the gateway to apply it.</comment>
+    <value>Reiniciar o gateway para mudar a interface {0}.</value>
+    <comment>EN: Restart the gateway to switch the interface to {0}.
+    NOTE: Shown as a dialog and logged when the language is changed. {0} is a language name, already written in its own language - do not translate it. Deliberately one sentence ending in the placeholder: as "Language set to {0}. Restart the gateway to apply it." the machine pass dropped the ". " that followed the placeholder, producing "espanolReinicie" and "cestinaObnovit" - two sentences run together. Keep the placeholder at the end.</comment>
   </data>
   <data name="DlgAlreadyRunning" xml:space="preserve">
     <value>N1MM-DXKeeper Gateway Já está a correr.</value>
-    <comment>EN: N1MM-DXKeeper Gateway is already running.</comment>
+    <comment>EN: N1MM-DXKeeper Gateway is already running.
+    NOTE: Shown when a second copy is launched. The product name stays in English.</comment>
   </data>
   <data name="DlgUdpPortInvalid" xml:space="preserve">
     <value>A UDP A porta de escuta deve ser um número inteiro entre 1 e 65535.</value>
@@ -342,7 +383,8 @@
 Deixe isto em branco, a menos que o programa de envio esteja configurado para enviar para um grupo multicast.</value>
     <comment>EN: {0}.
 
-Leave this blank unless the sending program is configured to send to a multicast group.</comment>
+Leave this blank unless the sending program is configured to send to a multicast group.
+    NOTE: {0} is ErrNotAnIpAddress or ErrNotMulticast. Keep the blank line.</comment>
   </data>
   <data name="DlgNoFailedQsos" xml:space="preserve">
     <value>Cada QSO esta sessão foi entregue a DXKeeper.
@@ -350,7 +392,8 @@ Leave this blank unless the sending program is configured to send to a multicast
 {0} não existe.</value>
     <comment>EN: Every QSO this session was delivered to DXKeeper.
 
-{0} does not exist.</comment>
+{0} does not exist.
+    NOTE: {0} is a full file path - do not translate it.</comment>
   </data>
   <data name="DlgCouldNotOpenFile" xml:space="preserve">
     <value>Não foi possível abrir {0}:
@@ -362,7 +405,8 @@ Usar o link da pasta e importar o arquivo para DXKeeper De lá.</value>
 
 {1}
 
-Use the folder link and import the file into DXKeeper from there.</comment>
+Use the folder link and import the file into DXKeeper from there.
+    NOTE: {0} is a filename, {1} is an operating-system error message. Do not translate either.</comment>
   </data>
   <data name="DlgCouldNotOpenFolder" xml:space="preserve">
     <value>Não foi possível abrir a pasta:
@@ -370,7 +414,8 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</value>
     <comment>EN: Could not open the folder:
 
-{0}</comment>
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
   </data>
   <data name="DlgNoErrorLog" xml:space="preserve">
     <value>Ainda nada foi escrito no registo de erros:
@@ -378,7 +423,8 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</value>
     <comment>EN: Nothing has been written to the error log yet:
 
-{0}</comment>
+{0}
+    NOTE: {0} is the full path of ErrorLog.txt - do not translate it.</comment>
   </data>
   <data name="DlgCouldNotOpenErrorLog" xml:space="preserve">
     <value>Não foi possível abrir ErrorLog.txt:
@@ -386,7 +432,8 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</value>
     <comment>EN: Could not open ErrorLog.txt:
 
-{0}</comment>
+{0}
+    NOTE: "ErrorLog.txt" is a filename - do not translate it. {0} is an operating-system error message.</comment>
   </data>
   <data name="DlgCouldNotOpenHelp" xml:space="preserve">
     <value>Não foi possível abrir a página de ajuda:
@@ -394,23 +441,28 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</value>
     <comment>EN: Could not open the help page:
 
-{0}</comment>
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
   </data>
   <data name="ErrNotAnIpAddress" xml:space="preserve">
     <value>"{0}" não é um endereço IP válido</value>
-    <comment>EN: "{0}" is not a valid IP address</comment>
+    <comment>EN: "{0}" is not a valid IP address
+    NOTE: {0} is what the operator typed. Used inside DlgMulticastInvalid and AlertMulticastRejected, so it is a fragment, not a sentence - no full stop.</comment>
   </data>
   <data name="ErrNotMulticast" xml:space="preserve">
     <value>"{0}"não é um IPv4 Endereço multicast (224.0.0.0 - 239.255.255.255)</value>
-    <comment>EN: "{0}" is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)</comment>
+    <comment>EN: "{0}" is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)
+    NOTE: Fragment, no full stop. Do not translate the address range or "IPv4".</comment>
   </data>
   <data name="MsgBindFailed" xml:space="preserve">
     <value>Não foi possível ouvir UDP porto {0}: {1}</value>
-    <comment>EN: Could not listen on UDP port {0}: {1}</comment>
+    <comment>EN: Could not listen on UDP port {0}: {1}
+    NOTE: Used both as a dialog and as a log line. {0} is a port number, {1} is an operating-system error message.</comment>
   </data>
   <data name="AlertMulticastRejected" xml:space="preserve">
     <value>{0} - A começar SEM multicast.</value>
-    <comment>EN: {0} - starting WITHOUT multicast.</comment>
+    <comment>EN: {0} - starting WITHOUT multicast.
+    NOTE: {0} is ErrNotAnIpAddress or ErrNotMulticast. The emphasis on "without" matters: the gateway looks healthy but would receive nothing from that group.</comment>
   </data>
   <data name="AlertUdpPortReverted" xml:space="preserve">
     <value>Revertido para UDP porto {0}.</value>
@@ -418,59 +470,74 @@ Use the folder link and import the file into DXKeeper from there.</comment>
   </data>
   <data name="AlertMulticastReverted" xml:space="preserve">
     <value>Reverteu o grupo multicast para "{0}".</value>
-    <comment>EN: Reverted the multicast group to "{0}".</comment>
+    <comment>EN: Reverted the multicast group to "{0}".
+    NOTE: {0} may be empty, meaning no multicast.</comment>
   </data>
   <data name="AlertReplaceNoKey" xml:space="preserve">
     <value>contactreplace em vez de {0}: não utilizável &lt;oldcall&gt;/&lt;oldtimestamp&gt; - A edição NÃO foi aplicada DXKeeper</value>
-    <comment>EN: contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper</comment>
+    <comment>EN: contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper
+    NOTE: "contactreplace", "&lt;oldcall&gt;" and "&lt;oldtimestamp&gt;" are wire-format names - do not translate them. {0} is a callsign.</comment>
   </data>
   <data name="AlertDeleteNoKey" xml:space="preserve">
     <value>contactdelete em vez de {0}: chamada em falta ou horário - nada foi enviado para DXKeeper</value>
-    <comment>EN: contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper</comment>
+    <comment>EN: contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper
+    NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
     <value>ERRO INTERNO que manipula uma mensagem ({0}: {1}) - ver ErrorLog.txtO portal ainda está a funcionar.</value>
-    <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.</comment>
+    <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
-    <comment>EN: INVALID: {0}</comment>
+    <comment>EN: INVALID: {0}
+    NOTE: {0} describes what was wrong with a received datagram and stays in English - it is wire diagnostics that also goes to ErrorLog.txt.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
     <value>*** {0}: DXKeeper DELECTOU o original mas não registrou a edição{1} - o editado QSO está em {2}, importa-o. Razão: {3}</value>
-    <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}</comment>
+    <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper DELECTADO o original, a edição não foi registrada{1}, E a edição não pôde ser salva em {2}. Razão: {3}</value>
-    <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}</comment>
+    <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}
+    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.</comment>
   </data>
   <data name="AlertNotConfirmed" xml:space="preserve">
     <value>DXKeeper não confirmou {0}{1}{2}: {3}</value>
-    <comment>EN: DXKeeper did not confirm {0}{1}{2}: {3}</comment>
+    <comment>EN: DXKeeper did not confirm {0}{1}{2}: {3}
+    NOTE: {0} a short description of the QSO, {1} an optional " (TCP 52001)" tag, {2} AlertSavedTo or AlertNotSavedTo or empty, {3} a reason from the Fail* strings.</comment>
   </data>
   <data name="AlertSavedTo" xml:space="preserve">
     <value> - salvo para {0}</value>
-    <comment>EN:  - saved to {0}</comment>
+    <comment>EN:  - saved to {0}
+    NOTE: Fragment appended inside AlertNotConfirmed. Keep the leading space. {0} is a filename.</comment>
   </data>
   <data name="AlertNotSavedTo" xml:space="preserve">
     <value> - E não podia ser salvo para {0}</value>
-    <comment>EN:  - AND it could not be saved to {0}</comment>
+    <comment>EN:  - AND it could not be saved to {0}
+    NOTE: Fragment appended inside AlertNotConfirmed. Keep the leading space. {0} is a filename.</comment>
   </data>
   <data name="FailBusy" xml:space="preserve">
     <value>outro envio ainda não tinha terminado</value>
-    <comment>EN: another send had not finished yet</comment>
+    <comment>EN: another send had not finished yet
+    NOTE: Deliberately plain. This read "another send was already in flight" and machine-translated into German as a literal statement about aviation - see the note on idioms at the top of this file.</comment>
   </data>
   <data name="FailConnectTimeout" xml:space="preserve">
     <value>a ligação a DXKeeper cronometrado após {0} segundos</value>
-    <comment>EN: the connection to DXKeeper timed out after {0} seconds</comment>
+    <comment>EN: the connection to DXKeeper timed out after {0} seconds
+    NOTE: {0} is a number of seconds.</comment>
   </data>
   <data name="FailConnectRefused" xml:space="preserve">
     <value>não é possível conectar DXKeeper ligado TCP porto {0}; em DXKeeper, verifica isso. {1} Relatórios "Listening"</value>
-    <comment>EN: cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"</comment>
+    <comment>EN: cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"
+    NOTE: {0} is a port number. {1} is DxKeeperConfigNetworkService, an English menu path inside DXKeeper - it must stay untranslated because DXKeeper's own interface is English-only.</comment>
   </data>
   <data name="FailNoPeerClose" xml:space="preserve">
     <value>DXKeeper nunca fechou a conexão dentro {0} segundos, então o QSO pode nunca ter sido aceite</value>
-    <comment>EN: DXKeeper never closed the connection within {0} seconds, so the QSO may never have been accepted</comment>
+    <comment>EN: DXKeeper never closed the connection within {0} seconds, so the QSO may never have been accepted
+    NOTE: {0} is a number of seconds. DXKeeper acknowledges only by closing the connection, so no close means the QSO cannot be claimed as delivered.</comment>
   </data>
   <data name="FailShuttingDown" xml:space="preserve">
     <value>O portal estava a fechar e isto nunca foi enviado.</value>
@@ -478,10 +545,13 @@ Use the folder link and import the file into DXKeeper from there.</comment>
   </data>
   <data name="FailSendFailed" xml:space="preserve">
     <value>o envio falhou</value>
-    <comment>EN: the send failed</comment>
+    <comment>EN: the send failed
+    NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service</value>
-    <comment>EN: Config &gt; Defaults tab &gt; Network Service</comment>
+    <comment>EN: Config &gt; Defaults tab &gt; Network Service
+    NOTE: DO NOT TRANSLATE. A literal menu path inside DXKeeper, whose interface is English-only.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
   </data>
 </root>

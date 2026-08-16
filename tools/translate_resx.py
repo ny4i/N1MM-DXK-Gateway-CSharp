@@ -2,7 +2,26 @@
 """
 Translate Strings.resx into a satellite Strings.<culture>.resx via LibreTranslate.
 
-    python tools/translate_resx.py de ja uk
+    python tools/translate_resx.py de ja uk        # add what is new or changed
+    python tools/translate_resx.py de --force      # retranslate everything
+
+INCREMENTAL BY DEFAULT, AND THAT IS THE POINT.
+
+These are machine translations that humans correct afterwards. A tool that
+retranslated everything on every run would throw that work away the first time
+a single string was added, so by default an entry is left exactly as it is when
+the satellite already holds a translation made from the same English text.
+
+Only two things cost a request: a key the satellite does not have, and a key
+whose English source has changed since it was translated - where the existing
+translation is now describing something else and has to be redone.
+
+The English source each entry was translated from is stored in that entry's
+<comment>, so the comparison needs no separate state file and survives anyone
+hand-editing the .resx in Poedit. Keys dropped from Strings.resx disappear on
+the next run.
+
+Use --force only when you mean to discard human corrections.
 
 The translating part is trivial. The part that matters is everything around it:
 a machine-translation pass will happily rewrite "{0}" into "{ 0 }", translate
@@ -53,6 +72,11 @@ PROTECTED_TERMS = sorted(
         "<oldcall>", "<oldtimestamp>", "oldcall", "oldtimestamp",
         # The word DXKeeper's own English UI displays, quoted in our text.
         "Listening",
+        # The marker on the two most serious messages the gateway emits. Six of
+        # thirteen languages translated it as a word - Japanese turned it into
+        # "メニュー" (menu) - which silently removed the one visual cue that says
+        # "DXKeeper no longer holds this QSO at all".
+        "***",
         "QSO", "ADIF", "RST", "UDP", "TCP", "DDE", "XML", "IPv4",
         # The DXKeeper menu paths are whole entries in DO_NOT_TRANSLATE_KEYS
         # and reach sentences only through a {0}, so they need no term masking.
@@ -143,7 +167,34 @@ def placeholders(text):
     return sorted(PLACEHOLDER.findall(text))
 
 
-def main(targets):
+# Pulls the English source back out of a satellite entry's comment. That
+# snapshot is what lets the tool tell "already translated" from "the English
+# changed underneath it" without keeping a separate state file.
+STORED_EN = re.compile(r"^EN: (.*?)(?:\n    NOTE: |\n    NOT TRANSLATED: |$)",
+                       re.DOTALL)
+
+
+def load_existing(path):
+    """Read a satellite as {name: (value, english_it_was_translated_from)}."""
+    if not path.exists():
+        return {}
+    out = {}
+    for data in ET.parse(path).getroot().findall("data"):
+        name = data.get("name")
+        value = data.find("value")
+        note = data.find("comment")
+        if name is None or value is None:
+            continue
+        stored = None
+        if note is not None and note.text:
+            m = STORED_EN.match(note.text)
+            if m:
+                stored = m.group(1)
+        out[name] = (value.text or "", stored)
+    return out
+
+
+def main(targets, force=False):
     tree = ET.parse(RESX)
     root = tree.getroot()
 
@@ -153,18 +204,35 @@ def main(targets):
         value = data.find("value")
         if name is None or value is None or value.text is None:
             continue
-        entries.append((name, value.text))
+        note = data.find("comment")
+        entries.append((name, value.text, note.text if note is not None else None))
 
     print(f"{len(entries)} strings in Strings.resx")
 
     for target in targets:
         out = RESX.parent / f"Strings.{target}.resx"
+        existing = {} if force else load_existing(out)
         translated = {}
         problems = []
+        kept = 0
+        sent = 0
 
-        for i, (name, english) in enumerate(entries, 1):
+        for i, (name, english, _note) in enumerate(entries, 1):
             if name in DO_NOT_TRANSLATE_KEYS:
                 translated[name] = english
+                kept += 1
+                continue
+
+            # Already translated FROM THIS EXACT ENGLISH - leave it alone.
+            # This is what makes the tool safe to re-run once a human has
+            # corrected the machine output: their work is never overwritten,
+            # and only genuinely new or genuinely changed strings cost a
+            # request. A changed English source falls through and is
+            # retranslated, because the old translation is now wrong.
+            prior, stored_en = existing.get(name, (None, None))
+            if prior is not None and stored_en == english:
+                translated[name] = prior
+                kept += 1
                 continue
 
             masked, originals = mask(english)
@@ -175,8 +243,10 @@ def main(targets):
             bare = re.sub(r"<br\s*/?>", "", SENTINEL.sub("", masked))
             if not re.search(r"[A-Za-z]", bare):
                 translated[name] = english
+                kept += 1
                 continue
 
+            sent += 1
             try:
                 got = translate(masked, target)
             except Exception as e:                      # noqa: BLE001
@@ -210,8 +280,8 @@ def main(targets):
             time.sleep(0.05)
 
         write(out, translated, entries)
-        print(f"wrote {out.name}"
-              + (f" - {len(problems)} string(s) left in English:" if problems else ""))
+        print(f"wrote {out.name} - {kept} kept, {sent} translated"
+              + (f", {len(problems)} left in English:" if problems else ""))
         for p in problems:
             print(f"    {p}")
 
@@ -219,27 +289,38 @@ def main(targets):
 def write(path, translated, entries):
     """Emit a satellite .resx: the standard header, then values only.
 
-    The English source is kept as the <comment> of each entry, which is what a
-    reviewer needs in front of them and what Poedit shows as context.
+    Each entry's <comment> carries the English source AND the neutral file's
+    translator note, because these are machine translations that a human has to
+    review. The source alone is not enough: the note is what says "keep the ***
+    marker", "this is a fragment, no full stop", or "{0} is a filename - do not
+    translate it". Poedit shows the comment beside each string, so a reviewer
+    gets both without opening the neutral file alongside.
     """
     header = RESX.read_text(encoding="utf-8")
     prologue = header[: header.index("  <data name=")]
 
+    def esc(s):
+        return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
     parts = [prologue]
-    for name, english in entries:
-        value = (translated[name]
-                 .replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
-        source = (english
-                  .replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+    for name, english, note in entries:
+        comment = f"EN: {esc(english)}"
+        if note:
+            comment += f"\n    NOTE: {esc(note)}"
+        if translated[name] == english:
+            comment += ("\n    NOT TRANSLATED: left in English deliberately - "
+                        "either a do-not-translate entry, or the machine pass "
+                        "damaged it and was rejected.")
         parts.append(f'  <data name="{name}" xml:space="preserve">\n'
-                     f"    <value>{value}</value>\n"
-                     f"    <comment>EN: {source}</comment>\n"
+                     f"    <value>{esc(translated[name])}</value>\n"
+                     f"    <comment>{comment}</comment>\n"
                      f"  </data>\n")
     parts.append("</root>\n")
     path.write_text("".join(parts), encoding="utf-8")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
+    args = [a for a in sys.argv[1:] if a != "--force"]
+    if not args:
         sys.exit(__doc__)
-    main(sys.argv[1:])
+    main(args, force="--force" in sys.argv[1:])

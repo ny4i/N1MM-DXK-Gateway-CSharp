@@ -650,7 +650,7 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Language set to {0}. Restart the gateway to apply it..
+        ///   Looks up a localized string similar to Restart the gateway to switch the interface to {0}..
         /// </summary>
         public static string LanguageRestartNote {
             get {

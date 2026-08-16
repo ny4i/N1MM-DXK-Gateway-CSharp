@@ -319,8 +319,8 @@
     <comment>First entry of the language list, meaning "use the Windows display language".</comment>
   </data>
   <data name="LanguageRestartNote" xml:space="preserve">
-    <value>Language set to {0}. Restart the gateway to apply it.</value>
-    <comment>{0} is a language name, already in its own language - do not translate it.</comment>
+    <value>Restart the gateway to switch the interface to {0}.</value>
+    <comment>Shown as a dialog and logged when the language is changed. {0} is a language name, already written in its own language - do not translate it. Deliberately one sentence ending in the placeholder: as "Language set to {0}. Restart the gateway to apply it." the machine pass dropped the ". " that followed the placeholder, producing "espanolReinicie" and "cestinaObnovit" - two sentences run together. Keep the placeholder at the end.</comment>
   </data>
 
   <!-- ============================ dialogs ============================== -->
