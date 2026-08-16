@@ -115,6 +115,18 @@ PLACEHOLDER = re.compile(r"\{\d+\}")
 #
 # The win over splitting the string at its placeholders is context: the engine
 # still sees one whole sentence and can order it naturally.
+#
+# Tried and found equivalent: carrying the protected text in an attribute,
+# <p notrans="DXKeeper"></p>, as suggested on the LibreTranslate forum. It
+# survives exactly as well - the outputs were identical across ko, uk, ja,
+# zh-Hans and de - because both rely on the same thing, format:"html" lifting
+# elements out of the text stream before the model sees them.
+#
+# The index form is kept because the protected text never leaves this process.
+# If an element is dropped or mangled the content is still here to restore or
+# to reject the string over; carried in an attribute it would be gone with the
+# tag. Attribute values would also need escaping, and these strings contain
+# angle brackets, quotes and ampersands.
 SENTINEL = re.compile(r'<x\s+id="(\d+)"\s*/?>(?:</x>)?')
 
 
