@@ -223,8 +223,7 @@
   <data name="DxKeeperPortTip" xml:space="preserve">
     <value>Read-only hier. Setzen Sie es in DXKeeper: {0} Das Gateway sendet an Base Port + 1, was der Port ist DXKeeper zeigt in der Überschrift dieses Panels.</value>
     <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.
-    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.</comment>
   </data>
   <data name="DxKeeperConfigPath" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service &gt; Base Port</value>
@@ -313,6 +312,28 @@
   <data name="CheckClubLogTip" xml:space="preserve">
     <value>Direkt DXKeeper Upload protokolliert QSO bis Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
+  </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>Hochladen jeweils QSO Wie es protokolliert wird</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>WARNUNG - Upload jeder QSO zu einem Online-Logbuch, wie es protokolliert wird, kann unbeabsichtigte Nebenwirkungen haben, wenn Sie dies später ändern oder löschen QSO.
+
+DXKeeper Uploads a QSO Sobald es protokolliert ist. Wenn die QSO wird danach bearbeitet oder gelöscht, das Gateway entfernt es von DXKeeper und protokolliert den korrigierten - aber ein Upload, der bereits ausgegangen ist, kann nicht abgerufen werden. LoTW insbesondere keine Möglichkeit hat, eine QSO Sie haben hochgeladen, also bleibt das Original dort und die Korrektur wird daneben hinzugefügt.
+
+Erwägen Sie, diese während eines Wettbewerbs ausgeschaltet zu lassen und von DXKeeper Sobald das Protokoll endgültig ist.
+
+Siehe Hilfe unter Ändern/Löschen QSOs und Upload Toggles.</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
   </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>Log Debugging Informationen</value>
@@ -508,8 +529,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertReplaceLostQso" xml:space="preserve">
     <value>*** {0}: DXKeeper Das Original gelöscht, aber nicht protokolliert{1} - das Edited QSO ist in {2} Importieren Sie es. Grund: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper Das Original gelöscht, der Edit wurde nicht protokolliert{1}Und die Bearbeitung konnte nicht gespeichert werden {2}. Grund: {3}</value>

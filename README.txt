@@ -106,6 +106,41 @@ see it, drag it out of the "hidden icons" flyout onto the taskbar. Closing the
 window quits the Gateway.
 
 
+CHANGE/DELETE QSOs AND UPLOAD TOGGLES
+-------------------------------------
+
+Read this before switching on Upload to eQSL.cc, Upload to LoTW or Upload to
+Club Log.
+
+Those toggles tell DXKeeper to upload each QSO to the online logbook as soon as
+it is logged. Separately, the Gateway supports editing and deleting QSOs: when
+your logger sends a change, the Gateway deletes the QSO from DXKeeper and logs
+the corrected one, because DXKeeper has no single "replace" operation.
+
+Those two features do not combine well, and neither the Gateway nor DXKeeper
+can make them. An upload that has already gone out cannot be recalled. LoTW in
+particular has no way to delete a QSO you have uploaded. So a QSO uploaded and
+then edited leaves the ORIGINAL standing at LoTW for ever, with the correction
+added beside it rather than replacing it. A QSO uploaded and then deleted stays
+at LoTW after it has gone from your own log.
+
+Before the Gateway supported editing and deleting, this could not arise: every
+QSO it logged was final.
+
+WHAT TO DO ABOUT IT
+
+The straightforward answer, and the one the author uses, is to leave all three
+upload toggles switched OFF while contesting, and to upload from DXKeeper by
+hand once the log is final and any corrections have been made. DXKeeper uploads
+a whole log as easily as one QSO, and by then there is nothing left to correct.
+
+Switch them on if you prefer - the Gateway warns you once and then does as it
+is told - but be aware that a later correction will not reach the online
+logbook cleanly.
+
+This does not apply to Query Callbook or Lookup previous QSOs. Those only read.
+
+
 FILES IT WRITES
 ---------------
 

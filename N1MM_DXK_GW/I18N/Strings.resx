@@ -277,6 +277,27 @@
   <data name="CheckClubLogTip" xml:space="preserve">
     <value>Direct DXKeeper to upload logged QSO to Club Log</value>
   </data>
+  <!-- ===================== upload side-effect warning ================= -->
+  <!-- Shown when an upload toggle is switched ON. The hazard is real and has
+       no software fix: an upload that has gone out cannot be recalled, and
+       LoTW has no delete at all, so a QSO edited afterwards leaves the
+       original standing there for ever. -->
+
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>Uploading each QSO as it is logged</value>
+    <comment>Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.</value>
+    <comment>The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
+
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>Log debugging information</value>
   </data>

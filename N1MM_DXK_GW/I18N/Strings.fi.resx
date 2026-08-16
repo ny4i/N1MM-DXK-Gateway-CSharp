@@ -313,6 +313,28 @@
     <value>Suora DXKeeper ladata kirjautuneena QSO - Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>Lähetetään jokainen QSO koska se on kirjautunut</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>VAROITUS - ladataan jokainen QSO online-päiväkirjaan koska se on kirjautunut voi olla tahattomia sivuvaikutuksia, jos myöhemmin muuttaa tai poistaa että QSO.
+
+DXKeeper lataa a QSO Heti kun se on kirjattu. Jos QSO on muokattu tai poistettu jälkeenpäin, yhdyskäytävä poistaa sen DXKeeper ja kirjaa korjattu - mutta lataus, joka on jo mennyt ulos ei voida palauttaa. LoTW erityisesti ei voi poistaa QSO olet ladannut, joten alkuperäinen pysyy siellä ja korjaus lisätään sen viereen.
+
+Harkitse jättää nämä pois päältä kilpailun aikana ja lähettää DXKeeper Itse, kun loki on valmis.
+
+Katso ohje, kohdassa Muutos/Poista QSOs ja Upload toggles.</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>Lokivianetsintätiedot</value>
     <comment>EN: Log debugging information</comment>
@@ -506,8 +528,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertReplaceLostQso" xml:space="preserve">
     <value>*** {0}: DXKeeper Poistaa alkuperäisen, mutta ei kirjata muokkaus{1} - muokattu QSO on {2} Tuo se. Perustelu: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper Poistaa alkuperäinen, muokkaus ei ole kirjautunut{1}, JA muokkausta ei voitu tallentaa {2}. Perustelu: {3}</value>

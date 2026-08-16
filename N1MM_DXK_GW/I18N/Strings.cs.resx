@@ -313,6 +313,28 @@
     <value>Přímé DXKeeper k nahrání přihlášené QSO do Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>Odesílání QSO jak je zaznamenán</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>VAROVÁNÍ - nahrávání každé QSO do on-line lodního deníku, jak je přihlášen může mít nezamýšlené vedlejší účinky, pokud později změnit nebo smazat, že QSO.
+
+DXKeeper Odesílání QSO jakmile je to zaznamenáno. Pokud QSO je později editován nebo smazán, brána jej odstraňuje z DXKeeper a zaznamenává opravený - ale nahrávání, které již vyšlo ven nelze odvolat. LoTW zejména nemá žádný způsob, jak odstranit QSO jste nahráli, takže původní zůstane tam a oprava je přidána vedle něj.
+
+Zvažte nechat tyto vypnuté během soutěže a nahrávání z DXKeeper Ty sám, až bude záznam hotový.
+
+Viz Nápověda, pod změnou / smazat QSOs a nahrávání přepínání.</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>Informace o ladění záznamu</value>
     <comment>EN: Log debugging information</comment>
@@ -496,8 +518,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertInternalError" xml:space="preserve">
     <value>Vnitřní error zpracovává zprávu. {0}: {1} Vidíš? ErrorLog.txt Brána stále běží.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -744,8 +765,7 @@ This program is free software under the GNU General Public License version 3 or 
   <data name="TrayTooltip" xml:space="preserve">
     <value>Přijato {0}, zaznamenáno {1} není dodáno {2}</value>
     <comment>EN: Received {0}, logged {1}, not delivered {2}
-    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.</comment>
   </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service</value>

@@ -313,6 +313,28 @@
     <value>Regia DXKeeper per caricare QSO a Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>Caricare ogni QSO come è collegato</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>AVVERTENZA - Caricamento di ciascuno QSO a un logbook online in quanto è registrato può avere effetti collaterali non desiderati se successivamente cambi o cancelli che QSO.
+
+DXKeeper carica un QSO non appena è registrato. Se il QSO viene modificato o cancellato in seguito, il gateway lo rimuove da DXKeeper e registra quello corretto - ma un caricamento che è già uscito non può essere richiamato. LoTW in particolare non ha modo di eliminare un QSO hai caricato, quindi l'originale rimane lì e la correzione viene aggiunta accanto a esso.
+
+Considerare di lasciare questi spenti durante un concorso e caricare da DXKeeper una volta che il registro è definitivo.
+
+Vedere Aiuto, sotto Cambiamento / Cancella QSOs e Upload Toggles.</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>Log debugging informazioni</value>
     <comment>EN: Log debugging information</comment>
@@ -508,8 +530,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertReplaceLostQso" xml:space="preserve">
     <value>*** {0}: DXKeeper DELETED l'originale ma non ha loggato la modifica{1} - il modificato QSO è dentro {2} importalo. Motivo: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper DELETED l'originale, la modifica non è stata registrata{1}, E la modifica non poteva essere salvata {2}. Motivo: {3}</value>

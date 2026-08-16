@@ -313,6 +313,28 @@
     <value>제품정보 DXKeeper 관련 기사 QSO 으로 Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>각 업로드 QSO 로그인</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>WARNING - 각 업로드 QSO 로그인으로 온라인 로그북에 로그인하면 나중에 변경하거나 삭제할 수 없습니다. QSO·
+
+DXKeeper 다운로드 QSO 로그인하면 됩니다. 이름 * QSO 편집 또는 삭제 된 후, 게이트웨이에서 제거 DXKeeper 그리고 올바른 것을 기록한다 - 그러나 이미 나가는 업로드는 회신 할 수 없습니다. LoTW 특히 삭제할 방법이 없습니다. QSO 해당 이용 후기에 달린 코멘트가 없습니다.
+
+대회에서 이 전환을 고려하고에서 업로드 DXKeeper 로그인이 완료되면.
+
+도움말 참조, 변경/Delete의 밑에 QSOs toggles를 업로드합니다.</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>로그 디버깅 정보</value>
     <comment>EN: Log debugging information</comment>

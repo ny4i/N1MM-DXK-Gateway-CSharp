@@ -313,6 +313,28 @@
     <value>Головна DXKeeper завантажити логін QSO до Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>Завантаження кожного QSO як він логується</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>ВАРНГ - завантаження кожного QSO в онлайн-блогер, як він логічно може мати нездивовані побічні ефекти, якщо ви пізніше змінити або видалити це QSOй
+
+DXKeeper завантаження QSO як тільки він з'явився. Якщо QSO відредаговано або видалено після DXKeeper і ввімкнено виправлено одне - але завантаження, яке вже не згадувалося. LoTW зокрема, не має способу видалення QSO Ви завантажили, тому оригінальні залишки там і корекція додається поряд з ним.
+
+Враховуйте, залишаючи ці вимкнені під час конкурсу та завантажте з DXKeeper самостійно, коли журнал завершується.
+
+Дивитися допомогу, під час зміни / видалення QSOs і завантажити окуляри.</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>Інформація про відправлення Логін</value>
     <comment>EN: Log debugging information</comment>
@@ -376,8 +398,7 @@
   <data name="LanguageRestartNote" xml:space="preserve">
     <value>Перезавантажити шлюзу для перемикання інтерфейсу {0} й</value>
     <comment>EN: Restart the gateway to switch the interface to {0}.
-    NOTE: Shown as a dialog and logged when the language is changed. {0} is a language name, already written in its own language - do not translate it. Deliberately one sentence ending in the placeholder: as "Language set to {0}. Restart the gateway to apply it." the machine pass dropped the ". " that followed the placeholder, producing "espanolReinicie" and "cestinaObnovit" - two sentences run together. Keep the placeholder at the end.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: Shown as a dialog and logged when the language is changed. {0} is a language name, already written in its own language - do not translate it. Deliberately one sentence ending in the placeholder: as "Language set to {0}. Restart the gateway to apply it." the machine pass dropped the ". " that followed the placeholder, producing "espanolReinicie" and "cestinaObnovit" - two sentences run together. Keep the placeholder at the end.</comment>
   </data>
   <data name="DlgAlreadyRunning" xml:space="preserve">
     <value>N1MM-DXKeeper Gateway вже працює.</value>
@@ -395,8 +416,7 @@
     <comment>EN: {0}.
 
 Leave this blank unless the sending program is configured to send to a multicast group.
-    NOTE: {0} is ErrNotAnIpAddress or ErrNotMulticast. Keep the blank line.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: {0} is ErrNotAnIpAddress or ErrNotMulticast. Keep the blank line.</comment>
   </data>
   <data name="DlgNoFailedQsos" xml:space="preserve">
     <value>Всі QSO Ця сесія була доставлена до DXKeeper й
@@ -509,8 +529,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertReplaceLostQso" xml:space="preserve">
     <value>*** {0}: DXKeeper Відхилено оригінальний але не ввійшов редагування{1} - редагування QSO У {2} імпортувати його. Причини: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper Отримали оригінальні, редагувати не було{1}, І редагування не вдалося зберегти {2}. Розум: {3}</value>
@@ -746,8 +765,7 @@ This program is free software under the GNU General Public License version 3 or 
   <data name="TrayTooltip" xml:space="preserve">
     <value>Отриманий {0}, Логін {1} не доставлено {2}</value>
     <comment>EN: Received {0}, logged {1}, not delivered {2}
-    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.</comment>
   </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service</value>

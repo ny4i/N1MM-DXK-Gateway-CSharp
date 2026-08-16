@@ -1160,5 +1160,27 @@ namespace N1MM_DXK_GW {
                 return ResourceManager.GetString("UdpPortTip", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+        ///
+        ///DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+        ///
+        ///Consider leavi [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string WarnUploadMessage {
+            get {
+                return ResourceManager.GetString("WarnUploadMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading each QSO as it is logged.
+        /// </summary>
+        public static string WarnUploadTitle {
+            get {
+                return ResourceManager.GetString("WarnUploadTitle", resourceCulture);
+            }
+        }
     }
 }

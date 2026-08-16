@@ -313,6 +313,28 @@
     <value>直接 DXKeeper 要上传已登录 QSO 改为 Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>上传每个 QSO 因为它被记录</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>警告 - 每个上传 QSO 改为在线日志,因为它已被登录,如果以后修改或删除,可能会产生意想不到的副作用 QSO。 。 。 。
+
+DXKeeper 上传 a QSO 一旦记录下来,就立刻 如果 QSO 后经编辑或删除,网关将其删除 DXKeeper 并记录已更正的。但上传的上传是无法记起的。 LoTW 特别是无法删除 QSO 您已经上传,所以原始内容将保留在那里,并同时添加更正内容。
+
+考虑在比赛期间把这些关机,然后从上传 DXKeeper 记录一成不变,你自己就去
+
+参见 Help, 在更改/ 删除下 QSOs 和上传切换。</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>日志调试信息</value>
     <comment>EN: Log debugging information</comment>

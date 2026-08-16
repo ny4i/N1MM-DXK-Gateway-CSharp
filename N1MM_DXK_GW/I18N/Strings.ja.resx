@@ -313,6 +313,28 @@
     <value>ダイレクト DXKeeper ログをアップロードする QSO お問い合わせ Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
+  <data name="WarnUploadTitle" xml:space="preserve">
+    <value>各アップロード QSO 記録されている</value>
+    <comment>EN: Uploading each QSO as it is logged
+    NOTE: Title of the warning shown when Upload to eQSL.cc, LoTW or Club Log is switched on. This read "Uploading as you go" and German rendered it as "uploading as you walk" - "as you go" is an idiom. See the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="WarnUploadMessage" xml:space="preserve">
+    <value>警告 - 各アップロード QSO あなたが後で変更するか、それを削除すると、それが記録されているので、オンラインログブックに QSOお問い合わせ
+
+DXKeeper アップロードする QSO 記録されるとすぐに。 もし、 QSO その後の編集または削除され、ゲートウェイはそれを削除します DXKeeper 修正された1つをログに記録しますが、既に削除したアップロードは、リコールできません。 LoTW 特に削除する方法はありません QSO アップロードしたので、元々に滞在し、修正も一緒に追加されます。
+
+コンテスト中にこれらのスイッチをオフにし、からアップロードすることを検討してください DXKeeper ログが終了したら、自分で
+
+変更/削除のヘルプを参照してください。 QSOs toggles をアップロードします。</value>
+    <comment>EN: WARNING - uploading each QSO to an online logbook as it is logged can have unintended side effects if you later change or delete that QSO.
+
+DXKeeper uploads a QSO as soon as it is logged. If the QSO is edited or deleted afterwards, the gateway removes it from DXKeeper and logs the corrected one - but an upload that has already gone out cannot be recalled. LoTW in particular has no way to delete a QSO you have uploaded, so the original stays there and the correction is added alongside it.
+
+Consider leaving these switched off during a contest and uploading from DXKeeper yourself once the log is final.
+
+See Help, under Change/Delete QSOs and Upload toggles.
+    NOTE: The whole point of this string. "LoTW", "DXKeeper", "QSO" and the Help section name stay in English. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
   <data name="CheckDebugLogging" xml:space="preserve">
     <value>ログデバッグ情報</value>
     <comment>EN: Log debugging information</comment>

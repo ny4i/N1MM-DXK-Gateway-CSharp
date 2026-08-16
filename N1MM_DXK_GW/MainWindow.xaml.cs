@@ -496,12 +496,28 @@ public partial class MainWindow : FluentWindow
       DxkPortValue.ToolTip = tip;
    }
 
+   /// <summary>
+   /// True once the upload warning has been shown this session, so enabling a
+   /// second and third service does not repeat it. The three share one
+   /// consequence and one warning; three identical dialogs in a row would
+   /// teach the operator to click past it.
+   /// </summary>
+   private bool warnedAboutUploads;
+
    private void SettingToggleChanged(object sender, RoutedEventArgs e)
    {
       if (loadingSettings)
       {
          return;
       }
+
+      // Read before the assignments below overwrite the old values: what
+      // matters is the transition to on, not the state.
+      var enablingUpload =
+         (EqslToggle.IsChecked == true && !settings.DxkEqslUpload) ||
+         (LotwToggle.IsChecked == true && !settings.DxkLotwUpload) ||
+         (ClubLogToggle.IsChecked == true && !settings.DxkClubLogUpload);
+
       settings.DxkLookup = DxkLookupToggle.IsChecked == true;
       settings.DxkCallbook = CallbookToggle.IsChecked == true;
       settings.DxkEqslUpload = EqslToggle.IsChecked == true;
@@ -509,6 +525,36 @@ public partial class MainWindow : FluentWindow
       settings.DxkClubLogUpload = ClubLogToggle.IsChecked == true;
       settings.VerboseLogging = VerboseLogToggle.IsChecked == true;
       settings.Save();
+
+      WarnAboutUploadsIfNeeded(enablingUpload);
+   }
+
+   /// <summary>
+   /// Warns that uploading as QSOs are logged does not survive a later edit.
+   ///
+   /// DXKeeper uploads a QSO the moment it is logged. An edit arriving
+   /// afterwards makes the gateway delete that QSO and log the corrected one,
+   /// which fixes DXKeeper and cannot fix the upload: LoTW has no delete, so
+   /// the original stays there and the correction lands beside it. Nothing
+   /// this program can do repairs that. Suppressing the upload flags on the
+   /// re-log would not help either — the wrong QSO is already uploaded, and
+   /// the corrected one would then never reach LoTW at all.
+   ///
+   /// So it is a warning rather than a restriction, and the setting is still
+   /// the operator's to make. It fires on the transition to on, which is the
+   /// deliberate act, and not at startup — a dialog on every launch for a
+   /// setting somebody chose months ago is how a warning gets ignored.
+   /// </summary>
+   private void WarnAboutUploadsIfNeeded(bool enablingUpload)
+   {
+      if (!enablingUpload || warnedAboutUploads)
+      {
+         return;
+      }
+      warnedAboutUploads = true;
+
+      MessageBox.Show(this, Strings.WarnUploadMessage, Strings.WarnUploadTitle,
+         MessageBoxButton.OK, MessageBoxImage.Warning);
    }
 
    private void DebugLogToggle_Changed(object sender, RoutedEventArgs e)
