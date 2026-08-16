@@ -547,6 +547,67 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="NoticeTitle" xml:space="preserve">
+    <value>Про програму</value>
+    <comment>EN: About this program
+    NOTE: Title of the first-run notice window. Deliberately not "Licence Agreement" - nothing is being agreed to.</comment>
+  </data>
+  <data name="NoticeHeading" xml:space="preserve">
+    <value>Безкоштовне програмне забезпечення, без гарантії</value>
+    <comment>EN: Free software, and no warranty</comment>
+  </data>
+  <data name="NoticeFreeSoftware" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway • безкоштовне програмне забезпечення під загальним публічним правом GNU, версія 3 або пізніше. Ви можете використовувати його для будь-якого призначення, вивчити, як це працює, поділитися ним і змінити його.</value>
+    <comment>EN: N1MM-DXKeeper Gateway is free software under the GNU General Public License, version 3 or later. You may use it for any purpose, study how it works, share it, and change it.
+    NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
+  </data>
+  <data name="NoticeWarranty" xml:space="preserve">
+    <value>Доставляється ABSOLUTELY NO WARRANTY. Ми пропонуємо надію, що це корисно, але ніхто не гарантує, що він підходить для будь-якої конкретної мети, і ніхто не несе відповідальності за все, що йде неправильно. Ваш лог відповідальність: перевірити, що QSOй DXKeeperй</value>
+    <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
+    NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
+  </data>
+  <data name="NoticeWhereToFind" xml:space="preserve">
+    <value>Повна ліцензія знаходиться в файлі COPYING поруч з програмою, і завжди доступна з посилання на Licence у вікні.</value>
+    <comment>EN: The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.
+    NOTE: "COPYING" is a filename - do not translate it.</comment>
+  </data>
+  <data name="NoticeViewLicence" xml:space="preserve">
+    <value>Перегляд ліцензії</value>
+    <comment>EN: View the licence
+    NOTE: Button that opens the COPYING file.</comment>
+  </data>
+  <data name="NoticeUnderstood" xml:space="preserve">
+    <value>Я розумію</value>
+    <comment>EN: I understand
+    NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
+  </data>
+  <data name="LicenceLink" xml:space="preserve">
+    <value>Життя</value>
+    <comment>EN: Licence
+    NOTE: Small link in the window footer that opens the licence at any time.</comment>
+  </data>
+  <data name="DlgCouldNotOpenLicence" xml:space="preserve">
+    <value>Не вдалося відкрити файл ліцензії:
+
+{0}</value>
+    <comment>EN: Could not open the licence file:
+
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgLicenceMissing" xml:space="preserve">
+    <value>Файл ліцензія не має значення:
+
+{0}
+
+Ця програма є безкоштовним програмним забезпеченням для загального користування GNU 3 або пізніше, і поставляється з ABSOLUTELY NO WARRANTY. https://www.gnu.org/licenses/gpl-3.0.html</value>
+    <comment>EN: The licence file is not where it should be:
+
+{0}
+
+This program is free software under the GNU General Public License version 3 or later, and comes with ABSOLUTELY NO WARRANTY. You can read the licence at https://www.gnu.org/licenses/gpl-3.0.html
+    NOTE: Shown when COPYING is missing next to the program - a broken install. {0} is a file path. Do not translate the URL or the licence name.</comment>
+  </data>
   <data name="TrayShow" xml:space="preserve">
     <value>Відкрийте вікно шлюзу</value>
     <comment>EN: Open the gateway window

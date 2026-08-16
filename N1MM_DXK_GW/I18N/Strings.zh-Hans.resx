@@ -547,6 +547,67 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="NoticeTitle" xml:space="preserve">
+    <value>关于此程序</value>
+    <comment>EN: About this program
+    NOTE: Title of the first-run notice window. Deliberately not "Licence Agreement" - nothing is being agreed to.</comment>
+  </data>
+  <data name="NoticeHeading" xml:space="preserve">
+    <value>免费软件,没有保证</value>
+    <comment>EN: Free software, and no warranty</comment>
+  </data>
+  <data name="NoticeFreeSoftware" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway 是GNU General Public License下的自由软件,版本3或稍后. 你可以把它用于任何目的,研究它是如何工作的,分享它,并改变它。</value>
+    <comment>EN: N1MM-DXKeeper Gateway is free software under the GNU General Public License, version 3 or later. You may use it for any purpose, study how it works, share it, and change it.
+    NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
+  </data>
+  <data name="NoticeWarranty" xml:space="preserve">
+    <value>它来 与Absollely 没有WARANTY。 它的提出是希望它有用,但没有人保证它适合任何特定目的,任何捐助者都不对任何错误负责。 你的日志是你的责任: 检查一下 QSO伸展范围 DXKeeper。 。 。 。</value>
+    <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
+    NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
+  </data>
+  <data name="NoticeWhereToFind" xml:space="preserve">
+    <value>完整的许可证在程序旁边的文件CAPING中,并且总是可以从窗口中的许可证链接中获取.</value>
+    <comment>EN: The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.
+    NOTE: "COPYING" is a filename - do not translate it.</comment>
+  </data>
+  <data name="NoticeViewLicence" xml:space="preserve">
+    <value>查看许可证</value>
+    <comment>EN: View the licence
+    NOTE: Button that opens the COPYING file.</comment>
+  </data>
+  <data name="NoticeUnderstood" xml:space="preserve">
+    <value>我理解你的话</value>
+    <comment>EN: I understand
+    NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
+  </data>
+  <data name="LicenceLink" xml:space="preserve">
+    <value>许可证</value>
+    <comment>EN: Licence
+    NOTE: Small link in the window footer that opens the licence at any time.</comment>
+  </data>
+  <data name="DlgCouldNotOpenLicence" xml:space="preserve">
+    <value>无法打开许可文件 :
+
+{0}</value>
+    <comment>EN: Could not open the licence file:
+
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgLicenceMissing" xml:space="preserve">
+    <value>许可证档案不应放在:
+
+{0}
+
+这个程序是GNU通用公共许可证版本3或以后的自由软件,与ABSOLUTELY NO WARANTY同时出现. 您可以在https://www.gnu.org/licenses/gpl-3.0.html上查阅许可证。</value>
+    <comment>EN: The licence file is not where it should be:
+
+{0}
+
+This program is free software under the GNU General Public License version 3 or later, and comes with ABSOLUTELY NO WARRANTY. You can read the licence at https://www.gnu.org/licenses/gpl-3.0.html
+    NOTE: Shown when COPYING is missing next to the program - a broken install. {0} is a file path. Do not translate the URL or the licence name.</comment>
+  </data>
   <data name="TrayShow" xml:space="preserve">
     <value>打开网关窗口</value>
     <comment>EN: Open the gateway window

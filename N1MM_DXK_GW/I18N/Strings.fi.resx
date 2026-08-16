@@ -547,6 +547,67 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="NoticeTitle" xml:space="preserve">
+    <value>Tietoja tästä ohjelmasta</value>
+    <comment>EN: About this program
+    NOTE: Title of the first-run notice window. Deliberately not "Licence Agreement" - nothing is being agreed to.</comment>
+  </data>
+  <data name="NoticeHeading" xml:space="preserve">
+    <value>Ilmainen ohjelmisto, eikä takuuta</value>
+    <comment>EN: Free software, and no warranty</comment>
+  </data>
+  <data name="NoticeFreeSoftware" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway on vapaa ohjelmisto GNU General Public License, versio 3 tai myöhemmin. Voit käyttää sitä mihin tahansa tarkoitukseen, tutkia sen toimintaa, jakaa sen ja muuttaa sitä.</value>
+    <comment>EN: N1MM-DXKeeper Gateway is free software under the GNU General Public License, version 3 or later. You may use it for any purpose, study how it works, share it, and change it.
+    NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
+  </data>
+  <data name="NoticeWarranty" xml:space="preserve">
+    <value>Siinä ei ole mitään vikaa. Sitä tarjotaan siinä toivossa, että se on hyödyllinen, mutta kukaan ei takaa, että se sopii mihinkään tiettyyn tarkoitukseen, eikä yksikään rahoittaja ole vastuussa mistään, mikä menee pieleen. Lokikirjasi on sinun vastuullasi: tarkista, että QSOa DXKeeper.</value>
+    <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
+    NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
+  </data>
+  <data name="NoticeWhereToFind" xml:space="preserve">
+    <value>Koko lisenssi on ohjelman vieressä olevassa tiedostossa COPYING, ja se on aina saatavilla License-linkistä ikkunassa.</value>
+    <comment>EN: The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.
+    NOTE: "COPYING" is a filename - do not translate it.</comment>
+  </data>
+  <data name="NoticeViewLicence" xml:space="preserve">
+    <value>Katso lisenssi</value>
+    <comment>EN: View the licence
+    NOTE: Button that opens the COPYING file.</comment>
+  </data>
+  <data name="NoticeUnderstood" xml:space="preserve">
+    <value>Ymmärrän.</value>
+    <comment>EN: I understand
+    NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
+  </data>
+  <data name="LicenceLink" xml:space="preserve">
+    <value>Lupakirja</value>
+    <comment>EN: Licence
+    NOTE: Small link in the window footer that opens the licence at any time.</comment>
+  </data>
+  <data name="DlgCouldNotOpenLicence" xml:space="preserve">
+    <value>Lisenssitiedostoa ei voitu avata:
+
+{0}</value>
+    <comment>EN: Could not open the licence file:
+
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgLicenceMissing" xml:space="preserve">
+    <value>Lupakirjatiedosto ei ole siellä, missä sen pitäisi olla:
+
+{0}
+
+Tämä ohjelma on ilmainen ohjelmisto GNU General Public License version 3 tai uudempi, ja mukana tulee ABSOLUTY NO WARRANTY. Ks. https://www.gnu.org/licenses/gpl-3.0.html</value>
+    <comment>EN: The licence file is not where it should be:
+
+{0}
+
+This program is free software under the GNU General Public License version 3 or later, and comes with ABSOLUTELY NO WARRANTY. You can read the licence at https://www.gnu.org/licenses/gpl-3.0.html
+    NOTE: Shown when COPYING is missing next to the program - a broken install. {0} is a file path. Do not translate the URL or the licence name.</comment>
+  </data>
   <data name="TrayShow" xml:space="preserve">
     <value>Avaa porttiikkuna</value>
     <comment>EN: Open the gateway window
