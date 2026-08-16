@@ -156,6 +156,20 @@ Optional, off by default: the **Multicast group** field (registry value `Multica
 
 An earlier revision of this file argued the opposite — that `SO_REUSEADDR` must never be set — reasoning from the unicast rule alone. That was wrong for the broadcast traffic this gateway actually receives.
 
+### WPF-UI controls
+
+**Read `docs/WPF-UI-NOTES.md` before changing the window.** WPF-UI controls
+several times do something other than what the markup says, and every case in
+that file was found by measuring the running window rather than by reading the
+XAML — a keyed `Style` without `BasedOn` stripping a control template, an
+`InfoBar` silently ignoring its `Content`, a `HyperlinkButton` ignoring
+`Foreground`, a `Card` centring instead of filling, a `CardExpander` that does
+not animate at all, and a scrollbar drawn over the content it scrolls.
+
+Note also that WPF-UI is WPF, **not** WinUI 3. Guidance found online for WinUI
+3, the Windows Community Toolkit or UWP usually describes a different control
+with a different template.
+
 ### Notification area
 
 `TrayIcon` wraps WinForms' `NotifyIcon`. WPF has no tray support of its own, but this project already references WinForms for NDde's hidden window, so this costs no new package and no new assembly. Everything on it must be touched from the UI thread — it needs a message pump.
