@@ -42,10 +42,13 @@ While the initial case for this program was processing N1MM UDP messages, severa
 - TR4W
 - Ham Radio Deluxe (HRD)
 
-Note there is another UDP interface that allows N1MM to receive UDP messages to log data. The Gateway also supports this standard but instead of N1MM being the target for the contacts, DXKeeper can be. This is supported to specifically allow SDR-Control to send messages from its built-in logger to DXKeeper. But any program that can send log records into N1MM, can also use this facility to log records into DXKeeper. This data is typically sent to N1MM on port 2333 for WSJT-X but the Gateway will also process those messages sent on port 12060. The follow programs support this interface
+Note there is another UDP interface that allows N1MM to receive UDP messages to log data. The Gateway also supports this standard but instead of N1MM being the target for the contacts, DXKeeper can be. This is supported to specifically allow SDR-Control to send messages from its built-in logger to DXKeeper. But any program that can send log records into N1MM, can also use this facility to log records into DXKeeper. This data is typically sent to N1MM on port 2333 for WSJT-X but the Gateway will also process those messages **sent on port 12060**. You have to change the port number in SDR-Control and/or WSJT-X.
+
+The following  programs support this interface
 
 - SDR-Control (by DL8MRE for MAC and IOS for remote operation of various radios)
 - WSJT-X
+  - It is recommended that if you want to send log records from WSJT-X to 
 
 ### **Configuring N1MM+**
 

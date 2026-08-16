@@ -140,6 +140,7 @@ public partial class MainWindow : FluentWindow
       dispatcher.ContactReplaceReceived += OnContactReplace;
       dispatcher.LookupInfoReceived += OnLookupInfo;
       dispatcher.ContactDeleteReceived += OnContactDelete;
+      dispatcher.AdifRecordReceived += OnAdifRecord;
       dispatcher.InvalidMessageReceived += OnInvalidMessage;
       dispatcher.UnhandledMessageReceived += OnUnhandledMessage;
       dispatcher.DispatchFailed += OnDispatchFailed;
@@ -767,6 +768,29 @@ public partial class MainWindow : FluentWindow
 
       // Queued, not sent directly: QsoSendQueue serialises delivery so the
       // gateway paces itself to DXKeeper instead of overrunning it.
+      sendQueue.EnqueueLog(adif, BuildLogOptions());
+   }
+
+   /// <summary>
+   /// A QSO logged by a program that broadcasts ADIF rather than N1MM XML —
+   /// WSJT-X's "Enable logged contact ADIF broadcast", and SDR-Control.
+   ///
+   /// Nothing is rebuilt: what arrived is already the format externallog
+   /// takes, and rebuilding it would drop the fields the XML path has no
+   /// mapping for. It joins the same queue as contactinfo and is subject to
+   /// the same options and the same delivery guarantees.
+   ///
+   /// There is no equivalent of contactreplace or contactdelete here — these
+   /// senders only ever log — so an edit made in WSJT-X after the fact does
+   /// not reach DXKeeper.
+   /// </summary>
+   private void OnAdifRecord(AdifBuilder.Result adif)
+   {
+      var queued = sendQueue.PendingCount;
+      var backlog = queued > 0 ? $" ({queued} ahead of it)" : string.Empty;
+      AppendLog($"ADIF: {adif.Summary} -> sending to DXKeeper{backlog}...");
+      logger.DebugLog($"ADIF received: {adif.AdifRecord}");
+
       sendQueue.EnqueueLog(adif, BuildLogOptions());
    }
 
