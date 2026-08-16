@@ -1552,12 +1552,13 @@ public partial class MainWindow : FluentWindow
 
    private void UpdateSettingsHeightCap()
    {
-      var cap = Math.Max(120, ActualHeight - ReservedBelowSettings);
-      SettingsScroll.MaxHeight = cap;
+      SettingsScroll.MaxHeight = Math.Max(120, ActualHeight - ReservedBelowSettings);
 
-      // Never reserve more than the cap allows, or a short window would give
-      // the settings region space the log needs.
-      SettingsScroll.MinHeight = Math.Min(SettingsReservedHeight, cap);
+      // No minimum any more. A reserved height was how the panes below were
+      // once kept still while a section opened, at the cost of 51px of empty
+      // space whenever every section was closed. The sections animate now, so
+      // those panes move smoothly instead of being held in place, and the
+      // space goes back to the operation log where it is worth something.
    }
 
    /// <summary>

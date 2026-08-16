@@ -378,8 +378,14 @@
          </ui:Card>
 
          <!-- ========================= Operation log ======================== -->
-         <ui:Card x:Name="LogCard" Grid.Row="2" Margin="0,0,0,8" Padding="14" MinHeight="150" VerticalAlignment="Stretch">
-            <Grid>
+         <!-- VerticalContentAlignment is load-bearing. Without it the card
+              centres its content rather than filling, so the star-sized row
+              holding the log collapsed to the height of its text: measured,
+              the list was 50px tall with the heading stranded in the middle of
+              the card and empty space above and below it. -->
+         <ui:Card x:Name="LogCard" Grid.Row="2" Margin="0,0,0,8" Padding="14" MinHeight="150"
+                  VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <Grid VerticalAlignment="Stretch">
                <Grid.RowDefinitions>
                   <RowDefinition Height="Auto" />
                   <RowDefinition Height="*" />
