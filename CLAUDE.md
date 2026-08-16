@@ -193,7 +193,21 @@ The routine log lines are mostly wire identifiers, and the log is what an operat
 - **`MainWindow.L()` catches `FormatException`** and shows the raw template. Translations are produced outside this repo and a damaged placeholder (`{ 0 }`, an invented `{2}`) would otherwise throw on the send-queue worker and kill the gateway mid-contest. `tools/translate_resx.py` rejects such a string before writing it; the catch is the second line of defence.
 - **No idioms in source strings.** "Another send was already in flight" machine-translated into German as a literal statement about aviation. It now reads "another send had not finished yet".
 
-`tools/translate_resx.py <culture>…` drives a local LibreTranslate, masking `{N}` placeholders and protected terms (product names, protocol names, wire identifiers) before each request and restoring them after. Measured behaviour it works around: LibreTranslate collapses a sentinel's doubled tail when it lands at the end of a segment (`QQ0ZZ` → `QQ0Z`) but leaves it intact mid-sentence. Any string whose placeholders or masked terms do not survive is left in English and reported. Output is machine quality and needs a native review; each entry carries its English source as a `<comment>` for that purpose.
+### Producing translations
+
+`tools/translate_resx.py` against a local LibreTranslate on `127.0.0.1:5000` is the whole pipeline — there is no other tool in the loop:
+
+```
+python tools/translate_resx.py cs de es fi fr it ja ko nl pt ru uk zh-Hans
+```
+
+It masks `{N}` placeholders and protected terms (product names, protocol names, wire identifiers, `<oldcall>`, `Listening`) before each request and restores them after, one string at a time.
+
+**Masking is HTML, not a text sentinel, and must stay that way.** A Latin-letter marker is just another word to a translation model. Measured: `QQ0ZZ` came back from Korean as `사이트맵` — the engine translated the sentinel as the word "sitemap" — and from Ukrainian as `КК1ЗЗ`, transliterated into Cyrillic. So each masked item is sent as an empty element, `<x id="0"></x>`, with `format: "html"`; LibreTranslate parses that and translates only text nodes. Note that *wrapping* a term does not protect it — `<b>DXKeeper</b>` returned as `<b>DX保持器</b>`, tag preserved and content translated. The term has to **be** the tag. Splitting each string at its placeholders would protect them too, but sending whole sentences keeps the context the model needs to order them.
+
+Three checks reject a string and leave it in English rather than write damaged output — placeholder set changed, a masked term missing, or the output more than ~3× the source. That last one catches model degeneration, which is otherwise undetectable: escaped `&lt;oldcall&gt;` once produced a run of 250 `=` characters mid-sentence with every placeholder and masked term intact.
+
+Output is machine quality and wants a native review before being advertised — Ukrainian renders "Connection Status" as "status on servers", Japanese renders "Help" as "Contact us". Each entry carries its English source as a `<comment>`, which is what Poedit shows a reviewer beside each string.
 
 ---
 
