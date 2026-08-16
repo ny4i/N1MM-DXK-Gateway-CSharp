@@ -62,9 +62,14 @@ Network section of its window.
 
   TR4W           Set UDP BROADCAST ADDRESS to the same address and port.
 
-  WSJT-X         Settings > Reporting. Either the N1MM Logger+ broadcast or
-                 "Enable logged contact ADIF broadcast" works; point it at
-                 port 12060. Both formats are accepted.
+  WSJT-X         Settings > Reporting. Tick "Enable logged contact ADIF
+                 broadcast" and enter your IP address - 127.0.0.1 if WSJT-X is
+                 on this same computer - and 12060 in the Server port number
+                 field.
+
+                 We suggest you use JTAlert instead, or send contacts directly
+                 to the DXLab applications; see the DXLab instructions. This
+                 route works, but those are the better-travelled paths.
 
   SDR-Control    Point its logging broadcast at port 12060.
 
@@ -159,9 +164,10 @@ a per-user folder instead and records which one at the top of ErrorLog.txt.
                         retries one, because DXKeeper does not detect
                         duplicates and a retry could log it twice. If this
                         file exists, import it into DXKeeper by hand and then
-                        delete it. A warning bar in the window tells you it is
-                        there and how many QSOs are in it, and the warning
-                        clears when the file is gone.
+                        delete it. "Failed QSOs" at the bottom of the window
+                        turns red with a count when this happens; click it to
+                        open the folder with the file selected. The count goes
+                        back to zero when the file is gone.
 
                         One file per run. A run that loses nothing leaves no
                         file, so the file existing always means something
