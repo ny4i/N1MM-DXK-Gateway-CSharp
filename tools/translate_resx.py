@@ -56,6 +56,15 @@ DO_NOT_TRANSLATE_KEYS = {
     "DxKeeperConfigNetworkService",
 }
 
+# Who translated this file, shown in the About window. Not a translation of
+# anything, so it is never machine-translated and - unlike every other entry -
+# it is never overwritten, not even by --force. Somebody's credit for their own
+# work is not this tool's to replace. A satellite that does not have one yet is
+# seeded with the machine that actually did the work, which is honest until a
+# person takes it over.
+ATTRIBUTION_KEY = "TranslatedBy"
+MACHINE_ATTRIBUTION = "LibreTranslate (https://libretranslate.com/)"
+
 # Terms that must survive untouched: product names, protocol names, wire-format
 # identifiers, and filenames. Longest first so "Club Log" masks before "Log".
 PROTECTED_TERMS = sorted(
@@ -293,7 +302,10 @@ def main(targets, force=False):
 
     for target in targets:
         out = RESX.parent / f"Strings.{target}.resx"
-        existing = {} if force else load_existing(out)
+        # Read once, then decide what --force is allowed to discard. Machine
+        # output is fair game; the attribution is not.
+        existing_always = load_existing(out)
+        existing = {} if force else existing_always
         translated = {}
         problems = []
         repaired = set()
@@ -303,6 +315,14 @@ def main(targets, force=False):
         for i, (name, english, _note) in enumerate(entries, 1):
             if name in DO_NOT_TRANSLATE_KEYS:
                 translated[name] = english
+                kept += 1
+                continue
+
+            if name == ATTRIBUTION_KEY:
+                # Deliberately checked before the --force branch below: a
+                # reviewer's name must survive a full retranslation.
+                prior_credit = existing_always.get(name, (None, None))[0]
+                translated[name] = prior_credit or MACHINE_ATTRIBUTION
                 kept += 1
                 continue
 

@@ -24,6 +24,15 @@
          the resource loader it need not probe for an "en" satellite before
          falling back, and is the baseline every translation is made from. -->
     <NeutralResourcesLanguage>en</NeutralResourcesLanguage>
+
+    <!-- 2.0 because this is the C# rewrite. The VB6 gateway reached 1.3.x, so
+         continuing that sequence would suggest a point release rather than a
+         reimplementation with a new UI, new failure handling and translations.
+         Shown in the title bar and the About window; testers quote it. -->
+    <Version>2.0.0</Version>
+    <Company>NY4I</Company>
+    <Product>N1MM-DXKeeper Gateway</Product>
+    <Copyright>Copyright (C) 2026 Tom Schaefer, NY4I</Copyright>
   </PropertyGroup>
 
   <!-- UseWindowsForms puts System.Windows.Forms into the implicit usings, which
@@ -44,9 +53,15 @@
        requires the terms to accompany what is conveyed, and NDde's own licence
        requires its notices to be distributed alongside. An installer picks
        these up simply by taking the output directory. -->
+  <!-- Shipped with a .txt extension even though the repository keeps the
+       conventional extensionless COPYING that GitHub and packagers expect.
+       Windows opens a file by its extension: double-clicking a file named
+       "COPYING" raises the "how do you want to open this?" picker, offering
+       7-Zip and Adobe Acrobat, rather than showing the licence. An operator
+       asked to read the terms should get Notepad, not a chooser. -->
   <ItemGroup>
-    <Content Include="..\COPYING" Link="COPYING" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="..\NOTICE.md" Link="NOTICE.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\COPYING" Link="COPYING.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\NOTICE.md" Link="NOTICE.txt" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\third-party-licenses\**"
              Link="third-party-licenses\%(RecursiveDir)%(Filename)%(Extension)"
              CopyToOutputDirectory="PreserveNewest" />

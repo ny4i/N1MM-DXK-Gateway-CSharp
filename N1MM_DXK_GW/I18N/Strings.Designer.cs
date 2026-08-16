@@ -58,6 +58,96 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string AboutClose {
+            get {
+                return ResourceManager.GetString("AboutClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy details.
+        /// </summary>
+        public static string AboutCopyProfile {
+            get {
+                return ResourceManager.GetString("AboutCopyProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free software under the GNU General Public License, version 3 or later, with ABSOLUTELY NO WARRANTY..
+        /// </summary>
+        public static string AboutLicenceShort {
+            get {
+                return ResourceManager.GetString("AboutLicenceShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string AboutLink {
+            get {
+                return ResourceManager.GetString("AboutLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A rewrite of the original VB6 gateway. The DXLab Suite message formats are the work of AA6YQ..
+        /// </summary>
+        public static string AboutOriginal {
+            get {
+                return ResourceManager.GetString("AboutOriginal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Details copied to the clipboard..
+        /// </summary>
+        public static string AboutProfileCopied {
+            get {
+                return ResourceManager.GetString("AboutProfileCopied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Carries QSOs from TR4W and N1MM Logger+ into DXKeeper, and asks DXView and Pathfinder about the callsigns you work..
+        /// </summary>
+        public static string AboutPurpose {
+            get {
+                return ResourceManager.GetString("AboutPurpose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About N1MM-DXKeeper Gateway.
+        /// </summary>
+        public static string AboutTitle {
+            get {
+                return ResourceManager.GetString("AboutTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Translation into {0} by {1}.
+        /// </summary>
+        public static string AboutTranslationBy {
+            get {
+                return ResourceManager.GetString("AboutTranslationBy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version {0}.
+        /// </summary>
+        public static string AboutVersion {
+            get {
+                return ResourceManager.GetString("AboutVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper.
         /// </summary>
         public static string AlertDeleteNoKey {
@@ -647,6 +737,15 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string GeneralHeader {
+            get {
+                return ResourceManager.GetString("GeneralHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Help.
         /// </summary>
         public static string Help {
@@ -688,15 +787,6 @@ namespace N1MM_DXK_GW {
         public static string LanguageTip {
             get {
                 return ResourceManager.GetString("LanguageTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Licence.
-        /// </summary>
-        public static string LicenceLink {
-            get {
-                return ResourceManager.GetString("LicenceLink", resourceCulture);
             }
         }
         
@@ -854,7 +944,7 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window..
+        ///   Looks up a localized string similar to The full licence is in the file COPYING.txt next to the program, and is always available from the About link in the window..
         /// </summary>
         public static string NoticeWhereToFind {
             get {
@@ -913,6 +1003,15 @@ namespace N1MM_DXK_GW {
         public static string StatusHeader {
             get {
                 return ResourceManager.GetString("StatusHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tom Schaefer, NY4I.
+        /// </summary>
+        public static string TranslatedBy {
+            get {
+                return ResourceManager.GetString("TranslatedBy", resourceCulture);
             }
         }
         

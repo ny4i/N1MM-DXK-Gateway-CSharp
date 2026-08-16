@@ -138,6 +138,11 @@
     <comment>EN: Diagnostics
     NOTE: Heading of the card holding logging options.</comment>
   </data>
+  <data name="GeneralHeader" xml:space="preserve">
+    <value>Головна</value>
+    <comment>EN: General
+    NOTE: Heading of the card holding settings that belong to the gateway itself rather than to what it talks to - currently just the interface language.</comment>
+  </data>
   <data name="LogCopy" xml:space="preserve">
     <value>Зареєструватися</value>
     <comment>EN: Copy
@@ -393,8 +398,7 @@ Leave this blank unless the sending program is configured to send to a multicast
     <comment>EN: Every QSO this session was delivered to DXKeeper.
 
 {0} does not exist.
-    NOTE: {0} is a full file path - do not translate it.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: {0} is a full file path - do not translate it.</comment>
   </data>
   <data name="DlgCouldNotOpenFile" xml:space="preserve">
     <value>Не вдалося відкрити {0}:
@@ -548,6 +552,59 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="TranslatedBy" xml:space="preserve">
+    <value>LibreTranslate (https://libretranslate.com/)</value>
+    <comment>EN: Tom Schaefer, NY4I
+    NOTE: WHOEVER TRANSLATED THIS FILE: replace this value with your name and callsign, however you would like to be credited. It is shown in the About window to anyone running the gateway in this language, and it is the one entry here that is not a translation of the English. Free-form - a name, a callsign, an email, a club, whatever you prefer. It is never overwritten by the machine-translation tool.</comment>
+  </data>
+  <data name="AboutLink" xml:space="preserve">
+    <value>Про нас</value>
+    <comment>EN: About
+    NOTE: Small link in the window footer that opens the About window.</comment>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>Про нас N1MM-DXKeeper Gateway</value>
+    <comment>EN: About N1MM-DXKeeper Gateway
+    NOTE: Title of the About window. The product name stays in English.</comment>
+  </data>
+  <data name="AboutVersion" xml:space="preserve">
+    <value>Редагування {0}</value>
+    <comment>EN: Version {0}
+    NOTE: {0} is a version number such as 2.0.0.</comment>
+  </data>
+  <data name="AboutPurpose" xml:space="preserve">
+    <value>Кар'єра QSOs від TR4W і N1MM Logger+ Увійти DXKeeper і просить DXView і Pathfinder про те, що ви працюєте.</value>
+    <comment>EN: Carries QSOs from TR4W and N1MM Logger+ into DXKeeper, and asks DXView and Pathfinder about the callsigns you work.
+    NOTE: One-line description. All five product names stay in English. TR4W is named here and nowhere else - the program's title stays "N1MM-DXKeeper Gateway", which is what operators have called it for years.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+  </data>
+  <data name="AboutLicenceShort" xml:space="preserve">
+    <value>Безкоштовне програмне забезпечення при загальній публічній ліцензії GNU, версія 3 або пізніше, з ABSOLUTELY NO WARRANTY.</value>
+    <comment>EN: Free software under the GNU General Public License, version 3 or later, with ABSOLUTELY NO WARRANTY.</comment>
+  </data>
+  <data name="AboutTranslationBy" xml:space="preserve">
+    <value>Переклад {0} від {1}</value>
+    <comment>EN: Translation into {0} by {1}
+    NOTE: {0} is a language name in its own language, {1} is the value of TranslatedBy. Do not translate either.</comment>
+  </data>
+  <data name="AboutOriginal" xml:space="preserve">
+    <value>Резит оригінального шлюзу VB6. Про нас DXLab Формати люкс-повідомлень - робота AA6YQ.</value>
+    <comment>EN: A rewrite of the original VB6 gateway. The DXLab Suite message formats are the work of AA6YQ.
+    NOTE: "VB6", "DXLab Suite" and the callsign AA6YQ stay in English.</comment>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>Головна</value>
+    <comment>EN: Close</comment>
+  </data>
+  <data name="AboutCopyProfile" xml:space="preserve">
+    <value>Статус на сервери</value>
+    <comment>EN: Copy details
+    NOTE: Button that copies version and environment details to the clipboard for pasting into a bug report.</comment>
+  </data>
+  <data name="AboutProfileCopied" xml:space="preserve">
+    <value>Деталі скопійовані на буфер.</value>
+    <comment>EN: Details copied to the clipboard.</comment>
+  </data>
   <data name="NoticeTitle" xml:space="preserve">
     <value>Про програму</value>
     <comment>EN: About this program
@@ -565,13 +622,12 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="NoticeWarranty" xml:space="preserve">
     <value>Доставляється ABSOLUTELY NO WARRANTY. Ми пропонуємо надію, що це корисно, але ніхто не гарантує, що він підходить для будь-якої конкретної мети, і ніхто не несе відповідальності за все, що йде неправильно. Ваш лог відповідальність: перевірити, що QSOs Досягнення DXKeeper й</value>
     <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
-    NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
   <data name="NoticeWhereToFind" xml:space="preserve">
-    <value>Повна ліцензія знаходиться в файлі COPYING поруч з програмою, і завжди доступна з посилання на Licence у вікні.</value>
-    <comment>EN: The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.
-    NOTE: "COPYING" is a filename - do not translate it.</comment>
+    <value>Повна ліцензія знаходиться в файлі COPYING.txt поряд з програмою, і завжди доступний з посилання про посилання в вікні.</value>
+    <comment>EN: The full licence is in the file COPYING.txt next to the program, and is always available from the About link in the window.
+    NOTE: "COPYING.txt" is a filename - do not translate it.</comment>
   </data>
   <data name="NoticeViewLicence" xml:space="preserve">
     <value>Перегляд ліцензії</value>
@@ -582,11 +638,6 @@ Use the folder link and import the file into DXKeeper from there.
     <value>Я розумію</value>
     <comment>EN: I understand
     NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
-  </data>
-  <data name="LicenceLink" xml:space="preserve">
-    <value>Життя</value>
-    <comment>EN: Licence
-    NOTE: Small link in the window footer that opens the licence at any time.</comment>
   </data>
   <data name="DlgCouldNotOpenLicence" xml:space="preserve">
     <value>Не вдалося відкрити файл ліцензії:

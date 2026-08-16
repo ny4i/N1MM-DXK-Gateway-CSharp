@@ -1203,8 +1203,8 @@ public partial class MainWindow : FluentWindow
 
    private void ErrorLogLink_Click(object sender, RoutedEventArgs e) => OpenErrorLog();
 
-   private void LicenceLink_Click(object sender, RoutedEventArgs e) =>
-      NoticeWindow.ShowLicence(this);
+   private void AboutLink_Click(object sender, RoutedEventArgs e) =>
+      AboutWindow.ShowSingle(this);
 
    /// <summary>
    /// Shows the first-run notice once, after the listener is already up.
@@ -1392,7 +1392,8 @@ public partial class MainWindow : FluentWindow
       // before the later named fields have been assigned - so the accordion
       // loop below would dereference nulls and take the process down on
       // startup. Nothing needs adjusting before the tree is built anyway.
-      if (NetworkSection is null || ServicesSection is null || DiagnosticsSection is null)
+      if (NetworkSection is null || ServicesSection is null ||
+          DiagnosticsSection is null || GeneralSection is null)
       {
          return;
       }
@@ -1402,7 +1403,8 @@ public partial class MainWindow : FluentWindow
          adjustingSections = true;
          try
          {
-            foreach (var other in new[] { NetworkSection, ServicesSection, DiagnosticsSection })
+            foreach (var other in new[]
+                     { NetworkSection, ServicesSection, DiagnosticsSection, GeneralSection })
             {
                if (!ReferenceEquals(other, opened))
                {

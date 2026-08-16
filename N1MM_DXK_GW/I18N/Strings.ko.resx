@@ -138,6 +138,11 @@
     <comment>EN: Diagnostics
     NOTE: Heading of the card holding logging options.</comment>
   </data>
+  <data name="GeneralHeader" xml:space="preserve">
+    <value>주요사업</value>
+    <comment>EN: General
+    NOTE: Heading of the card holding settings that belong to the gateway itself rather than to what it talks to - currently just the interface language.</comment>
+  </data>
   <data name="LogCopy" xml:space="preserve">
     <value>이름 *</value>
     <comment>EN: Copy
@@ -547,6 +552,58 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="TranslatedBy" xml:space="preserve">
+    <value>LibreTranslate (https://libretranslate.com/)</value>
+    <comment>EN: Tom Schaefer, NY4I
+    NOTE: WHOEVER TRANSLATED THIS FILE: replace this value with your name and callsign, however you would like to be credited. It is shown in the About window to anyone running the gateway in this language, and it is the one entry here that is not a translation of the English. Free-form - a name, a callsign, an email, a club, whatever you prefer. It is never overwritten by the machine-translation tool.</comment>
+  </data>
+  <data name="AboutLink" xml:space="preserve">
+    <value>제품정보</value>
+    <comment>EN: About
+    NOTE: Small link in the window footer that opens the About window.</comment>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>제품정보 N1MM-DXKeeper Gateway</value>
+    <comment>EN: About N1MM-DXKeeper Gateway
+    NOTE: Title of the About window. The product name stays in English.</comment>
+  </data>
+  <data name="AboutVersion" xml:space="preserve">
+    <value>이름 * {0}</value>
+    <comment>EN: Version {0}
+    NOTE: {0} is a version number such as 2.0.0.</comment>
+  </data>
+  <data name="AboutPurpose" xml:space="preserve">
+    <value>카리스마 QSOs TR4W에서 N1MM Logger+ 로그인 DXKeeper· DXView 이름 * Pathfinder 호출에 대해 작업합니다.</value>
+    <comment>EN: Carries QSOs from TR4W and N1MM Logger+ into DXKeeper, and asks DXView and Pathfinder about the callsigns you work.
+    NOTE: One-line description. All five product names stay in English. TR4W is named here and nowhere else - the program's title stays "N1MM-DXKeeper Gateway", which is what operators have called it for years.</comment>
+  </data>
+  <data name="AboutLicenceShort" xml:space="preserve">
+    <value>GNU General Public License 하에 무료 소프트웨어, 버전 3 이상, ABSOLUTELY NO WARRANTY.</value>
+    <comment>EN: Free software under the GNU General Public License, version 3 or later, with ABSOLUTELY NO WARRANTY.</comment>
+  </data>
+  <data name="AboutTranslationBy" xml:space="preserve">
+    <value>번역으로 {0} 이름 * {1}</value>
+    <comment>EN: Translation into {0} by {1}
+    NOTE: {0} is a language name in its own language, {1} is the value of TranslatedBy. Do not translate either.</comment>
+  </data>
+  <data name="AboutOriginal" xml:space="preserve">
+    <value>원래 VB6 게이트웨이의 재 작성. 더 보기 DXLab 스위트 메시지 형식은 AA6YQ의 작업입니다.</value>
+    <comment>EN: A rewrite of the original VB6 gateway. The DXLab Suite message formats are the work of AA6YQ.
+    NOTE: "VB6", "DXLab Suite" and the callsign AA6YQ stay in English.</comment>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>이름 *</value>
+    <comment>EN: Close</comment>
+  </data>
+  <data name="AboutCopyProfile" xml:space="preserve">
+    <value>본문 바로가기</value>
+    <comment>EN: Copy details
+    NOTE: Button that copies version and environment details to the clipboard for pasting into a bug report.</comment>
+  </data>
+  <data name="AboutProfileCopied" xml:space="preserve">
+    <value>클립보드에 복사된 세부사항.</value>
+    <comment>EN: Details copied to the clipboard.</comment>
+  </data>
   <data name="NoticeTitle" xml:space="preserve">
     <value>이 프로그램</value>
     <comment>EN: About this program
@@ -567,9 +624,9 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
   <data name="NoticeWhereToFind" xml:space="preserve">
-    <value>전체 라이센스는 프로그램의 옆에 파일 COPYING에 있으며, 항상 창의 Licence 링크에서 사용할 수 있습니다.</value>
-    <comment>EN: The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.
-    NOTE: "COPYING" is a filename - do not translate it.</comment>
+    <value>전체 라이센스는 프로그램 옆에있는 COPYING.txt에 있으며, 항상 윈도우의 링크에서 사용할 수 있습니다.</value>
+    <comment>EN: The full licence is in the file COPYING.txt next to the program, and is always available from the About link in the window.
+    NOTE: "COPYING.txt" is a filename - do not translate it.</comment>
   </data>
   <data name="NoticeViewLicence" xml:space="preserve">
     <value>licence 보기</value>
@@ -580,11 +637,6 @@ Use the folder link and import the file into DXKeeper from there.
     <value>나는 이해</value>
     <comment>EN: I understand
     NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
-  </data>
-  <data name="LicenceLink" xml:space="preserve">
-    <value>이름 *</value>
-    <comment>EN: Licence
-    NOTE: Small link in the window footer that opens the licence at any time.</comment>
   </data>
   <data name="DlgCouldNotOpenLicence" xml:space="preserve">
     <value>면허 파일을 열 수 없습니다:

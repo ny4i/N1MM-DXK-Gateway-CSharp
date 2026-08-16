@@ -138,6 +138,11 @@
     <comment>EN: Diagnostics
     NOTE: Heading of the card holding logging options.</comment>
   </data>
+  <data name="GeneralHeader" xml:space="preserve">
+    <value>Geral</value>
+    <comment>EN: General
+    NOTE: Heading of the card holding settings that belong to the gateway itself rather than to what it talks to - currently just the interface language.</comment>
+  </data>
   <data name="LogCopy" xml:space="preserve">
     <value>Copiar</value>
     <comment>EN: Copy
@@ -169,14 +174,12 @@
   <data name="FailedQsoBarMessage" xml:space="preserve">
     <value>{0} QSOs desta sessão não foi possível entregar DXKeeper Importar {1} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
-    NOTE: {0} is a count, {1} is a filename. Do not translate the filename.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
   </data>
   <data name="FailedQsoBarMessageOne" xml:space="preserve">
     <value>1 QSO desta sessão não foi possível entregar DXKeeper Importar {0} em DXKeeper, em seguida, excluí-lo — este aviso limpa quando o arquivo é ido.</value>
     <comment>EN: 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.
-    NOTE: Singular form. {0} is a filename. Do not translate the filename.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: Singular form. {0} is a filename. Do not translate the filename.</comment>
   </data>
   <data name="OpenFileButton" xml:space="preserve">
     <value>Abrir arquivo</value>
@@ -488,8 +491,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertInternalError" xml:space="preserve">
     <value>ERRO INTERNO que manipula uma mensagem ({0}: {1}) - ver ErrorLog.txt O portal ainda está a funcionar.</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -551,6 +553,58 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="TranslatedBy" xml:space="preserve">
+    <value>LibreTranslate (https://libretranslate.com/)</value>
+    <comment>EN: Tom Schaefer, NY4I
+    NOTE: WHOEVER TRANSLATED THIS FILE: replace this value with your name and callsign, however you would like to be credited. It is shown in the About window to anyone running the gateway in this language, and it is the one entry here that is not a translation of the English. Free-form - a name, a callsign, an email, a club, whatever you prefer. It is never overwritten by the machine-translation tool.</comment>
+  </data>
+  <data name="AboutLink" xml:space="preserve">
+    <value>Sobre</value>
+    <comment>EN: About
+    NOTE: Small link in the window footer that opens the About window.</comment>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>Sobre N1MM-DXKeeper Gateway</value>
+    <comment>EN: About N1MM-DXKeeper Gateway
+    NOTE: Title of the About window. The product name stays in English.</comment>
+  </data>
+  <data name="AboutVersion" xml:space="preserve">
+    <value>Versão {0}</value>
+    <comment>EN: Version {0}
+    NOTE: {0} is a version number such as 2.0.0.</comment>
+  </data>
+  <data name="AboutPurpose" xml:space="preserve">
+    <value>Transportadoras QSOs de TR4W e N1MM Logger+ em DXKeeper, e pergunta DXView e Pathfinder sobre os sinais de chamadas que trabalhas.</value>
+    <comment>EN: Carries QSOs from TR4W and N1MM Logger+ into DXKeeper, and asks DXView and Pathfinder about the callsigns you work.
+    NOTE: One-line description. All five product names stay in English. TR4W is named here and nowhere else - the program's title stays "N1MM-DXKeeper Gateway", which is what operators have called it for years.</comment>
+  </data>
+  <data name="AboutLicenceShort" xml:space="preserve">
+    <value>Software livre sob a GNU General Public License, versão 3 ou posterior, com NENHUMA GARANTIA.</value>
+    <comment>EN: Free software under the GNU General Public License, version 3 or later, with ABSOLUTELY NO WARRANTY.</comment>
+  </data>
+  <data name="AboutTranslationBy" xml:space="preserve">
+    <value>Tradução para {0} por {1}</value>
+    <comment>EN: Translation into {0} by {1}
+    NOTE: {0} is a language name in its own language, {1} is the value of TranslatedBy. Do not translate either.</comment>
+  </data>
+  <data name="AboutOriginal" xml:space="preserve">
+    <value>Uma reescrita do gateway VB6 original. A DXLab Formatos de mensagem Suite são o trabalho do AA6YQ.</value>
+    <comment>EN: A rewrite of the original VB6 gateway. The DXLab Suite message formats are the work of AA6YQ.
+    NOTE: "VB6", "DXLab Suite" and the callsign AA6YQ stay in English.</comment>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>Fechar</value>
+    <comment>EN: Close</comment>
+  </data>
+  <data name="AboutCopyProfile" xml:space="preserve">
+    <value>Copiar os detalhes</value>
+    <comment>EN: Copy details
+    NOTE: Button that copies version and environment details to the clipboard for pasting into a bug report.</comment>
+  </data>
+  <data name="AboutProfileCopied" xml:space="preserve">
+    <value>Detalhes copiados para a área de transferência.</value>
+    <comment>EN: Details copied to the clipboard.</comment>
+  </data>
   <data name="NoticeTitle" xml:space="preserve">
     <value>Sobre este programa</value>
     <comment>EN: About this program
@@ -571,9 +625,9 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
   </data>
   <data name="NoticeWhereToFind" xml:space="preserve">
-    <value>A licença completa está no arquivo COPYING ao lado do programa, e está sempre disponível no link Licença na janela.</value>
-    <comment>EN: The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.
-    NOTE: "COPYING" is a filename - do not translate it.</comment>
+    <value>A licença completa está no arquivo COPYING.txt ao lado do programa, e está sempre disponível no link Sobre na janela.</value>
+    <comment>EN: The full licence is in the file COPYING.txt next to the program, and is always available from the About link in the window.
+    NOTE: "COPYING.txt" is a filename - do not translate it.</comment>
   </data>
   <data name="NoticeViewLicence" xml:space="preserve">
     <value>Ver a licença</value>
@@ -584,11 +638,6 @@ Use the folder link and import the file into DXKeeper from there.
     <value>Compreendo.</value>
     <comment>EN: I understand
     NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
-  </data>
-  <data name="LicenceLink" xml:space="preserve">
-    <value>Licença</value>
-    <comment>EN: Licence
-    NOTE: Small link in the window footer that opens the licence at any time.</comment>
   </data>
   <data name="DlgCouldNotOpenLicence" xml:space="preserve">
     <value>Não foi possível abrir o arquivo de licença:

@@ -96,8 +96,13 @@
          <RowDefinition Height="*" />
       </Grid.RowDefinitions>
 
+      <!-- Bound to the window's own Title, which SetTitleWithVersion rewrites
+           at startup to include the version. Pinning it to Strings.AppTitle
+           here silently overrode that, so the caption showed no version even
+           though the window title carried one. The VB6 gateway put the version
+           in its caption and testers quote it in reports. -->
       <ui:TitleBar Grid.Row="0"
-                   Title="{x:Static local:Strings.AppTitle}"
+                   Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
                    ShowMaximize="True" />
 
       <Grid Grid.Row="1" Margin="18,6,18,14">
@@ -295,22 +300,43 @@
                                          ToolTip="{x:Static local:Strings.CheckVerboseLoggingTip}"
                                          Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
 
-                        <!-- Language sits in the right half of this card's grid
-                             rather than in a card of its own. It is a rarely
-                             touched preference, and a fourth card for one row
-                             would cost more vertical space than the setting is
-                             worth. The list is built at run time from the
-                             satellite assemblies actually present, so it holds
-                             only "Follow Windows" when nothing is shipped. -->
-                        <TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource SettingLabel}"
-                                   Text="{x:Static local:Strings.LanguageLabel}"
-                                   ToolTip="{x:Static local:Strings.LanguageTip}" />
-                        <ComboBox x:Name="LanguageCombo" Grid.Row="0" Grid.Column="4"
-                                  MinWidth="150" VerticalAlignment="Center"
-                                  ToolTip="{x:Static local:Strings.LanguageTip}"
-                                  SelectionChanged="LanguageCombo_SelectionChanged" />
                      </Grid>
                   </StackPanel>
+               </ui:CardExpander>
+
+               <!-- Language had been tucked into the right half of the
+                    Diagnostics grid, which reads as an afterthought: that card
+                    is about logging. Services was considered and rejected too -
+                    that one is specifically what DXKeeper should do with each
+                    QSO, and the interface language is not a DXKeeper service.
+                    It belongs to the gateway itself, so it gets its own card,
+                    placed last so the default view is unchanged. -->
+               <ui:CardExpander x:Name="GeneralSection" Style="{StaticResource SettingsSection}"
+                                Icon="{ui:SymbolIcon Settings24}"
+                                Expanded="SettingsSection_ExpandChanged"
+                                Collapsed="SettingsSection_ExpandChanged"
+                                IsExpanded="False">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.GeneralHeader}" />
+                  </ui:CardExpander.Header>
+                  <Grid>
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                     </Grid.ColumnDefinitions>
+                     <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                                Text="{x:Static local:Strings.LanguageLabel}"
+                                ToolTip="{x:Static local:Strings.LanguageTip}" />
+                     <!-- The list is built at run time from the satellite
+                          assemblies actually present, so it holds only
+                          "Follow Windows" when none are shipped. -->
+                     <ComboBox x:Name="LanguageCombo" Grid.Column="1"
+                               MinWidth="180" HorizontalAlignment="Left"
+                               Margin="12,0,0,0" VerticalAlignment="Center"
+                               ToolTip="{x:Static local:Strings.LanguageTip}"
+                               SelectionChanged="LanguageCombo_SelectionChanged" />
+                  </Grid>
                </ui:CardExpander>
             </StackPanel>
          </ScrollViewer>
@@ -438,12 +464,13 @@
                                       Content="{x:Static local:Strings.SeeErrorLog}"
                                       Click="ErrorLogLink_Click" />
                   <!-- Always present, and quiet. The first-run notice is shown
-                       once; after that this is the only way back to the terms
-                       and the warranty disclaimer from inside the program. -->
-                  <ui:HyperlinkButton x:Name="LicenceLink" Padding="0"
+                       once; after that this is the way back to the version,
+                       the terms, the warranty disclaimer and the credit for
+                       whoever translated the language on screen. -->
+                  <ui:HyperlinkButton x:Name="AboutLink" Padding="0"
                                       Opacity="0.7" FontSize="12"
-                                      Content="{x:Static local:Strings.LicenceLink}"
-                                      Click="LicenceLink_Click" />
+                                      Content="{x:Static local:Strings.AboutLink}"
+                                      Click="AboutLink_Click" />
                </StackPanel>
                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                   <ui:Button x:Name="ShowErrorLogButton" Margin="0,0,8,0"

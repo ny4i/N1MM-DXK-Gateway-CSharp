@@ -30,7 +30,15 @@ namespace N1MM_DXK_GW;
 /// </summary>
 public partial class NoticeWindow : FluentWindow
 {
-   private const string LicenceFileName = "COPYING";
+   /// <summary>
+   /// Candidate names, most useful first. The shipped copy is COPYING.txt so
+   /// Windows opens it in a text editor: an extensionless "COPYING" has no
+   /// association, and double-clicking it raises the "how do you want to open
+   /// this file?" picker offering 7-Zip and Acrobat. The bare name is still
+   /// accepted so running from a source checkout works.
+   /// </summary>
+   private static readonly string[] LicenceFileNames = { "COPYING.txt", "COPYING" };
+
    private const string LicenceUrl = "https://www.gnu.org/licenses/gpl-3.0.html";
 
    public NoticeWindow()
@@ -43,8 +51,23 @@ public partial class NoticeWindow : FluentWindow
    /// puts it. AppContext.BaseDirectory rather than the current directory,
    /// because a shortcut can start the gateway anywhere.
    /// </summary>
-   public static string LicencePath =>
-      Path.Combine(AppContext.BaseDirectory, LicenceFileName);
+   public static string LicencePath
+   {
+      get
+      {
+         foreach (var name in LicenceFileNames)
+         {
+            var candidate = Path.Combine(AppContext.BaseDirectory, name);
+            if (File.Exists(candidate))
+            {
+               return candidate;
+            }
+         }
+         // Nothing found: name the one that should have been installed, so the
+         // "missing licence" message points at the right place.
+         return Path.Combine(AppContext.BaseDirectory, LicenceFileNames[0]);
+      }
+   }
 
    /// <summary>
    /// Opens the licence for reading, from wherever it is invoked.
