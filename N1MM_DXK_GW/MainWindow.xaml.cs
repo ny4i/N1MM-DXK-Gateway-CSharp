@@ -1152,21 +1152,57 @@ public partial class MainWindow : FluentWindow
    private void RefreshFailedQsoStatus()
    {
       var count = failedQsos.RecordCount();
+
       if (count == 0)
       {
-         FailedQsoBar.IsOpen = false;
+         // Present but quiet. Still clickable, because the folder is worth
+         // being able to reach at any time — a file left by an EARLIER run is
+         // otherwise invisible, since this count only ever describes this one.
+         FailedQsoIndicator.Content = IndicatorText(
+            Strings.FailedQsoIndicator,
+            TryFindResource("TextFillColorSecondaryBrush") as System.Windows.Media.Brush,
+            FontWeights.Normal);
+         FailedQsoIndicator.ToolTip = Strings.FailedQsoNoneTip;
+         FailedQsoIndicator.Opacity = 0.75;
          return;
       }
 
-      FailedQsoBar.Message = count == 1
-         ? string.Format(CultureInfo.CurrentCulture, Strings.FailedQsoBarMessageOne, failedQsos.FileName)
-         : string.Format(CultureInfo.CurrentCulture, Strings.FailedQsoBarMessage, count, failedQsos.FileName);
-      FailedQsoBar.ToolTip = string.Format(CultureInfo.CurrentCulture,
-                                           Strings.FailedQsoTip, failedQsos.FilePath);
-      // Not closable: dismissing it would hide a standing condition that has
-      // not been dealt with. It closes itself when the file is gone.
-      FailedQsoBar.IsOpen = true;
+      FailedQsoIndicator.Content = IndicatorText(
+         L(Strings.FailedQsoIndicatorCount, count),
+         new SolidColorBrush(Color.FromRgb(0xC4, 0x2B, 0x1C)),
+         FontWeights.SemiBold);
+      FailedQsoIndicator.ToolTip = L(Strings.FailedQsoTip, count, failedQsos.FilePath);
+      FailedQsoIndicator.Opacity = 1.0;
    }
+
+   /// <summary>
+   /// Builds the indicator's content as a TextBlock carrying its own colour.
+   ///
+   /// Setting Foreground on the HyperlinkButton itself does nothing: its
+   /// template binds the content's colour to a theme brush, so the control
+   /// stayed hyperlink blue however red it was told to be — measured off a
+   /// screenshot, which is the only way that kind of thing shows up. An
+   /// explicit TextBlock supplies the colour the template cannot override.
+   /// </summary>
+   private static TextBlock IndicatorText(
+      string text, System.Windows.Media.Brush? brush, FontWeight weight)
+   {
+      var block = new TextBlock { Text = text, FontWeight = weight };
+      if (brush != null)
+      {
+         block.Foreground = brush;
+      }
+      return block;
+   }
+
+   /// <summary>
+   /// Opens Explorer with the failed-QSO file selected, which answers both
+   /// "where is it" and "what is in that folder" in one action — including
+   /// when the file is not beside the program, as happens when the gateway is
+   /// installed somewhere it cannot write.
+   /// </summary>
+   private void FailedQsoIndicator_Click(object sender, RoutedEventArgs e) =>
+      FailedQsoFolderLink_Click(sender, e);
 
    private void FailedQsoFileLink_Click(object sender, RoutedEventArgs e)
    {
@@ -1343,7 +1379,55 @@ public partial class MainWindow : FluentWindow
       {
          OperationLogList.Items.RemoveAt(0);
       }
+      ScrollLogToBottom();
+   }
+
+   private ScrollViewer? logScrollViewer;
+
+   /// <summary>
+   /// Scrolls the log to its true bottom, padding included.
+   ///
+   /// ScrollIntoView is not enough. It scrolls only until the item is just
+   /// inside the viewport, so the newest line lands hard against the bottom
+   /// edge — underneath the horizontal scrollbar, which in the Fluent style is
+   /// an overlay drawn across the content rather than a strip beside it. The
+   /// line an operator most wants to read is the one it covers.
+   ///
+   /// ScrollToBottom scrolls to the end of the extent, which includes the
+   /// ListBox's bottom padding, so the last line comes to rest above the
+   /// scrollbar instead of behind it.
+   /// </summary>
+   private void ScrollLogToBottom()
+   {
+      logScrollViewer ??= FindDescendant<ScrollViewer>(OperationLogList);
+      if (logScrollViewer != null)
+      {
+         logScrollViewer.ScrollToBottom();
+         return;
+      }
+
+      // Template not realised yet (the first line can arrive before the
+      // ListBox has been through a layout pass). Fall back, and try again for
+      // the scroll viewer on the next line.
       OperationLogList.ScrollIntoView(OperationLogList.Items[^1]);
+   }
+
+   private static T? FindDescendant<T>(DependencyObject root) where T : DependencyObject
+   {
+      for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+      {
+         var child = VisualTreeHelper.GetChild(root, i);
+         if (child is T match)
+         {
+            return match;
+         }
+         var deeper = FindDescendant<T>(child);
+         if (deeper != null)
+         {
+            return deeper;
+         }
+      }
+      return null;
    }
 
    /// <summary>

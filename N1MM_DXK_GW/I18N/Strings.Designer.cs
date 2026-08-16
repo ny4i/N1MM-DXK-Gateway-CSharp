@@ -157,7 +157,7 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running..
+        ///   Looks up a localized string similar to INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running..
         /// </summary>
         public static string AlertInternalError {
             get {
@@ -382,7 +382,7 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show low-priority status events in the operation log (e.g. DDE connect/disconnect).
+        ///   Looks up a localized string similar to Show low-priority status events in the operation log, such as DDE connecting and disconnecting.
         /// </summary>
         public static string CheckVerboseLoggingTip {
             get {
@@ -638,33 +638,6 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone..
-        /// </summary>
-        public static string FailedQsoBarMessage {
-            get {
-                return ResourceManager.GetString("FailedQsoBarMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone..
-        /// </summary>
-        public static string FailedQsoBarMessageOne {
-            get {
-                return ResourceManager.GetString("FailedQsoBarMessageOne", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to QSOs not delivered.
-        /// </summary>
-        public static string FailedQsoBarTitle {
-            get {
-                return ResourceManager.GetString("FailedQsoBarTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} QSOs not delivered — open.
         /// </summary>
         public static string FailedQsoCount {
@@ -679,6 +652,33 @@ namespace N1MM_DXK_GW {
         public static string FailedQsoCountOne {
             get {
                 return ResourceManager.GetString("FailedQsoCountOne", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed QSOs.
+        /// </summary>
+        public static string FailedQsoIndicator {
+            get {
+                return ResourceManager.GetString("FailedQsoIndicator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed QSOs: {0}.
+        /// </summary>
+        public static string FailedQsoIndicatorCount {
+            get {
+                return ResourceManager.GetString("FailedQsoIndicatorCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No QSOs have failed this run. Click to open the folder where they would be saved, in case an earlier run left a file behind..
+        /// </summary>
+        public static string FailedQsoNoneTip {
+            get {
+                return ResourceManager.GetString("FailedQsoNoneTip", resourceCulture);
             }
         }
         
@@ -701,7 +701,9 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Import {0} into DXKeeper, then delete it. This count clears when the file is gone..
+        ///   Looks up a localized string similar to {0} QSOs were not delivered to DXKeeper this run. Click to show the file in its folder, import it into DXKeeper, then delete it. This count clears when the file is gone.
+        ///
+        ///{1}.
         /// </summary>
         public static string FailedQsoTip {
             get {
@@ -809,7 +811,7 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Operation log copied to the clipboard ({0} lines)..
+        ///   Looks up a localized string similar to Operation log copied to the clipboard — {0} lines..
         /// </summary>
         public static string LogCopied {
             get {
@@ -949,24 +951,6 @@ namespace N1MM_DXK_GW {
         public static string NoticeWhereToFind {
             get {
                 return ResourceManager.GetString("NoticeWhereToFind", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open File.
-        /// </summary>
-        public static string OpenFileButton {
-            get {
-                return ResourceManager.GetString("OpenFileButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open Folder.
-        /// </summary>
-        public static string OpenFolderButton {
-            get {
-                return ResourceManager.GetString("OpenFolderButton", resourceCulture);
             }
         }
         

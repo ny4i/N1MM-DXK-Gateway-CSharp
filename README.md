@@ -103,7 +103,7 @@ In N1MM+ version 7336 or later, typing a callsign and striking the **Space** b
 
 Clicking this window’s **Help** button displays the web page you’re now reading.
 
-An indication in red font will appear if new entries have been placed in an Errorlog.txt file in the folder in which the Gateway resides; if this happens, please [<u style="box-sizing: border-box;">report<br style="box-sizing: border-box;">it</u>](mailto:DXLab@groups.io) to the DXLab Discussion Group. During normal operation, the Gateway’s main window can be minimized; its primary purpose is to permit the Gateway to be terminated when desired.
+An indication in red font will appear if new entries have been placed in an Errorlog.txt file in the folder in which the Gateway resides; if this happens, please report it to the [DXLabs Groups.IO](mailto:DXLab@groups.io) or better yet, open an issue in GitHub. During normal operation, the Gateway’s main window can be minimized; its primary purpose is to permit the Gateway to be terminated when desired. When minimized, it will go into the Windows Tool Tray
 
 With the Gateway running, logging a QSO in  [N1MM+](https://n1mmwp.hamdocs.com/setup/interfacing/) will log a QSO with the following [ADIF fields](https://www.dxlabsuite.com/ADIF.htm#ADIF-defined%20Fields) in [DXKeeper](https://www.dxlabsuite.com/dxkeeper/):
 
@@ -152,7 +152,7 @@ With the Gateway running, logging a QSO in  [N1MM+](https://n1mmwp.hamdocs.com
 
 - RX_PWR (K or KW will be recorded as 1000; QRP will be recorded as 5)
 
-If you have questions or suggestions, please [<u style="box-sizing: border-box;">send them via email</u>](mailto:DXLab@groups.io) to the DXLab Discussion Group.
+If you have questions or suggestions, please [send them via email](mailto:DXLab@groups.io) to the DXLab Discussion Group.
 
 ## Theory of Operation
 
@@ -160,7 +160,7 @@ In Process…
 
 ## Pending Changes
 
-Please note that the Gateway does not handle the Log Editing and Log deleting capabilities that the N1MM UDP messages support. That is implemented in this beta version: [N1MM_DXK_GW_1.3.3](https://ny4i.com/wp-content/uploads/2026/08/N1MM_DXK_GW_1.3.3.zip)
+Please note that the Gateway does not handle the Log Editing and Log deleting capabilities that the N1MM UDP messages support. That is implemented in this beta version: [N1MM_DXK_GW_2.0.0](https://ny4i.com/wp-content/uploads/2026/08/N1MM_DXK_GW_1.3.3.zip)
 
 [NY4I](https://ny4i.com/)
 

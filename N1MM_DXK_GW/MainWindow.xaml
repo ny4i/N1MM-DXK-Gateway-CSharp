@@ -413,6 +413,21 @@
                         BorderThickness="0" Background="Transparent"
                         ScrollViewer.HorizontalScrollBarVisibility="Auto"
                         VirtualizingStackPanel.IsVirtualizing="True">
+                  <!-- The clearance for the horizontal scrollbar goes HERE, on
+                       the items panel, and not on the ListBox's Padding.
+                       Fluent draws that scrollbar as an overlay across the
+                       content rather than as a strip beside it, so without
+                       clearance it lies over the newest line - which in a log
+                       pinned to the bottom is always the line being read.
+                       Padding on the ListBox does not fix it: it is not part
+                       of the scrollable extent, so scrolling to the end still
+                       puts the last line under the bar. The panel's margin is
+                       inside the scroll viewer and does count. -->
+                  <ListBox.ItemsPanel>
+                     <ItemsPanelTemplate>
+                        <VirtualizingStackPanel Margin="0,0,0,14" />
+                     </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
                   <ListBox.ItemContainerStyle>
                      <Style TargetType="ListBoxItem">
                         <Setter Property="Padding" Value="2,1,2,1" />
@@ -435,26 +450,6 @@
             <!-- A real InfoBar rather than a coloured sentence with links: this
                  is a standing condition needing an action, which is exactly
                  what InfoBar is for. -->
-            <ui:InfoBar x:Name="FailedQsoBar"
-                        Severity="Warning"
-                        IsOpen="False"
-                        IsClosable="False"
-                        Margin="0,0,0,10"
-                        Title="{x:Static local:Strings.FailedQsoBarTitle}">
-               <ui:InfoBar.Content>
-                  <StackPanel Orientation="Horizontal" Margin="0,10,0,4">
-                     <ui:Button x:Name="FailedQsoFileButton" Margin="0,0,8,0"
-                                Icon="{ui:SymbolIcon Document24}"
-                                Content="{x:Static local:Strings.OpenFileButton}"
-                                Click="FailedQsoFileLink_Click" />
-                     <ui:Button x:Name="FailedQsoFolderButton"
-                                Icon="{ui:SymbolIcon FolderOpen24}"
-                                Content="{x:Static local:Strings.OpenFolderButton}"
-                                Click="FailedQsoFolderLink_Click" />
-                  </StackPanel>
-               </ui:InfoBar.Content>
-            </ui:InfoBar>
-
             <Grid>
                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"
                            VerticalAlignment="Center">
@@ -472,6 +467,20 @@
                                       Content="{x:Static local:Strings.AboutLink}"
                                       Click="AboutLink_Click" />
                </StackPanel>
+               <!-- Failed QSOs, centre of the footer. This replaced a warning
+                    bar that stayed on screen until the file was deleted. The
+                    bar was right that an undelivered QSO must not be missed
+                    and wrong about how: a permanent block nagging about a
+                    condition the operator has already read is how a warning
+                    becomes wallpaper. This says the same thing in one line,
+                    goes quiet when there is nothing to say, and is the way to
+                    the file at any time - including for a file an earlier run
+                    left behind, which nothing previously surfaced at all. -->
+               <ui:HyperlinkButton x:Name="FailedQsoIndicator"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Padding="0" FontSize="12"
+                                   Click="FailedQsoIndicator_Click" />
+
                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                   <ui:Button x:Name="ShowErrorLogButton" Margin="0,0,8,0"
                              Icon="{ui:SymbolIcon DocumentError24}"

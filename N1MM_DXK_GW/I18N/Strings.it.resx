@@ -46,6 +46,15 @@
     has no screenshot to work from. Prefer plain, literal wording even where
     it reads a little flatter in English.
 
+    Avoid brackets, especially around a placeholder. "Failed QSOs ({0})" came
+    back from the machine pass as "Failed QSOs (){0})", which renders as
+    "Failed QSOs ()2)"; the same happened to three other strings that had
+    parenthesised asides. The placeholder itself survived every time - it is
+    the punctuation wrapped tightly around it that does not. Use a dash, a
+    colon or a second sentence instead. tools/translate_resx.py now rejects a
+    translation that leaves brackets unbalanced, so a string written this way
+    simply stays in English rather than shipping broken.
+
     Placeholders must keep their indices. A translation may reorder {0} and
     {1} freely, but inventing an index the English string does not have makes
     string.Format throw. MainWindow.L() catches that and shows the raw
@@ -162,32 +171,24 @@
     <comment>EN: Clear the on-screen log. ErrorLog.txt is not affected.</comment>
   </data>
   <data name="LogCopied" xml:space="preserve">
-    <value>Registro di funzionamento copiato sul clipboard ({0} linee).</value>
-    <comment>EN: Operation log copied to the clipboard ({0} lines).
-    NOTE: {0} is a line count.</comment>
+    <value>Registro di funzionamento copiato al clipboard — {0} Linee.</value>
+    <comment>EN: Operation log copied to the clipboard — {0} lines.
+    NOTE: {0} is a line count. Written without brackets on purpose: parenthesised text around a placeholder is where the machine pass loses a bracket, and the result renders as ")12 lines". See the note on brackets at the top of this file.</comment>
   </data>
-  <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOs non consegnato</value>
-    <comment>EN: QSOs not delivered
-    NOTE: Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
+  <data name="FailedQsoIndicator" xml:space="preserve">
+    <value>Sfigato QSOs</value>
+    <comment>EN: Failed QSOs
+    NOTE: Always-present link in the middle of the window footer. Quiet when nothing has failed, highlighted with a count when something has. Keep it SHORT - it sits between two groups of buttons.</comment>
   </data>
-  <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs da questa sessione non poteva essere consegnato DXKeeper. Importazione {1} a DXKeeper, poi cancellarlo — questo avviso si cancella quando il file è andato.</value>
-    <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.
-    NOTE: {0} is a count, {1} is a filename. Do not translate the filename.</comment>
+  <data name="FailedQsoIndicatorCount" xml:space="preserve">
+    <value>Sfigato QSOs: {0}</value>
+    <comment>EN: Failed QSOs: {0}
+    NOTE: Same link once QSOs have failed this run. {0} is a count. Keep it short. Written without brackets on purpose - as "Failed QSOs ({0})" the machine pass moved the bracket and returned "(){0})", which reads as "Failed QSOs ()2)". Punctuation wrapped tightly around a placeholder does not survive translation reliably.</comment>
   </data>
-  <data name="FailedQsoBarMessageOne" xml:space="preserve">
-    <value>1 QSO da questa sessione non poteva essere consegnato DXKeeper. Importazione {0} a DXKeeper, poi cancellarlo — questo avviso si cancella quando il file è andato.</value>
-    <comment>EN: 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.
-    NOTE: Singular form. {0} is a filename. Do not translate the filename.</comment>
-  </data>
-  <data name="OpenFileButton" xml:space="preserve">
-    <value>Aprire il file</value>
-    <comment>EN: Open File</comment>
-  </data>
-  <data name="OpenFolderButton" xml:space="preserve">
-    <value>Cartella aperta</value>
-    <comment>EN: Open Folder</comment>
+  <data name="FailedQsoNoneTip" xml:space="preserve">
+    <value>No. QSOs hanno fallito questa corsa. Fare clic per aprire la cartella in cui sarebbero stati salvati, nel caso in cui una prima esecuzione abbia lasciato un file dietro.</value>
+    <comment>EN: No QSOs have failed this run. Click to open the folder where they would be saved, in case an earlier run left a file behind.
+    NOTE: Tooltip when nothing has failed. The second half matters: a file from an earlier run is otherwise easy to miss.</comment>
   </data>
   <data name="UdpPortLabel" xml:space="preserve">
     <value>UDP porta di ascolto:</value>
@@ -325,9 +326,9 @@
     <comment>EN: Verbose logging</comment>
   </data>
   <data name="CheckVerboseLoggingTip" xml:space="preserve">
-    <value>Mostra eventi di stato a bassa priorità nel registro di funzionamento (ad es. DDE collegare/discollegare)</value>
-    <comment>EN: Show low-priority status events in the operation log (e.g. DDE connect/disconnect)
-    NOTE: "DDE" is a Windows protocol name - do not translate.</comment>
+    <value>Mostra eventi di stato a bassa priorità nel registro di funzionamento, come DDE collegamento e disconnessione</value>
+    <comment>EN: Show low-priority status events in the operation log, such as DDE connecting and disconnecting
+    NOTE: "DDE" is a Windows protocol name - do not translate. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
     <value>{0} QSOs non consegnato — aperto</value>
@@ -351,9 +352,13 @@
     NOTE: Link that shows the failed-QSO file in Explorer.</comment>
   </data>
   <data name="FailedQsoTip" xml:space="preserve">
-    <value>Importazioni {0} a DXKeeper, poi cancellalo. Questo conteggio si cancella quando il file è andato.</value>
-    <comment>EN: Import {0} into DXKeeper, then delete it. This count clears when the file is gone.
-    NOTE: Tooltip. {0} is the full path of the ADIF file - do not translate it.</comment>
+    <value>{0} QSOs non sono stati consegnati DXKeeper questa corsa. Fare clic per mostrare il file nella sua cartella, importarlo in DXKeeper, poi cancellalo. Questo conteggio si cancella quando il file è andato.
+
+{1}</value>
+    <comment>EN: {0} QSOs were not delivered to DXKeeper this run. Click to show the file in its folder, import it into DXKeeper, then delete it. This count clears when the file is gone.
+
+{1}
+    NOTE: Tooltip once QSOs have failed. {0} is a count, {1} is the full path of the ADIF file - do not translate the path.</comment>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
     <value>Lingua:</value>
@@ -490,8 +495,8 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>INTERNO ERROR gestire un messaggio ({0}: {1}) vedi ErrorLog.txt. Il gateway è ancora in esecuzione.</value>
-    <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.
+    <value>ERROR INTERNALE che gestisce un messaggio. {0}: {1}. Vedi ErrorLog.txt. Il gateway è ancora in esecuzione.</value>
+    <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
     NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">

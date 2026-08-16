@@ -3,6 +3,7 @@
 Translate Strings.resx into a satellite Strings.<culture>.resx via LibreTranslate.
 
     python tools/translate_resx.py de ja uk        # add what is new or changed
+    python tools/translate_resx.py de --recheck    # also redo what fails today's checks
     python tools/translate_resx.py de --force      # retranslate everything
 
 INCREMENTAL BY DEFAULT, AND THAT IS THE POINT.
@@ -179,6 +180,27 @@ def placeholders(text):
     return sorted(PLACEHOLDER.findall(text))
 
 
+def unbalanced(translated, english):
+    """Brackets left unbalanced by the translation.
+
+    Comparing the SET of placeholders is not enough to know a string survived.
+    "Failed QSOs ({0})" came back from German as "Failed QSOs (){0})" - same
+    one placeholder, correctly restored, and the text around it scrambled into
+    something that renders as "Failed QSOs ()2)".
+
+    Only flagged where the English itself was balanced, since a translation is
+    free to drop a bracket pair the English had, and only for brackets: quote
+    characters differ legitimately between scripts.
+    """
+    bad = []
+    for opener, closer in (("(", ")"), ("[", "]")):
+        if english.count(opener) != english.count(closer):
+            continue
+        if translated.count(opener) != translated.count(closer):
+            bad.append(opener + closer)
+    return bad
+
+
 # Scripts that separate words with spaces. Deliberately excludes CJK: Japanese
 # and Chinese do not space between words, so "DXKeeper削除します" is ordinary
 # typography there and must not be treated as damage.
@@ -285,7 +307,20 @@ def load_existing(path):
     return out
 
 
-def main(targets, force=False):
+def fails_checks(translated, english):
+    """Whether an existing translation would be rejected by today's checks.
+
+    The checks have grown as damage was found - a fused product name, an
+    unbalanced bracket - and entries written before a check existed keep
+    passing, because incremental mode never looks at them again once the
+    English stops changing. This is what --recheck uses to find them.
+    """
+    return (placeholders(translated) != placeholders(english)
+            or bool(glued(translated, english))
+            or bool(unbalanced(translated, english)))
+
+
+def main(targets, force=False, recheck=False):
     tree = ET.parse(RESX)
     root = tree.getroot()
 
@@ -334,9 +369,15 @@ def main(targets, force=False):
             # retranslated, because the old translation is now wrong.
             prior, stored_en = existing.get(name, (None, None))
             if prior is not None and stored_en == english:
-                translated[name] = prior
-                kept += 1
-                continue
+                # --recheck re-runs today's checks over what is already there
+                # and redoes only what fails. Opt-in, not automatic: a human
+                # correction is kept even if a check dislikes it, unless
+                # somebody deliberately asks for the sweep.
+                if not (recheck and fails_checks(prior, english)):
+                    translated[name] = prior
+                    kept += 1
+                    continue
+                problems.append(f"{name}: failed a current check, retranslating")
 
             masked, originals = mask(english)
 
@@ -365,6 +406,11 @@ def main(targets, force=False):
                 problems.append(
                     f"{name}: placeholders changed "
                     f"{placeholders(english)} -> {placeholders(restored)}")
+                translated[name] = english
+            elif unbalanced(restored, english):
+                problems.append(
+                    f"{name}: brackets left unbalanced "
+                    f"({', '.join(unbalanced(restored, english))})")
                 translated[name] = english
             elif len(restored) > 3 * len(english) + 40:
                 # Degeneration guard. A translation model that loses its way
@@ -437,7 +483,10 @@ def write(path, translated, entries, repaired=frozenset()):
 
 
 if __name__ == "__main__":
-    args = [a for a in sys.argv[1:] if a != "--force"]
+    flags = {"--force", "--recheck"}
+    args = [a for a in sys.argv[1:] if a not in flags]
     if not args:
         sys.exit(__doc__)
-    main(args, force="--force" in sys.argv[1:])
+    main(args,
+         force="--force" in sys.argv[1:],
+         recheck="--recheck" in sys.argv[1:])

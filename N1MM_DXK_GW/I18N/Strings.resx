@@ -46,6 +46,15 @@
     has no screenshot to work from. Prefer plain, literal wording even where
     it reads a little flatter in English.
 
+    Avoid brackets, especially around a placeholder. "Failed QSOs ({0})" came
+    back from the machine pass as "Failed QSOs (){0})", which renders as
+    "Failed QSOs ()2)"; the same happened to three other strings that had
+    parenthesised asides. The placeholder itself survived every time - it is
+    the punctuation wrapped tightly around it that does not. Use a dash, a
+    colon or a second sentence instead. tools/translate_resx.py now rejects a
+    translation that leaves brackets unbalanced, so a string written this way
+    simply stays in English rather than shipping broken.
+
     Placeholders must keep their indices. A translation may reorder {0} and
     {1} freely, but inventing an index the English string does not have makes
     string.Format throw. MainWindow.L() catches that and shows the raw
@@ -153,27 +162,21 @@
     <value>Clear the on-screen log. ErrorLog.txt is not affected.</value>
   </data>
   <data name="LogCopied" xml:space="preserve">
-    <value>Operation log copied to the clipboard ({0} lines).</value>
-    <comment>{0} is a line count.</comment>
+    <value>Operation log copied to the clipboard — {0} lines.</value>
+    <comment>{0} is a line count. Written without brackets on purpose: parenthesised text around a placeholder is where the machine pass loses a bracket, and the result renders as ")12 lines". See the note on brackets at the top of this file.</comment>
   </data>
 
-  <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOs not delivered</value>
-    <comment>Title of the warning bar shown when DXKeeper did not confirm one or more QSOs.</comment>
+  <data name="FailedQsoIndicator" xml:space="preserve">
+    <value>Failed QSOs</value>
+    <comment>Always-present link in the middle of the window footer. Quiet when nothing has failed, highlighted with a count when something has. Keep it SHORT - it sits between two groups of buttons.</comment>
   </data>
-  <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.</value>
-    <comment>{0} is a count, {1} is a filename. Do not translate the filename.</comment>
+  <data name="FailedQsoIndicatorCount" xml:space="preserve">
+    <value>Failed QSOs: {0}</value>
+    <comment>Same link once QSOs have failed this run. {0} is a count. Keep it short. Written without brackets on purpose - as "Failed QSOs ({0})" the machine pass moved the bracket and returned "(){0})", which reads as "Failed QSOs ()2)". Punctuation wrapped tightly around a placeholder does not survive translation reliably.</comment>
   </data>
-  <data name="FailedQsoBarMessageOne" xml:space="preserve">
-    <value>1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.</value>
-    <comment>Singular form. {0} is a filename. Do not translate the filename.</comment>
-  </data>
-  <data name="OpenFileButton" xml:space="preserve">
-    <value>Open File</value>
-  </data>
-  <data name="OpenFolderButton" xml:space="preserve">
-    <value>Open Folder</value>
+  <data name="FailedQsoNoneTip" xml:space="preserve">
+    <value>No QSOs have failed this run. Click to open the folder where they would be saved, in case an earlier run left a file behind.</value>
+    <comment>Tooltip when nothing has failed. The second half matters: a file from an earlier run is otherwise easy to miss.</comment>
   </data>
   <data name="UdpPortLabel" xml:space="preserve">
     <value>UDP listening port:</value>
@@ -284,8 +287,8 @@
     <value>Verbose logging</value>
   </data>
   <data name="CheckVerboseLoggingTip" xml:space="preserve">
-    <value>Show low-priority status events in the operation log (e.g. DDE connect/disconnect)</value>
-    <comment>"DDE" is a Windows protocol name - do not translate.</comment>
+    <value>Show low-priority status events in the operation log, such as DDE connecting and disconnecting</value>
+    <comment>"DDE" is a Windows protocol name - do not translate. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
   </data>
 
   <data name="FailedQsoCount" xml:space="preserve">
@@ -305,8 +308,10 @@
     <comment>Link that shows the failed-QSO file in Explorer.</comment>
   </data>
   <data name="FailedQsoTip" xml:space="preserve">
-    <value>Import {0} into DXKeeper, then delete it. This count clears when the file is gone.</value>
-    <comment>Tooltip. {0} is the full path of the ADIF file - do not translate it.</comment>
+    <value>{0} QSOs were not delivered to DXKeeper this run. Click to show the file in its folder, import it into DXKeeper, then delete it. This count clears when the file is gone.
+
+{1}</value>
+    <comment>Tooltip once QSOs have failed. {0} is a count, {1} is the full path of the ADIF file - do not translate the path.</comment>
   </data>
 
   <!-- ============================ language picker ======================= -->
@@ -420,7 +425,7 @@ Use the folder link and import the file into DXKeeper from there.</value>
     <comment>"contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.</value>
+    <value>INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.</value>
     <comment>A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
