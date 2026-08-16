@@ -473,6 +473,59 @@ Use the folder link and import the file into DXKeeper from there.</value>
     <comment>Last-resort wording when no more specific reason is available.</comment>
   </data>
 
+  <!-- ========================= licence notice ========================= -->
+  <!-- Shown once, on first run. The GPL is NOT an end-user licence agreement
+       and does not have to be accepted to run the program - GPLv3 section 9
+       says so outright. What this notice exists for is the WARRANTY
+       DISCLAIMER, which does benefit from being put in front of the operator
+       plainly, so the wording acknowledges rather than demands agreement. -->
+
+  <data name="NoticeTitle" xml:space="preserve">
+    <value>About this program</value>
+    <comment>Title of the first-run notice window. Deliberately not "Licence Agreement" - nothing is being agreed to.</comment>
+  </data>
+  <data name="NoticeHeading" xml:space="preserve">
+    <value>Free software, and no warranty</value>
+  </data>
+  <data name="NoticeFreeSoftware" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway is free software under the GNU General Public License, version 3 or later. You may use it for any purpose, study how it works, share it, and change it.</value>
+    <comment>"GNU General Public License" is the name of a licence - do not translate it.</comment>
+  </data>
+  <data name="NoticeWarranty" xml:space="preserve">
+    <value>It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.</value>
+    <comment>The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
+  </data>
+  <data name="NoticeWhereToFind" xml:space="preserve">
+    <value>The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.</value>
+    <comment>"COPYING" is a filename - do not translate it.</comment>
+  </data>
+  <data name="NoticeViewLicence" xml:space="preserve">
+    <value>View the licence</value>
+    <comment>Button that opens the COPYING file.</comment>
+  </data>
+  <data name="NoticeUnderstood" xml:space="preserve">
+    <value>I understand</value>
+    <comment>Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
+  </data>
+  <data name="LicenceLink" xml:space="preserve">
+    <value>Licence</value>
+    <comment>Small link in the window footer that opens the licence at any time.</comment>
+  </data>
+  <data name="DlgCouldNotOpenLicence" xml:space="preserve">
+    <value>Could not open the licence file:
+
+{0}</value>
+    <comment>{0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgLicenceMissing" xml:space="preserve">
+    <value>The licence file is not where it should be:
+
+{0}
+
+This program is free software under the GNU General Public License version 3 or later, and comes with ABSOLUTELY NO WARRANTY. You can read the licence at https://www.gnu.org/licenses/gpl-3.0.html</value>
+    <comment>Shown when COPYING is missing next to the program - a broken install. {0} is a file path. Do not translate the URL or the licence name.</comment>
+  </data>
+
   <!-- ======================== notification area ======================= -->
   <!-- Keep these SHORT. The tray tooltip is capped at 127 characters by
        Windows and is truncated past that, and menu entries in a notification

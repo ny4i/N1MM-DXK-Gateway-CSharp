@@ -430,12 +430,21 @@
             </ui:InfoBar>
 
             <Grid>
-               <ui:HyperlinkButton x:Name="ErrorLogLink"
-                                   HorizontalAlignment="Left" VerticalAlignment="Center"
-                                   Visibility="Collapsed" Padding="0"
-                                   Foreground="{DynamicResource SystemFillColorCriticalBrush}"
-                                   Content="{x:Static local:Strings.SeeErrorLog}"
-                                   Click="ErrorLogLink_Click" />
+               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"
+                           VerticalAlignment="Center">
+                  <ui:HyperlinkButton x:Name="ErrorLogLink"
+                                      Visibility="Collapsed" Padding="0" Margin="0,0,12,0"
+                                      Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                      Content="{x:Static local:Strings.SeeErrorLog}"
+                                      Click="ErrorLogLink_Click" />
+                  <!-- Always present, and quiet. The first-run notice is shown
+                       once; after that this is the only way back to the terms
+                       and the warranty disclaimer from inside the program. -->
+                  <ui:HyperlinkButton x:Name="LicenceLink" Padding="0"
+                                      Opacity="0.7" FontSize="12"
+                                      Content="{x:Static local:Strings.LicenceLink}"
+                                      Click="LicenceLink_Click" />
+               </StackPanel>
                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                   <ui:Button x:Name="ShowErrorLogButton" Margin="0,0,8,0"
                              Icon="{ui:SymbolIcon DocumentError24}"

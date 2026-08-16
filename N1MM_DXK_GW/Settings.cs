@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.Globalization;
 using Microsoft.Win32;
 
@@ -30,6 +32,14 @@ public sealed class Settings
    /// </summary>
    public string Language { get; set; } = string.Empty;
 
+   /// <summary>
+   /// True once the operator has seen the first-run notice. Not an acceptance
+   /// record — the GPL requires no acceptance to run the program — just a note
+   /// that the warranty disclaimer has been put in front of them, so it is
+   /// shown once rather than at every start.
+   /// </summary>
+   public bool NoticeSeen { get; set; }
+
    public bool DxkLookup { get; set; }
    public bool DxkCallbook { get; set; }
    public bool DxkEqslUpload { get; set; }
@@ -57,6 +67,7 @@ public sealed class Settings
       s.UdpPort = ReadInt(key, "N1MMUDPPort", DefaultUdpPort);
       s.MulticastGroup = key.GetValue("MulticastGroup") as string ?? string.Empty;
       s.Language = key.GetValue("Language") as string ?? string.Empty;
+      s.NoticeSeen = ReadBool(key, "NoticeSeen");
       s.DxkLookup = ReadBool(key, "DXKeeperLookup");
       s.DxkCallbook = ReadBool(key, "DXKeeperCallbookQuery");
       s.DxkEqslUpload = ReadBool(key, "DXKeepereQSLUpload");
@@ -80,6 +91,7 @@ public sealed class Settings
       WriteString(key, "N1MMUDPPort", UdpPort.ToString(CultureInfo.InvariantCulture));
       WriteString(key, "MulticastGroup", MulticastGroup);
       WriteString(key, "Language", Language);
+      WriteString(key, "NoticeSeen", BoolToVb(NoticeSeen));
       WriteString(key, "DXKeeperLookup", BoolToVb(DxkLookup));
       WriteString(key, "DXKeeperCallbookQuery", BoolToVb(DxkCallbook));
       WriteString(key, "DXKeepereQSLUpload", BoolToVb(DxkEqslUpload));

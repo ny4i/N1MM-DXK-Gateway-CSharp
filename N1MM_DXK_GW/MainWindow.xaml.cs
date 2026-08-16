@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.Globalization;
 using System.Net;
 using System.Resources;
@@ -236,6 +238,10 @@ public partial class MainWindow : FluentWindow
       dxkDde.Start();
       dxvDde.Start();
       pfDde.Start();
+
+      // Last, deliberately: everything above is already running, so the notice
+      // never delays the gateway starting to listen.
+      ShowFirstRunNoticeIfNeeded();
    }
 
    private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
@@ -1196,6 +1202,35 @@ public partial class MainWindow : FluentWindow
    });
 
    private void ErrorLogLink_Click(object sender, RoutedEventArgs e) => OpenErrorLog();
+
+   private void LicenceLink_Click(object sender, RoutedEventArgs e) =>
+      NoticeWindow.ShowLicence(this);
+
+   /// <summary>
+   /// Shows the first-run notice once, after the listener is already up.
+   ///
+   /// Order matters. The gateway is often started in a hurry at the beginning
+   /// of a contest, so nothing may stand between launching it and it receiving
+   /// QSOs. The dialog is modal to the window but WPF keeps pumping the
+   /// dispatcher underneath it, so the dequeue timer keeps draining and no
+   /// datagram is lost while the notice is on screen.
+   /// </summary>
+   private void ShowFirstRunNoticeIfNeeded()
+   {
+      if (settings.NoticeSeen)
+      {
+         return;
+      }
+
+      var notice = new NoticeWindow { Owner = this };
+      notice.ShowDialog();
+
+      // Recorded once it has been shown, not once it has been "accepted":
+      // there is nothing to accept, and the operator closing the window by any
+      // means has still had the disclaimer put in front of them.
+      settings.NoticeSeen = true;
+      settings.Save();
+   }
 
    private void ShowErrorLogButton_Click(object sender, RoutedEventArgs e) => OpenErrorLog();
 

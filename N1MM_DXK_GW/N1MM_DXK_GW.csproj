@@ -39,6 +39,19 @@
     <EmbeddedResource Include="N1MM_DXK_GW.ico" />
   </ItemGroup>
 
+  <!-- The licence travels with the binary, not just with the repository.
+       NoticeWindow reads COPYING from AppContext.BaseDirectory, the GPL
+       requires the terms to accompany what is conveyed, and NDde's own licence
+       requires its notices to be distributed alongside. An installer picks
+       these up simply by taking the output directory. -->
+  <ItemGroup>
+    <Content Include="..\COPYING" Link="COPYING" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\NOTICE.md" Link="NOTICE.md" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\third-party-licenses\**"
+             Link="third-party-licenses\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
   <!-- Strings.Designer.cs is CHECKED IN, not generated at build time, and must
        stay that way. WPF runs MarkupCompilePass1 before PrepareResources, so a
        build-generated resource class does not exist yet when XAML referencing

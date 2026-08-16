@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.Windows.Media;
 
 // WinForms is still referenced (NDde's hidden window), so System.Drawing also

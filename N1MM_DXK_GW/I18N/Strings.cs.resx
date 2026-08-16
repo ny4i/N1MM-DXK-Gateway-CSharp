@@ -548,6 +548,68 @@ Use the folder link and import the file into DXKeeper from there.
     <comment>EN: the send failed
     NOTE: Last-resort wording when no more specific reason is available.</comment>
   </data>
+  <data name="NoticeTitle" xml:space="preserve">
+    <value>O tomto programu</value>
+    <comment>EN: About this program
+    NOTE: Title of the first-run notice window. Deliberately not "Licence Agreement" - nothing is being agreed to.</comment>
+  </data>
+  <data name="NoticeHeading" xml:space="preserve">
+    <value>Volný software a žádná záruka</value>
+    <comment>EN: Free software, and no warranty</comment>
+  </data>
+  <data name="NoticeFreeSoftware" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway je svobodný software pod GNU General Public License, verze 3 nebo novější. Můžete ho použít pro jakýkoliv účel, studovat, jak funguje, sdílet a změnit.</value>
+    <comment>EN: N1MM-DXKeeper Gateway is free software under the GNU General Public License, version 3 or later. You may use it for any purpose, study how it works, share it, and change it.
+    NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
+  </data>
+  <data name="NoticeWarranty" xml:space="preserve">
+    <value>Je to naprosto bez vášně. Je nabízena v naději, že je užitečná, ale nikdo nezaručuje, že je vhodná pro jakýkoliv konkrétní účel, a žádný dodavatel není odpovědný za nic, co se pokazí. Váš deník je vaše zodpovědnost: zkontrolujte, že QSOs dosah DXKeeper.</value>
+    <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
+    NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
+  </data>
+  <data name="NoticeWhereToFind" xml:space="preserve">
+    <value>Plná licence je v souboru COPYING vedle programu a je vždy k dispozici z odkazu Licence v okně.</value>
+    <comment>EN: The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window.
+    NOTE: "COPYING" is a filename - do not translate it.</comment>
+  </data>
+  <data name="NoticeViewLicence" xml:space="preserve">
+    <value>Zobrazit licenci</value>
+    <comment>EN: View the licence
+    NOTE: Button that opens the COPYING file.</comment>
+  </data>
+  <data name="NoticeUnderstood" xml:space="preserve">
+    <value>Rozumím.</value>
+    <comment>EN: I understand
+    NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
+  </data>
+  <data name="LicenceLink" xml:space="preserve">
+    <value>Licence</value>
+    <comment>EN: Licence
+    NOTE: Small link in the window footer that opens the licence at any time.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
+  </data>
+  <data name="DlgCouldNotOpenLicence" xml:space="preserve">
+    <value>Nelze otevřít licenční soubor:
+
+{0}</value>
+    <comment>EN: Could not open the licence file:
+
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgLicenceMissing" xml:space="preserve">
+    <value>Licenční soubor není tam, kde by měl být:
+
+{0}
+
+Tento program je svobodný software pod GNU General Public License verze 3 nebo novější, a přichází s ABSOLULY NO WARRANTY. Licenci si můžete přečíst na adrese https: / / www.gnu.org / licences / gpl-3.0.html</value>
+    <comment>EN: The licence file is not where it should be:
+
+{0}
+
+This program is free software under the GNU General Public License version 3 or later, and comes with ABSOLUTELY NO WARRANTY. You can read the licence at https://www.gnu.org/licenses/gpl-3.0.html
+    NOTE: Shown when COPYING is missing next to the program - a broken install. {0} is a file path. Do not translate the URL or the licence name.</comment>
+  </data>
   <data name="TrayShow" xml:space="preserve">
     <value>Otevřít okno brány</value>
     <comment>EN: Open the gateway window

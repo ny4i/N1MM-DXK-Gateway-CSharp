@@ -392,6 +392,30 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not open the licence file:
+        ///
+        ///{0}.
+        /// </summary>
+        public static string DlgCouldNotOpenLicence {
+            get {
+                return ResourceManager.GetString("DlgCouldNotOpenLicence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The licence file is not where it should be:
+        ///
+        ///{0}
+        ///
+        ///This program is free software under the GNU General Public License version 3 or later, and comes with ABSOLUTELY NO WARRANTY. You can read the licence at https://www.gnu.org/licenses/gpl-3.0.html.
+        /// </summary>
+        public static string DlgLicenceMissing {
+            get {
+                return ResourceManager.GetString("DlgLicenceMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}.
         ///
         ///Leave this blank unless the sending program is configured to send to a multicast group..
@@ -668,6 +692,15 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Licence.
+        /// </summary>
+        public static string LicenceLink {
+            get {
+                return ResourceManager.GetString("LicenceLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Clear.
         /// </summary>
         public static string LogClear {
@@ -763,6 +796,69 @@ namespace N1MM_DXK_GW {
         public static string NetworkHeader {
             get {
                 return ResourceManager.GetString("NetworkHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to N1MM-DXKeeper Gateway is free software under the GNU General Public License, version 3 or later. You may use it for any purpose, study how it works, share it, and change it..
+        /// </summary>
+        public static string NoticeFreeSoftware {
+            get {
+                return ResourceManager.GetString("NoticeFreeSoftware", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Free software, and no warranty.
+        /// </summary>
+        public static string NoticeHeading {
+            get {
+                return ResourceManager.GetString("NoticeHeading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to About this program.
+        /// </summary>
+        public static string NoticeTitle {
+            get {
+                return ResourceManager.GetString("NoticeTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I understand.
+        /// </summary>
+        public static string NoticeUnderstood {
+            get {
+                return ResourceManager.GetString("NoticeUnderstood", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View the licence.
+        /// </summary>
+        public static string NoticeViewLicence {
+            get {
+                return ResourceManager.GetString("NoticeViewLicence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper..
+        /// </summary>
+        public static string NoticeWarranty {
+            get {
+                return ResourceManager.GetString("NoticeWarranty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The full licence is in the file COPYING next to the program, and is always available from the Licence link in the window..
+        /// </summary>
+        public static string NoticeWhereToFind {
+            get {
+                return ResourceManager.GetString("NoticeWhereToFind", resourceCulture);
             }
         }
         
