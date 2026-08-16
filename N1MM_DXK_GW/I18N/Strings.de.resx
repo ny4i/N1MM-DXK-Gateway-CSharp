@@ -221,9 +221,10 @@
     NOTE: Label. "DXKeeper" and "TCP" - do not translate.</comment>
   </data>
   <data name="DxKeeperPortTip" xml:space="preserve">
-    <value>Read-only hier. Setzen Sie es in DXKeeper: {0}Das Gateway sendet an Base Port + 1, was der Port ist DXKeeper zeigt in der Überschrift dieses Panels.</value>
+    <value>Read-only hier. Setzen Sie es in DXKeeper: {0} Das Gateway sendet an Base Port + 1, was der Port ist DXKeeper zeigt in der Überschrift dieses Panels.</value>
     <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.
-    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.</comment>
+    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="DxKeeperConfigPath" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service &gt; Base Port</value>
@@ -496,8 +497,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertInternalError" xml:space="preserve">
     <value>INTERNALER ERROR, der eine Nachricht bearbeitet. {0}: {1}. siehe ErrorLog.txt Das Gateway läuft noch.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -506,9 +506,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
-    <value>*** {0}: DXKeeper Das Original gelöscht, aber nicht protokolliert{1} - das Edited QSO ist in {2}Importieren Sie es. Grund: {3}</value>
+    <value>*** {0}: DXKeeper Das Original gelöscht, aber nicht protokolliert{1} - das Edited QSO ist in {2} Importieren Sie es. Grund: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper Das Original gelöscht, der Edit wurde nicht protokolliert{1}Und die Bearbeitung konnte nicht gespeichert werden {2}. Grund: {3}</value>

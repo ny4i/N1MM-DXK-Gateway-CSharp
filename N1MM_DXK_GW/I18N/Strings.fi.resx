@@ -496,8 +496,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertInternalError" xml:space="preserve">
     <value>SISÄINEN VIRHE käsittelee viestiä. {0}: {1}. Katso ErrorLog.txt Portti on yhä käynnissä.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>Hei. {0}</value>
@@ -505,9 +504,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: {0} describes what was wrong with a received datagram and stays in English - it is wire diagnostics that also goes to ErrorLog.txt.</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
-    <value>*** {0}: DXKeeper Poistaa alkuperäisen, mutta ei kirjata muokkaus{1} - muokattu QSO on {2}Tuo se. Perustelu: {3}</value>
+    <value>*** {0}: DXKeeper Poistaa alkuperäisen, mutta ei kirjata muokkaus{1} - muokattu QSO on {2} Tuo se. Perustelu: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper Poistaa alkuperäinen, muokkaus ei ole kirjautunut{1}, JA muokkausta ei voitu tallentaa {2}. Perustelu: {3}</value>

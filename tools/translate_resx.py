@@ -235,8 +235,13 @@ def _fusions(translated, english):
     treated the plural "s" as the next word - producing "QSO s" in Russian. The
     English comparison below is what prevents that, and it now guards both.
     """
+    # Placeholders as well as protected terms. Both are opaque blocks the
+    # model moves around, and it eats the separator that followed either:
+    # "the edited QSO is in {2}, import it" came back as "... i {2}Importer".
+    # Covering only the terms missed thirty of these across the languages.
     terms = [t for t in PROTECTED_TERMS if re.fullmatch(r"[A-Za-z0-9.+]+", t)]
-    alternation = "|".join(sorted(map(re.escape, terms), key=len, reverse=True))
+    alternation = "|".join(
+        [r"\{\d+\}"] + sorted(map(re.escape, terms), key=len, reverse=True))
     pattern = re.compile(
         rf"({alternation})({SPACED_LETTER})|({SPACED_LETTER})({alternation})")
 
@@ -248,6 +253,23 @@ def _fusions(translated, english):
                      rf"|(?:{SPACED_LETTER}{re.escape(term)})", english):
             continue
         yield match
+
+
+def repair_smiley(translated, english):
+    """Remove a bracket the model bolted onto a colon.
+
+    Measured on Norwegian: ": " before a placeholder comes back as ":)", so
+    "Received from N1MM: {0}" became "Mottatt fra N1MM:) {0}" - a smiley in a
+    status line. It hit twelve strings in that language alone, including the
+    tray counters and the message that says DXKeeper no longer holds a QSO.
+
+    Deleting the bracket is not a guess at meaning: the English has no smiley,
+    this program never emits one, and the character is an invention of the
+    model. Only done when the English did not have ":)" itself.
+    """
+    if ":)" not in translated or ":)" in english:
+        return translated, False
+    return translated.replace(":)", ":"), True
 
 
 def repair_glued(translated, english):
@@ -267,7 +289,8 @@ def repair_glued(translated, english):
     # space can never be inserted anywhere the check would not call damage.
     cuts = []
     for match in _fusions(translated, english):
-        # group(2) is the word fused after a term; group(3) the letter before.
+        # group(2) is the word fused after a term or placeholder; group(3) is
+        # the letter fused before one.
         cuts.append(match.start(2) if match.group(2) is not None
                     else match.start(4))
     if not cuts:
@@ -344,6 +367,7 @@ def main(targets, force=False, recheck=False):
         translated = {}
         problems = []
         repaired = set()
+        redone = set()
         kept = 0
         sent = 0
 
@@ -377,7 +401,12 @@ def main(targets, force=False, recheck=False):
                     translated[name] = prior
                     kept += 1
                     continue
-                problems.append(f"{name}: failed a current check, retranslating")
+                # Counted apart from `problems`. That list means "rejected and
+                # left in English", and it is printed under exactly that
+                # heading; putting an informational note in it made the run
+                # report strings as untranslated when they had just been
+                # redone. A counter that misreports is worse than no counter.
+                redone.add(name)
 
             masked, originals = mask(english)
 
@@ -402,16 +431,31 @@ def main(targets, force=False, recheck=False):
             if restored is None:
                 problems.append(f"{name}: a masked term was destroyed in translation")
                 translated[name] = english
-            elif placeholders(restored) != placeholders(english):
+                print(f"  [{target}] {i}/{len(entries)} {name}", flush=True)
+                time.sleep(0.05)
+                continue
+
+            # Repairs first, then checks. Both repairs remove or restore a
+            # single character the model invented or dropped, so running them
+            # before the checks means a string is only rejected for damage
+            # that could not be mended mechanically.
+            restored, fixed_smiley = repair_smiley(restored, english)
+            restored, fixed_glue = repair_glued(restored, english)
+            if fixed_smiley or fixed_glue:
+                repaired.add(name)
+
+            if placeholders(restored) != placeholders(english):
                 problems.append(
                     f"{name}: placeholders changed "
                     f"{placeholders(english)} -> {placeholders(restored)}")
                 translated[name] = english
+                repaired.discard(name)
             elif unbalanced(restored, english):
                 problems.append(
                     f"{name}: brackets left unbalanced "
                     f"({', '.join(unbalanced(restored, english))})")
                 translated[name] = english
+                repaired.discard(name)
             elif len(restored) > 3 * len(english) + 40:
                 # Degeneration guard. A translation model that loses its way
                 # emits a long repeated run - one produced 250 "=" characters
@@ -422,10 +466,8 @@ def main(targets, force=False, recheck=False):
                     f"{name}: output degenerated "
                     f"({len(english)} chars -> {len(restored)})")
                 translated[name] = english
+                repaired.discard(name)
             else:
-                restored, was_repaired = repair_glued(restored, english)
-                if was_repaired:
-                    repaired.add(name)
                 translated[name] = restored
 
             print(f"  [{target}] {i}/{len(entries)} {name}", flush=True)
@@ -436,6 +478,8 @@ def main(targets, force=False, recheck=False):
         # repaired string as "left in English" was wrong and misleading - it
         # had been translated, then mended.
         summary = f"wrote {out.name} - {kept} kept, {sent} translated"
+        if redone:
+            summary += f", {len(redone)} redone by --recheck"
         if repaired:
             summary += f", {len(repaired)} repaired"
         if problems:

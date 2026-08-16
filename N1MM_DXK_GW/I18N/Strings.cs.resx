@@ -494,7 +494,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>Vnitřní error zpracovává zprávu. {0}: {1}Vidíš? ErrorLog.txt Brána stále běží.</value>
+    <value>Vnitřní error zpracovává zprávu. {0}: {1} Vidíš? ErrorLog.txt Brána stále běží.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
     NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
     REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
@@ -742,9 +742,10 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>
   <data name="TrayTooltip" xml:space="preserve">
-    <value>Přijato {0}, zaznamenáno {1}není dodáno {2}</value>
+    <value>Přijato {0}, zaznamenáno {1} není dodáno {2}</value>
     <comment>EN: Received {0}, logged {1}, not delivered {2}
-    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.</comment>
+    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service</value>

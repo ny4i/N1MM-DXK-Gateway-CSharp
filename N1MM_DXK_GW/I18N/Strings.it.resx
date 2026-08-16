@@ -506,9 +506,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
-    <value>*** {0}: DXKeeper DELETED l'originale ma non ha loggato la modifica{1} - il modificato QSO è dentro {2}importalo. Motivo: {3}</value>
+    <value>*** {0}: DXKeeper DELETED l'originale ma non ha loggato la modifica{1} - il modificato QSO è dentro {2} importalo. Motivo: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
     <value>*** {0}: DXKeeper DELETED l'originale, la modifica non è stata registrata{1}, E la modifica non poteva essere salvata {2}. Motivo: {3}</value>

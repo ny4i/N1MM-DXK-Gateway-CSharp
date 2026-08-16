@@ -494,7 +494,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>ERRO INTERNO A lidar com uma mensagem. {0}: {1}Ver ErrorLog.txt O portal ainda está a funcionar.</value>
+    <value>ERRO INTERNO A lidar com uma mensagem. {0}: {1} Ver ErrorLog.txt O portal ainda está a funcionar.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
     NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
     REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>

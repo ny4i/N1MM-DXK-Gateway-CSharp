@@ -221,9 +221,10 @@
     NOTE: Label. "DXKeeper" and "TCP" - do not translate.</comment>
   </data>
   <data name="DxKeeperPortTip" xml:space="preserve">
-    <value>Читайте только здесь. Включи его. DXKeeper: {0}Шлюз отправляется в базовый порт + 1, который является портом DXKeeper Показывается в заголовке панели.</value>
+    <value>Читайте только здесь. Включи его. DXKeeper: {0} Шлюз отправляется в базовый порт + 1, который является портом DXKeeper Показывается в заголовке панели.</value>
     <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.
-    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.</comment>
+    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="DxKeeperConfigPath" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service &gt; Base Port</value>
@@ -484,9 +485,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: {0} may be empty, meaning no multicast.</comment>
   </data>
   <data name="AlertReplaceNoKey" xml:space="preserve">
-    <value>contactreplace для {0}Нет полезного &lt;oldcall&gt;/&lt;oldtimestamp&gt; Редакция не была применена к DXKeeper</value>
+    <value>contactreplace для {0} Нет полезного &lt;oldcall&gt;/&lt;oldtimestamp&gt; Редакция не была применена к DXKeeper</value>
     <comment>EN: contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper
-    NOTE: "contactreplace", "&lt;oldcall&gt;" and "&lt;oldtimestamp&gt;" are wire-format names - do not translate them. {0} is a callsign.</comment>
+    NOTE: "contactreplace", "&lt;oldcall&gt;" and "&lt;oldtimestamp&gt;" are wire-format names - do not translate them. {0} is a callsign.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertDeleteNoKey" xml:space="preserve">
     <value>contactdelete для {0}: отсутствующий позывной или метка времени - ничего не было отправлено DXKeeper</value>
@@ -494,7 +496,7 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>Внутренняя ошибка при обработке сообщения. {0}: {1}Смотри. ErrorLog.txt Шлюз все еще работает.</value>
+    <value>Внутренняя ошибка при обработке сообщения. {0}: {1} Смотри. ErrorLog.txt Шлюз все еще работает.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
     NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
     REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
@@ -505,14 +507,16 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: {0} describes what was wrong with a received datagram and stays in English - it is wire diagnostics that also goes to ErrorLog.txt.</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
-    <value>*** {0}: DXKeeper Удалил оригинал, но не записал редактирование{1} - отредактированный QSO находится в {2}импортировать. Причина: {3}</value>
+    <value>*** {0}: DXKeeper Удалил оригинал, но не записал редактирование{1} - отредактированный QSO находится в {2} импортировать. Причина: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
-    <value>*** {0}: DXKeeper Удаленный оригинал, правка не была зарегистрирована{1}Редактирование не может быть сохранено для {2}Причина: {3}</value>
+    <value>*** {0}: DXKeeper Удаленный оригинал, правка не была зарегистрирована{1}Редактирование не может быть сохранено для {2} Причина: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}
-    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.</comment>
+    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertNotConfirmed" xml:space="preserve">
     <value>DXKeeper не подтвердил {0}{1}{2}: {3}</value>
@@ -741,9 +745,10 @@ This program is free software under the GNU General Public License version 3 or 
     NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
   </data>
   <data name="TrayTooltip" xml:space="preserve">
-    <value>Полученный {0}зарегистрированный {1}Не доставлено {2}</value>
+    <value>Полученный {0} зарегистрированный {1} Не доставлено {2}</value>
     <comment>EN: Received {0}, logged {1}, not delivered {2}
-    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.</comment>
+    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">
     <value>Config &gt; Defaults tab &gt; Network Service</value>

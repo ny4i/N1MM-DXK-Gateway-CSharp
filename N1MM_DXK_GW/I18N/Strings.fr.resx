@@ -495,9 +495,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>ERREUR INTERNE traitant un message. {0}: {1}Voir ErrorLog.txt. La passerelle est toujours en marche.</value>
+    <value>ERREUR INTERNE traitant un message. {0}: {1} Voir ErrorLog.txt. La passerelle est toujours en marche.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>- Oui. {0}</value>
@@ -505,14 +506,16 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: {0} describes what was wrong with a received datagram and stays in English - it is wire diagnostics that also goes to ErrorLog.txt.</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
-    <value>*** {0}: DXKeeper DÉLÈVÉ l'original mais n'a pas enregistré l'édition{1} - la version révisée QSO est en {2}Importez-le. Raison: {3}</value>
+    <value>*** {0}: DXKeeper DÉLÈVÉ l'original mais n'a pas enregistré l'édition{1} - la version révisée QSO est en {2} Importez-le. Raison: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
-    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
-    <value>*** {0}: DXKeeper DÉLÈVE l'original, l'édition n'a pas été enregistrée{1}, ET l'édition n'a pas pu être enregistrée {2}Motif : {3}</value>
+    <value>*** {0}: DXKeeper DÉLÈVE l'original, l'édition n'a pas été enregistrée{1}, ET l'édition n'a pas pu être enregistrée {2} Motif : {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}
-    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.</comment>
+    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertNotConfirmed" xml:space="preserve">
     <value>DXKeeper n'a pas confirmé {0}{1}{2}: {3}</value>

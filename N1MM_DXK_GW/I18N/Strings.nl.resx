@@ -496,8 +496,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AlertInternalError" xml:space="preserve">
     <value>Interne fout bij het afhandelen van een bericht. {0}: {1}. Zie ErrorLog.txt De poort loopt nog.</value>
     <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
-    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
     <value>INVALID: {0}</value>
@@ -511,9 +510,10 @@ Use the folder link and import the file into DXKeeper from there.
     NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
-    <value>*** {0}: DXKeeper Het origineel is verwijderd, de bewerking is niet gelogd{1}, EN de bewerking kon niet worden opgeslagen in {2}Reden: {3}</value>
+    <value>*** {0}: DXKeeper Het origineel is verwijderd, de bewerking is niet gelogd{1}, EN de bewerking kon niet worden opgeslagen in {2} Reden: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}
-    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.</comment>
+    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
   </data>
   <data name="AlertNotConfirmed" xml:space="preserve">
     <value>DXKeeper niet bevestigd {0}{1}{2}: {3}</value>
