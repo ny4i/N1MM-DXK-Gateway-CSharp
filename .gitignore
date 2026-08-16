@@ -493,3 +493,10 @@ pcap/
 # holds real QSOs the gateway could not deliver — the operator's log data, and
 # never ours to commit.
 *.adi
+
+# Installer build products. The .nsi is source; the staged payload is a copy of
+# the publish output and the Setup.exe is a build artefact - both are rebuilt
+# by:  dotnet publish N1MM_DXK_GW -c Release -o installer\stage
+#      makensis installer\N1MM_DXK_GW.nsi
+installer/stage/
+installer/*.exe
