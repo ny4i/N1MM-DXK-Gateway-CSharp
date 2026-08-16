@@ -46,9 +46,9 @@ Note there is another UDP interface that allows N1MM to receive UDP messages to 
 
 The following  programs support this interface
 
-- SDR-Control (by DL8MRE for MAC and IOS for remote operation of various radios)
+- SDR-Control (by DL8MRE for Mac and IOS for remote operation of various radios)
 - WSJT-X
-  - It is recommended that if you want to send log records from WSJT-X to 
+  - It is recommended that if you want to send log records from WSJT-X to DXKeeper that you either use the wonderful [JT-Alert](https://hamapps.com/) program or setup theintegration between WSJT-X and DXKeeper [directly](https://www.dxlabsuite.com/dxlabwiki/GettingStartedwithK1JTModesDirect).
 
 ### **Configuring N1MM+**
 

@@ -24,7 +24,7 @@ public sealed class Logger
 
    public Logger(string? logPath = null)
    {
-      this.logPath = logPath ?? Path.Combine(AppContext.BaseDirectory, "ErrorLog.txt");
+      this.logPath = logPath ?? Path.Combine(AppPaths.DataDirectory, "ErrorLog.txt");
    }
 
    public string LogPath => logPath;
@@ -86,6 +86,14 @@ public sealed class Logger
       writer.WriteLine();
       writer.WriteLine($"{stamp}     > N1MM-DXKeeper Gateway version {version} (C# port)");
       writer.WriteLine($"{stamp}     > App.Path          : {AppContext.BaseDirectory}");
+      if (AppPaths.RedirectedFromProgramFolder)
+      {
+         // Said plainly, because it changes where the operator must look for
+         // the failed-QSO file — and because a read-only program folder is
+         // worth knowing about before it matters.
+         writer.WriteLine($"{stamp}     > Data folder       : {AppPaths.DataDirectory}"
+                          + "  (program folder is not writable)");
+      }
       writer.WriteLine($"{stamp}     > Operating System  : {Environment.OSVersion}");
       writer.WriteLine($"{stamp}     > .NET runtime      : {Environment.Version}");
       writer.WriteLine($"{stamp}     > Locale            : {CultureInfo.CurrentCulture.Name}");

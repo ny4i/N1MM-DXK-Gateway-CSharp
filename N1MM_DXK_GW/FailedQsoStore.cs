@@ -48,7 +48,7 @@ public sealed class FailedQsoStore
       this.logger = logger;
       var stamp = (runStartedAt ?? DateTime.Now).ToString("yyyyMMdd_HHmmss",
                                                           CultureInfo.InvariantCulture);
-      this.path = Path.Combine(directory ?? AppContext.BaseDirectory,
+      this.path = Path.Combine(directory ?? AppPaths.DataDirectory,
                                $"FailedQSOs_{stamp}.adi");
    }
 
