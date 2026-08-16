@@ -117,87 +117,87 @@
     <comment>EN: N1MM-DXKeeper Gateway</comment>
   </data>
   <data name="SettingsHeader" xml:space="preserve">
-    <value>Einstellungen</value>
+    <value>设置</value>
     <comment>EN: Settings</comment>
   </data>
   <data name="NetworkHeader" xml:space="preserve">
-    <value>Netz</value>
+    <value>网络</value>
     <comment>EN: Network</comment>
   </data>
   <data name="ServicesHeader" xml:space="preserve">
-    <value>Dienstleistungen</value>
+    <value>服务</value>
     <comment>EN: Services</comment>
   </data>
   <data name="DiagnosticsHeader" xml:space="preserve">
-    <value>Diagnose</value>
+    <value>诊断</value>
     <comment>EN: Diagnostics</comment>
   </data>
   <data name="LogCopy" xml:space="preserve">
-    <value>Kopie</value>
+    <value>复制</value>
     <comment>EN: Copy</comment>
   </data>
   <data name="LogClear" xml:space="preserve">
-    <value>klar</value>
+    <value>清除</value>
     <comment>EN: Clear</comment>
   </data>
   <data name="LogCopyTip" xml:space="preserve">
-    <value>Kopieren des Operationsprotokolls in die Zwischenablage</value>
+    <value>将操作日志复制到剪贴板</value>
     <comment>EN: Copy the operation log to the clipboard</comment>
   </data>
   <data name="LogClearTip" xml:space="preserve">
-    <value>Löschen Sie das On-Screen-Log. ErrorLog.txt ist nicht betroffen.</value>
+    <value>清除屏幕记录 。 ErrorLog.txt 不受影响。</value>
     <comment>EN: Clear the on-screen log. ErrorLog.txt is not affected.</comment>
   </data>
   <data name="LogCopied" xml:space="preserve">
-    <value>Betriebsprotokoll kopiert in die Zwischenablage (){0} Strecken.</value>
+    <value>操作日志复制到剪贴板( O){0} 页:1</value>
     <comment>EN: Operation log copied to the clipboard ({0} lines).</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOs nicht geliefert</value>
+    <value>QSO未交付</value>
     <comment>EN: QSOs not delivered</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs aus dieser Sitzung konnte nicht geliefert werden DXKeeper. Einfuhr {1} in DXKeeper, dann löschen Sie es - diese Nachricht löscht, wenn die Datei weg ist.</value>
+    <value>{0} QSOs 无法发送到 DXKeeper导入 {1} 输入 DXKeeper,然后删除它——当文件丢失时,该通知即可清除。</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.</comment>
   </data>
   <data name="FailedQsoBarMessageOne" xml:space="preserve">
-    <value>1 QSO von dieser Sitzung konnte nicht geliefert werden DXKeeper. Einfuhr {0} in DXKeeper, dann löschen Sie es - diese Nachricht löscht, wenn die Datei weg ist.</value>
+    <value>页:1 QSO 无法从本届会议交付到 DXKeeper导入 {0} 输入 DXKeeper,然后删除它——当文件丢失时,该通知即可清除。</value>
     <comment>EN: 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.</comment>
   </data>
   <data name="OpenFileButton" xml:space="preserve">
-    <value>Offene Datei</value>
+    <value>打开文件</value>
     <comment>EN: Open File</comment>
   </data>
   <data name="OpenFolderButton" xml:space="preserve">
-    <value>Offener Ordner</value>
+    <value>打开文件夹</value>
     <comment>EN: Open Folder</comment>
   </data>
   <data name="UdpPortLabel" xml:space="preserve">
-    <value>UDP Abhöranschluss:</value>
+    <value>UDP 监听端口 :</value>
     <comment>EN: UDP listening port:</comment>
   </data>
   <data name="UdpPortTip" xml:space="preserve">
-    <value>UDP Hafen, der N1MM Logger+ Sendungen QSO XML an (Standard 12060)</value>
+    <value>UDP 移动 N1MM Logger+ 广播 QSO XML 改为(默认 12060)</value>
     <comment>EN: UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)</comment>
   </data>
   <data name="MulticastLabel" xml:space="preserve">
-    <value>Multicast-Gruppe (fakultativ):</value>
+    <value>多播组( 可选) :</value>
     <comment>EN: Multicast group (optional):</comment>
   </data>
   <data name="MulticastPlaceholder" xml:space="preserve">
-    <value>Leerwert = kein Multicast</value>
+    <value>空白 = 无多播</value>
     <comment>EN: blank = no multicast</comment>
   </data>
   <data name="MulticastTip" xml:space="preserve">
-    <value>Fakultativ. Lassen Sie leer, es sei denn, das Sendeprogramm ist so konfiguriert, dass es an eine Multicast-Gruppe gesendet wird (224.0.0.0 - 239.255.255.255). Unicast und Broadcast werden so oder so empfangen. Die Gruppe wird auf der von der Routing-Tabelle ausgewählten Schnittstelle zusammengeführt.</value>
+    <value>可选的 除非发送程序配置为多播组发送(224.0.0 - 239.255.255)。 统一广播和广播无论以哪种方式接收。 该组在路由表选择的界面上被加入.</value>
     <comment>EN: Optional. Leave blank unless the sending program is configured to send to a multicast group (224.0.0.0 - 239.255.255.255). Unicast and broadcast are received either way. The group is joined on the interface the routing table selects.</comment>
   </data>
   <data name="DxKeeperPortLabel" xml:space="preserve">
-    <value>DXKeeper TCP Basishafen:</value>
+    <value>DXKeeper TCP 基端口 :</value>
     <comment>EN: DXKeeper TCP base port:</comment>
   </data>
   <data name="DxKeeperPortTip" xml:space="preserve">
-    <value>Read-only hier. Setzen Sie es in DXKeeper: {0}Das Gateway sendet an Base Port + 1, was der Port ist DXKeeper zeigt in der Überschrift dieses Panels.</value>
+    <value>在这里只读。 装进去 DXKeeper编号 : {0}。网关发送到 Base Port + 1,即港口 DXKeeper 显示在面板的标题。</value>
     <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.</comment>
   </data>
   <data name="DxKeeperConfigPath" xml:space="preserve">
@@ -205,159 +205,159 @@
     <comment>EN: Config &gt; Defaults tab &gt; Network Service &gt; Base Port</comment>
   </data>
   <data name="DxKeeperPortReading" xml:space="preserve">
-    <value>(Lesen aus dem Register ...)</value>
+    <value>(从登记册读... )</value>
     <comment>EN: (reading from registry…)</comment>
   </data>
   <data name="StatusHeader" xml:space="preserve">
-    <value>Anschlussstatus</value>
+    <value>连接状态</value>
     <comment>EN: Connection Status</comment>
   </data>
   <data name="Connected" xml:space="preserve">
-    <value>verbunden</value>
+    <value>已连接</value>
     <comment>EN: connected</comment>
   </data>
   <data name="Disconnected" xml:space="preserve">
-    <value>getrennt</value>
+    <value>已断开</value>
     <comment>EN: disconnected</comment>
   </data>
   <data name="LogHeader" xml:space="preserve">
-    <value>Betriebsprotokoll</value>
+    <value>操作日志</value>
     <comment>EN: Operation Log</comment>
   </data>
   <data name="SeeErrorLog" xml:space="preserve">
-    <value>siehe ErrorLog</value>
+    <value>参见错误日志</value>
     <comment>EN: see ErrorLog</comment>
   </data>
   <data name="DisplayErrorLog" xml:space="preserve">
-    <value>Anzeigefehlerprotokoll</value>
+    <value>显示错误日志</value>
     <comment>EN: Display Error Log</comment>
   </data>
   <data name="Help" xml:space="preserve">
-    <value>Hilfe</value>
+    <value>帮助</value>
     <comment>EN: Help</comment>
   </data>
   <data name="CheckDxkLookup" xml:space="preserve">
-    <value>Lookup früher QSOs</value>
+    <value>上次查询 QSO编号</value>
     <comment>EN: Lookup previous QSOs</comment>
   </data>
   <data name="CheckDxkLookupTip" xml:space="preserve">
-    <value>Direkt DXKeeper Vorherige anzeigen QSOs mit dem protokollierten Rufzeichen</value>
+    <value>直接 DXKeeper 显示上一个 QSOs 与已登录的呼号</value>
     <comment>EN: Direct DXKeeper to display previous QSOs with the logged callsign</comment>
   </data>
   <data name="CheckCallbook" xml:space="preserve">
-    <value>Anfrage Callbook</value>
+    <value>查询呼叫簿</value>
     <comment>EN: Query Callbook</comment>
   </data>
   <data name="CheckCallbookTip" xml:space="preserve">
-    <value>Direkt DXKeeper um das ausgewählte Callbook abzufragen</value>
+    <value>直接 DXKeeper 以查询其选定的呼叫簿</value>
     <comment>EN: Direct DXKeeper to query its selected callbook</comment>
   </data>
   <data name="CheckEqsl" xml:space="preserve">
-    <value>Upload zum eQSL.cc</value>
+    <value>上传到 eQSL.cc</value>
     <comment>EN: Upload to eQSL.cc</comment>
   </data>
   <data name="CheckEqslTip" xml:space="preserve">
-    <value>Direkt DXKeeper Upload protokolliert QSO bis eQSL.cc</value>
+    <value>直接 DXKeeper 要上传已登录 QSO 改为 eQSL.cc</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to eQSL.cc</comment>
   </data>
   <data name="CheckLotw" xml:space="preserve">
-    <value>Upload zum LoTW</value>
+    <value>上传到 LoTW</value>
     <comment>EN: Upload to LoTW</comment>
   </data>
   <data name="CheckLotwTip" xml:space="preserve">
-    <value>Direkt DXKeeper Upload protokolliert QSO bis LoTW</value>
+    <value>直接 DXKeeper 要上传已登录 QSO 改为 LoTW</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to LoTW</comment>
   </data>
   <data name="CheckClubLog" xml:space="preserve">
-    <value>Upload zum Club Log</value>
+    <value>上传到 Club Log</value>
     <comment>EN: Upload to Club Log</comment>
   </data>
   <data name="CheckClubLogTip" xml:space="preserve">
-    <value>Direkt DXKeeper Upload protokolliert QSO bis Club Log</value>
+    <value>直接 DXKeeper 要上传已登录 QSO 改为 Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
   <data name="CheckDebugLogging" xml:space="preserve">
-    <value>Log Debugging Informationen</value>
+    <value>日志调试信息</value>
     <comment>EN: Log debugging information</comment>
   </data>
   <data name="CheckDebugLoggingTip" xml:space="preserve">
-    <value>Informationen zum Debuggen protokollieren ErrorLog.txt</value>
+    <value>日志调试信息到 ErrorLog.txt</value>
     <comment>EN: Log debugging information to ErrorLog.txt</comment>
   </data>
   <data name="CheckVerboseLogging" xml:space="preserve">
-    <value>Verbose-Protokollierung</value>
+    <value>Verbose 记录</value>
     <comment>EN: Verbose logging</comment>
   </data>
   <data name="CheckVerboseLoggingTip" xml:space="preserve">
-    <value>Zustandsereignisse mit niedriger Priorität im Betriebsprotokoll anzeigen (z.B. DDE Ein-/Ausschalten</value>
+    <value>在操作日志中显示低优先级状态事件(例如. DDE 连接/断开连接)</value>
     <comment>EN: Show low-priority status events in the operation log (e.g. DDE connect/disconnect)</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
-    <value>{0} QSOs nicht geliefert — offen</value>
+    <value>{0} QSOs 未交付——打开</value>
     <comment>EN: {0} QSOs not delivered — open</comment>
   </data>
   <data name="FailedQsoCountOne" xml:space="preserve">
-    <value>1 QSO nicht geliefert — offen</value>
+    <value>页:1 QSO 未交付——打开</value>
     <comment>EN: 1 QSO not delivered — open</comment>
   </data>
   <data name="FailedQsoOpenFile" xml:space="preserve">
-    <value>Datei</value>
+    <value>文件</value>
     <comment>EN: file</comment>
   </data>
   <data name="FailedQsoOpenFolder" xml:space="preserve">
-    <value>Ordner</value>
+    <value>文件夹</value>
     <comment>EN: folder</comment>
   </data>
   <data name="FailedQsoTip" xml:space="preserve">
-    <value>Einfuhr {0} in DXKeeperund dann löschen. Diese Zählung löscht, wenn die Datei weg ist.</value>
+    <value>导入 {0} 输入 DXKeeper,然后删除。 此数在文件丢失时清除 。</value>
     <comment>EN: Import {0} into DXKeeper, then delete it. This count clears when the file is gone.</comment>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
-    <value>Sprache:</value>
+    <value>语言 :</value>
     <comment>EN: Language:</comment>
   </data>
   <data name="LanguageTip" xml:space="preserve">
-    <value>Sprache dieses Fensters. "Follow Windows" verwendet die Windows-Anzeigesprache. Eine Änderung wird beim nächsten Start des Gateways wirksam.</value>
+    <value>此窗口的语言 。 "Follow Windows"使用Windows显示语言. 更改在下次网关启动时生效 。</value>
     <comment>EN: Language of this window. "Follow Windows" uses the Windows display language. A change takes effect the next time the gateway starts.</comment>
   </data>
   <data name="LanguageFollowWindows" xml:space="preserve">
-    <value>Folgen Sie Windows</value>
+    <value>跟随窗口</value>
     <comment>EN: Follow Windows</comment>
   </data>
   <data name="LanguageRestartNote" xml:space="preserve">
-    <value>Sprache eingestellt auf {0}Starten Sie das Gateway neu, um es anzuwenden.</value>
+    <value>语言设置为 {0}。重新启动应用的网关。</value>
     <comment>EN: Language set to {0}. Restart the gateway to apply it.</comment>
   </data>
   <data name="DlgAlreadyRunning" xml:space="preserve">
-    <value>N1MM-DXKeeper Gateway läuft bereits.</value>
+    <value>N1MM-DXKeeper Gateway 已经运行。</value>
     <comment>EN: N1MM-DXKeeper Gateway is already running.</comment>
   </data>
   <data name="DlgUdpPortInvalid" xml:space="preserve">
-    <value>Die UDP Der Abhöranschluss muss eine ganze Zahl zwischen 1 und 65535 sein.</value>
+    <value>那个 UDP 听端口必须是1至65535之间的整数.</value>
     <comment>EN: The UDP listening port must be a whole number between 1 and 65535.</comment>
   </data>
   <data name="DlgMulticastInvalid" xml:space="preserve">
-    <value>{0}.
+    <value>{0}。 。 。 。
 
-Lassen Sie diese leer, es sei denn, das Sendeprogramm ist so konfiguriert, dass es an eine Multicast-Gruppe gesendet wird.</value>
+留此空白, 除非发送程序配置为多播组发送 。</value>
     <comment>EN: {0}.
 
 Leave this blank unless the sending program is configured to send to a multicast group.</comment>
   </data>
   <data name="DlgNoFailedQsos" xml:space="preserve">
-    <value>Alle QSO Diese Sitzung wurde an DXKeeper.
+    <value>每个 QSO 本届会议已交付给 DXKeeper。 。 。 。
 
-{0} existiert nicht.</value>
+{0} 不存在。</value>
     <comment>EN: Every QSO this session was delivered to DXKeeper.
 
 {0} does not exist.</comment>
   </data>
   <data name="DlgCouldNotOpenFile" xml:space="preserve">
-    <value>Konnte nicht öffnen {0}:
+    <value>无法打开 {0}编号 :
 
 {1}
 
-Verwenden Sie den Ordnerlink und importieren Sie die Datei in DXKeeper von dort.</value>
+使用文件夹链接并导入文件 DXKeeper 从那里。</value>
     <comment>EN: Could not open {0}:
 
 {1}
@@ -365,7 +365,7 @@ Verwenden Sie den Ordnerlink und importieren Sie die Datei in DXKeeper von dort.
 Use the folder link and import the file into DXKeeper from there.</comment>
   </data>
   <data name="DlgCouldNotOpenFolder" xml:space="preserve">
-    <value>Konnte den Ordner nicht öffnen:
+    <value>无法打开文件夹 :
 
 {0}</value>
     <comment>EN: Could not open the folder:
@@ -373,7 +373,7 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="DlgNoErrorLog" xml:space="preserve">
-    <value>Es wurde noch nichts in das Fehlerprotokoll geschrieben:
+    <value>尚未写入错误日志 :
 
 {0}</value>
     <comment>EN: Nothing has been written to the error log yet:
@@ -381,7 +381,7 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="DlgCouldNotOpenErrorLog" xml:space="preserve">
-    <value>Konnte nicht öffnen ErrorLog.txt:
+    <value>无法打开 ErrorLog.txt编号 :
 
 {0}</value>
     <comment>EN: Could not open ErrorLog.txt:
@@ -389,7 +389,7 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="DlgCouldNotOpenHelp" xml:space="preserve">
-    <value>Die Hilfeseite konnte nicht geöffnet werden:
+    <value>无法打开帮助页面 :
 
 {0}</value>
     <comment>EN: Could not open the help page:
@@ -397,87 +397,87 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="ErrNotAnIpAddress" xml:space="preserve">
-    <value>„{0}" ist keine gültige IP-Adresse</value>
+    <value>" , "{0}" 不是有效的 IP 地址</value>
     <comment>EN: "{0}" is not a valid IP address</comment>
   </data>
   <data name="ErrNotMulticast" xml:space="preserve">
-    <value>„{0}„ ist nicht ein IPv4 Multicast-Adresse (224.0.0.0 - 239.255.255.255)</value>
+    <value>" , "{0}" 不是一个 IPv4 多播地址(224.0.0 - 239.255.255)</value>
     <comment>EN: "{0}" is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)</comment>
   </data>
   <data name="MsgBindFailed" xml:space="preserve">
-    <value>Konnte nicht zuhören UDP Hafen {0}: {1}</value>
+    <value>无法监听 UDP 端口 {0}编号 : {1}</value>
     <comment>EN: Could not listen on UDP port {0}: {1}</comment>
   </data>
   <data name="AlertMulticastRejected" xml:space="preserve">
-    <value>{0} - Start ohne Multicast.</value>
+    <value>{0} - 开始没有多播。</value>
     <comment>EN: {0} - starting WITHOUT multicast.</comment>
   </data>
   <data name="AlertUdpPortReverted" xml:space="preserve">
-    <value>Zurück zu UDP Hafen {0}.</value>
+    <value>恢复为 UDP 端口 {0}。 。 。 。</value>
     <comment>EN: Reverted to UDP port {0}.</comment>
   </data>
   <data name="AlertMulticastReverted" xml:space="preserve">
-    <value>Reverted die Multicast-Gruppe zu "{0}„.</value>
+    <value>将多播组还原为 "{0}" ..</value>
     <comment>EN: Reverted the multicast group to "{0}".</comment>
   </data>
   <data name="AlertReplaceNoKey" xml:space="preserve">
-    <value>contactreplace für {0}: nicht verwendbar &lt;oldcall&gt;/&lt;oldtimestamp&gt; Der Edit wurde NICHT angewendet DXKeeper</value>
+    <value>contactreplace (单位:千美元) {0}: 无法使用 &lt;oldcall&gt;页:1&lt;oldtimestamp&gt; - 编辑未应用到 DXKeeper</value>
     <comment>EN: contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper</comment>
   </data>
   <data name="AlertDeleteNoKey" xml:space="preserve">
-    <value>contactdelete für {0}: fehlendes Rufzeichen oder Zeitstempel - nichts wurde an DXKeeper</value>
+    <value>contactdelete (单位:千美元) {0}: 缺少呼号或时间戳 - 没有发送到 DXKeeper</value>
     <comment>EN: contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>INTERNER FEHLER, der eine Nachricht bearbeitet (){0}: {1}) - siehe ErrorLog.txtDas Gateway läuft noch.</value>
+    <value>处理信件的内部错误( N){0}编号 : {1}- 看见了 ErrorLog.txt。该网关仍在运行。</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
-    <value>INVALID: {0}</value>
+    <value>参赛者: {0}</value>
     <comment>EN: INVALID: {0}</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
-    <value>****** {0}: DXKeeper Das Original gelöscht, aber nicht protokolliert{1} - das Edited QSO ist in {2}Importieren Sie es. Grund: {3}</value>
+    <value>页:1 {0}编号 : DXKeeper 删除了原始文件,但没有登录编辑{1} - 编辑 QSO 进入 {2},导入它。 原因: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
-    <value>****** {0}: DXKeeper Das Original gelöscht, der Edit wurde nicht protokolliert{1}Und die Bearbeitung konnte nicht gespeichert werden {2}. Grund: {3}</value>
+    <value>页:1 {0}编号 : DXKeeper 删除原件, 编辑未登录{1},编辑无法保存到 {2}原因: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}</comment>
   </data>
   <data name="AlertNotConfirmed" xml:space="preserve">
-    <value>DXKeeper nicht bestätigt {0}{1}{2}: {3}</value>
+    <value>DXKeeper 未确认 {0}{1}{2}编号 : {3}</value>
     <comment>EN: DXKeeper did not confirm {0}{1}{2}: {3}</comment>
   </data>
   <data name="AlertSavedTo" xml:space="preserve">
-    <value> - gespeichert {0}</value>
+    <value> - 保存给 {0}</value>
     <comment>EN:  - saved to {0}</comment>
   </data>
   <data name="AlertNotSavedTo" xml:space="preserve">
-    <value> - Und es konnte nicht gerettet werden {0}</value>
+    <value> - 而且无法保存到 {0}</value>
     <comment>EN:  - AND it could not be saved to {0}</comment>
   </data>
   <data name="FailBusy" xml:space="preserve">
-    <value>Ein weiteres Senden war noch nicht beendet</value>
+    <value>另一个发送尚未完成</value>
     <comment>EN: another send had not finished yet</comment>
   </data>
   <data name="FailConnectTimeout" xml:space="preserve">
-    <value>Die Verbindung zum DXKeeper Timeout nach {0} Sekunden</value>
+    <value>连接到 DXKeeper 超时于 {0} 秒数</value>
     <comment>EN: the connection to DXKeeper timed out after {0} seconds</comment>
   </data>
   <data name="FailConnectRefused" xml:space="preserve">
-    <value>kann keine Verbindung herstellen DXKeeper am TCP Hafen {0}; in DXKeeper, überprüfen Sie, dass {1} BerichteListening„</value>
+    <value>无法连接到 DXKeeper 打开 TCP 端口 {0}; 内 DXKeeper检查 {1} 报告 "Listening" , "</value>
     <comment>EN: cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"</comment>
   </data>
   <data name="FailNoPeerClose" xml:space="preserve">
-    <value>DXKeeper Niemals die Verbindung innerhalb {0} Sekunden, also die QSO Vielleicht nie akzeptiert</value>
+    <value>DXKeeper 从未关闭内部连接 {0} 秒,所以请 QSO 可能从未被接受</value>
     <comment>EN: DXKeeper never closed the connection within {0} seconds, so the QSO may never have been accepted</comment>
   </data>
   <data name="FailShuttingDown" xml:space="preserve">
-    <value>Das Gateway wurde heruntergefahren und dies wurde nie gesendet</value>
+    <value>网关被关闭了 而这个从未发送</value>
     <comment>EN: the gateway was shutting down and this was never sent</comment>
   </data>
   <data name="FailSendFailed" xml:space="preserve">
-    <value>Der Send fehlgeschlagen</value>
+    <value>发送失败</value>
     <comment>EN: the send failed</comment>
   </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">

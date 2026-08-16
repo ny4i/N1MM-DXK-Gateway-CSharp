@@ -117,87 +117,87 @@
     <comment>EN: N1MM-DXKeeper Gateway</comment>
   </data>
   <data name="SettingsHeader" xml:space="preserve">
-    <value>Einstellungen</value>
+    <value>Настройки</value>
     <comment>EN: Settings</comment>
   </data>
   <data name="NetworkHeader" xml:space="preserve">
-    <value>Netz</value>
+    <value>Сеть</value>
     <comment>EN: Network</comment>
   </data>
   <data name="ServicesHeader" xml:space="preserve">
-    <value>Dienstleistungen</value>
+    <value>Услуги</value>
     <comment>EN: Services</comment>
   </data>
   <data name="DiagnosticsHeader" xml:space="preserve">
-    <value>Diagnose</value>
+    <value>диагностика</value>
     <comment>EN: Diagnostics</comment>
   </data>
   <data name="LogCopy" xml:space="preserve">
-    <value>Kopie</value>
+    <value>Копия</value>
     <comment>EN: Copy</comment>
   </data>
   <data name="LogClear" xml:space="preserve">
-    <value>klar</value>
+    <value>Чисто.</value>
     <comment>EN: Clear</comment>
   </data>
   <data name="LogCopyTip" xml:space="preserve">
-    <value>Kopieren des Operationsprotokolls in die Zwischenablage</value>
+    <value>Копировать журнал операции в буфер обмена</value>
     <comment>EN: Copy the operation log to the clipboard</comment>
   </data>
   <data name="LogClearTip" xml:space="preserve">
-    <value>Löschen Sie das On-Screen-Log. ErrorLog.txt ist nicht betroffen.</value>
+    <value>Очистите экранный журнал. ErrorLog.txt не затрагивается.</value>
     <comment>EN: Clear the on-screen log. ErrorLog.txt is not affected.</comment>
   </data>
   <data name="LogCopied" xml:space="preserve">
-    <value>Betriebsprotokoll kopiert in die Zwischenablage (){0} Strecken.</value>
+    <value>Операционный журнал, скопированный в буфер обмена ({0} линии).</value>
     <comment>EN: Operation log copied to the clipboard ({0} lines).</comment>
   </data>
   <data name="FailedQsoBarTitle" xml:space="preserve">
-    <value>QSOs nicht geliefert</value>
+    <value>QSOне доставлены</value>
     <comment>EN: QSOs not delivered</comment>
   </data>
   <data name="FailedQsoBarMessage" xml:space="preserve">
-    <value>{0} QSOs aus dieser Sitzung konnte nicht geliefert werden DXKeeper. Einfuhr {1} in DXKeeper, dann löschen Sie es - diese Nachricht löscht, wenn die Datei weg ist.</value>
+    <value>{0} QSOs с этой сессии не может быть доставлен DXKeeperИмпорт {1} в DXKeeperЗатем удалите его — это уведомление проясняется, когда файл исчез.</value>
     <comment>EN: {0} QSOs from this session could not be delivered to DXKeeper. Import {1} into DXKeeper, then delete it — this notice clears when the file is gone.</comment>
   </data>
   <data name="FailedQsoBarMessageOne" xml:space="preserve">
-    <value>1 QSO von dieser Sitzung konnte nicht geliefert werden DXKeeper. Einfuhr {0} in DXKeeper, dann löschen Sie es - diese Nachricht löscht, wenn die Datei weg ist.</value>
+    <value>1 1 QSO с этой сессии не может быть DXKeeperИмпорт {0} в DXKeeperЗатем удалите его — это уведомление проясняется, когда файл исчез.</value>
     <comment>EN: 1 QSO from this session could not be delivered to DXKeeper. Import {0} into DXKeeper, then delete it — this notice clears when the file is gone.</comment>
   </data>
   <data name="OpenFileButton" xml:space="preserve">
-    <value>Offene Datei</value>
+    <value>Открытый файл</value>
     <comment>EN: Open File</comment>
   </data>
   <data name="OpenFolderButton" xml:space="preserve">
-    <value>Offener Ordner</value>
+    <value>Открытая папка</value>
     <comment>EN: Open Folder</comment>
   </data>
   <data name="UdpPortLabel" xml:space="preserve">
-    <value>UDP Abhöranschluss:</value>
+    <value>UDP Прослушивающий порт:</value>
     <comment>EN: UDP listening port:</comment>
   </data>
   <data name="UdpPortTip" xml:space="preserve">
-    <value>UDP Hafen, der N1MM Logger+ Sendungen QSO XML an (Standard 12060)</value>
+    <value>UDP портировать N1MM Logger+ трансляция QSO XML По умолчанию 12060</value>
     <comment>EN: UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)</comment>
   </data>
   <data name="MulticastLabel" xml:space="preserve">
-    <value>Multicast-Gruppe (fakultativ):</value>
+    <value>Многоадресная группа (необязательно):</value>
     <comment>EN: Multicast group (optional):</comment>
   </data>
   <data name="MulticastPlaceholder" xml:space="preserve">
-    <value>Leerwert = kein Multicast</value>
+    <value>blank = нет мультикастов</value>
     <comment>EN: blank = no multicast</comment>
   </data>
   <data name="MulticastTip" xml:space="preserve">
-    <value>Fakultativ. Lassen Sie leer, es sei denn, das Sendeprogramm ist so konfiguriert, dass es an eine Multicast-Gruppe gesendet wird (224.0.0.0 - 239.255.255.255). Unicast und Broadcast werden so oder so empfangen. Die Gruppe wird auf der von der Routing-Tabelle ausgewählten Schnittstelle zusammengeführt.</value>
+    <value>Необязательно. Оставьте пустой, если программа отправки не выполнена с возможностью отправки в многоадресную группу (224.0.0.0 - 239.255.255.255). Unicast и вещание принимаются в любом случае. Группа присоединяется к интерфейсу, который выбирает таблица маршрутизации.</value>
     <comment>EN: Optional. Leave blank unless the sending program is configured to send to a multicast group (224.0.0.0 - 239.255.255.255). Unicast and broadcast are received either way. The group is joined on the interface the routing table selects.</comment>
   </data>
   <data name="DxKeeperPortLabel" xml:space="preserve">
-    <value>DXKeeper TCP Basishafen:</value>
+    <value>DXKeeper TCP Базовый порт:</value>
     <comment>EN: DXKeeper TCP base port:</comment>
   </data>
   <data name="DxKeeperPortTip" xml:space="preserve">
-    <value>Read-only hier. Setzen Sie es in DXKeeper: {0}Das Gateway sendet an Base Port + 1, was der Port ist DXKeeper zeigt in der Überschrift dieses Panels.</value>
+    <value>Читайте только здесь. Включи его. DXKeeper: {0}Шлюз отправляется в базовый порт + 1, который является портом DXKeeper Показывается в заголовке панели.</value>
     <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.</comment>
   </data>
   <data name="DxKeeperConfigPath" xml:space="preserve">
@@ -205,159 +205,159 @@
     <comment>EN: Config &gt; Defaults tab &gt; Network Service &gt; Base Port</comment>
   </data>
   <data name="DxKeeperPortReading" xml:space="preserve">
-    <value>(Lesen aus dem Register ...)</value>
+    <value>(Читать из реестра...)</value>
     <comment>EN: (reading from registry…)</comment>
   </data>
   <data name="StatusHeader" xml:space="preserve">
-    <value>Anschlussstatus</value>
+    <value>Статус подключения</value>
     <comment>EN: Connection Status</comment>
   </data>
   <data name="Connected" xml:space="preserve">
-    <value>verbunden</value>
+    <value>соединенный</value>
     <comment>EN: connected</comment>
   </data>
   <data name="Disconnected" xml:space="preserve">
-    <value>getrennt</value>
+    <value>отключенный</value>
     <comment>EN: disconnected</comment>
   </data>
   <data name="LogHeader" xml:space="preserve">
-    <value>Betriebsprotokoll</value>
+    <value>Операционный журнал</value>
     <comment>EN: Operation Log</comment>
   </data>
   <data name="SeeErrorLog" xml:space="preserve">
-    <value>siehe ErrorLog</value>
+    <value>Посмотреть ErrorLog</value>
     <comment>EN: see ErrorLog</comment>
   </data>
   <data name="DisplayErrorLog" xml:space="preserve">
-    <value>Anzeigefehlerprotokoll</value>
+    <value>Скачать Error Log</value>
     <comment>EN: Display Error Log</comment>
   </data>
   <data name="Help" xml:space="preserve">
-    <value>Hilfe</value>
+    <value>Помощь</value>
     <comment>EN: Help</comment>
   </data>
   <data name="CheckDxkLookup" xml:space="preserve">
-    <value>Lookup früher QSOs</value>
+    <value>Предыдущий Lookup QSOs</value>
     <comment>EN: Lookup previous QSOs</comment>
   </data>
   <data name="CheckDxkLookupTip" xml:space="preserve">
-    <value>Direkt DXKeeper Vorherige anzeigen QSOs mit dem protokollierten Rufzeichen</value>
+    <value>прямой DXKeeper Отображать предыдущие QSOs с зарегистрированным позывным</value>
     <comment>EN: Direct DXKeeper to display previous QSOs with the logged callsign</comment>
   </data>
   <data name="CheckCallbook" xml:space="preserve">
-    <value>Anfrage Callbook</value>
+    <value>Запросить Callbook</value>
     <comment>EN: Query Callbook</comment>
   </data>
   <data name="CheckCallbookTip" xml:space="preserve">
-    <value>Direkt DXKeeper um das ausgewählte Callbook abzufragen</value>
+    <value>прямой DXKeeper Запросить выбранную Callbook</value>
     <comment>EN: Direct DXKeeper to query its selected callbook</comment>
   </data>
   <data name="CheckEqsl" xml:space="preserve">
-    <value>Upload zum eQSL.cc</value>
+    <value>Загрузить eQSL.cc</value>
     <comment>EN: Upload to eQSL.cc</comment>
   </data>
   <data name="CheckEqslTip" xml:space="preserve">
-    <value>Direkt DXKeeper Upload protokolliert QSO bis eQSL.cc</value>
+    <value>прямой DXKeeper скачать logged QSO то eQSL.cc</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to eQSL.cc</comment>
   </data>
   <data name="CheckLotw" xml:space="preserve">
-    <value>Upload zum LoTW</value>
+    <value>Загрузить LoTW</value>
     <comment>EN: Upload to LoTW</comment>
   </data>
   <data name="CheckLotwTip" xml:space="preserve">
-    <value>Direkt DXKeeper Upload protokolliert QSO bis LoTW</value>
+    <value>прямой DXKeeper скачать logged QSO то LoTW</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to LoTW</comment>
   </data>
   <data name="CheckClubLog" xml:space="preserve">
-    <value>Upload zum Club Log</value>
+    <value>Загрузить Club Log</value>
     <comment>EN: Upload to Club Log</comment>
   </data>
   <data name="CheckClubLogTip" xml:space="preserve">
-    <value>Direkt DXKeeper Upload protokolliert QSO bis Club Log</value>
+    <value>прямой DXKeeper скачать logged QSO то Club Log</value>
     <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
   </data>
   <data name="CheckDebugLogging" xml:space="preserve">
-    <value>Log Debugging Informationen</value>
+    <value>Лог отладки информации</value>
     <comment>EN: Log debugging information</comment>
   </data>
   <data name="CheckDebugLoggingTip" xml:space="preserve">
-    <value>Informationen zum Debuggen protokollieren ErrorLog.txt</value>
+    <value>Лог отладки информации к ErrorLog.txt</value>
     <comment>EN: Log debugging information to ErrorLog.txt</comment>
   </data>
   <data name="CheckVerboseLogging" xml:space="preserve">
-    <value>Verbose-Protokollierung</value>
+    <value>Лесозаготовка</value>
     <comment>EN: Verbose logging</comment>
   </data>
   <data name="CheckVerboseLoggingTip" xml:space="preserve">
-    <value>Zustandsereignisse mit niedriger Priorität im Betriebsprotokoll anzeigen (z.B. DDE Ein-/Ausschalten</value>
+    <value>Показать события с низким приоритетом в журнале операций (например, DDE соединить/отключить</value>
     <comment>EN: Show low-priority status events in the operation log (e.g. DDE connect/disconnect)</comment>
   </data>
   <data name="FailedQsoCount" xml:space="preserve">
-    <value>{0} QSOs nicht geliefert — offen</value>
+    <value>{0} QSOs Not Delivered - Открытый</value>
     <comment>EN: {0} QSOs not delivered — open</comment>
   </data>
   <data name="FailedQsoCountOne" xml:space="preserve">
-    <value>1 QSO nicht geliefert — offen</value>
+    <value>1 1 QSO Не доставлено - открыто</value>
     <comment>EN: 1 QSO not delivered — open</comment>
   </data>
   <data name="FailedQsoOpenFile" xml:space="preserve">
-    <value>Datei</value>
+    <value>файл</value>
     <comment>EN: file</comment>
   </data>
   <data name="FailedQsoOpenFolder" xml:space="preserve">
-    <value>Ordner</value>
+    <value>папка</value>
     <comment>EN: folder</comment>
   </data>
   <data name="FailedQsoTip" xml:space="preserve">
-    <value>Einfuhr {0} in DXKeeperund dann löschen. Diese Zählung löscht, wenn die Datei weg ist.</value>
+    <value>импорт {0} в DXKeeperЗатем удалите его. Этот счет проясняется, когда файл исчез.</value>
     <comment>EN: Import {0} into DXKeeper, then delete it. This count clears when the file is gone.</comment>
   </data>
   <data name="LanguageLabel" xml:space="preserve">
-    <value>Sprache:</value>
+    <value>Язык:</value>
     <comment>EN: Language:</comment>
   </data>
   <data name="LanguageTip" xml:space="preserve">
-    <value>Sprache dieses Fensters. "Follow Windows" verwendet die Windows-Anzeigesprache. Eine Änderung wird beim nächsten Start des Gateways wirksam.</value>
+    <value>Язык этого окна. «Follow Windows» использует язык дисплея Windows. Изменения вступают в силу в следующий раз, когда начинается шлюз.</value>
     <comment>EN: Language of this window. "Follow Windows" uses the Windows display language. A change takes effect the next time the gateway starts.</comment>
   </data>
   <data name="LanguageFollowWindows" xml:space="preserve">
-    <value>Folgen Sie Windows</value>
+    <value>Следуйте за Windows</value>
     <comment>EN: Follow Windows</comment>
   </data>
   <data name="LanguageRestartNote" xml:space="preserve">
-    <value>Sprache eingestellt auf {0}Starten Sie das Gateway neu, um es anzuwenden.</value>
+    <value>Язык, установленный для {0}Перезапустите шлюз, чтобы применить его.</value>
     <comment>EN: Language set to {0}. Restart the gateway to apply it.</comment>
   </data>
   <data name="DlgAlreadyRunning" xml:space="preserve">
-    <value>N1MM-DXKeeper Gateway läuft bereits.</value>
+    <value>N1MM-DXKeeper Gateway Уже бежит.</value>
     <comment>EN: N1MM-DXKeeper Gateway is already running.</comment>
   </data>
   <data name="DlgUdpPortInvalid" xml:space="preserve">
-    <value>Die UDP Der Abhöranschluss muss eine ganze Zahl zwischen 1 und 65535 sein.</value>
+    <value>The UDP Прослушивающий порт должен быть целым числом от 1 до 65535.</value>
     <comment>EN: The UDP listening port must be a whole number between 1 and 65535.</comment>
   </data>
   <data name="DlgMulticastInvalid" xml:space="preserve">
     <value>{0}.
 
-Lassen Sie diese leer, es sei denn, das Sendeprogramm ist so konfiguriert, dass es an eine Multicast-Gruppe gesendet wird.</value>
+Оставьте это пустым, если программа отправки не настроена на отправку в многоадресную группу.</value>
     <comment>EN: {0}.
 
 Leave this blank unless the sending program is configured to send to a multicast group.</comment>
   </data>
   <data name="DlgNoFailedQsos" xml:space="preserve">
-    <value>Alle QSO Diese Sitzung wurde an DXKeeper.
+    <value>Каждый QSO Эта сессия была проведена для DXKeeper.
 
-{0} existiert nicht.</value>
+{0} не существует.</value>
     <comment>EN: Every QSO this session was delivered to DXKeeper.
 
 {0} does not exist.</comment>
   </data>
   <data name="DlgCouldNotOpenFile" xml:space="preserve">
-    <value>Konnte nicht öffnen {0}:
+    <value>Не могу открыть {0}:
 
 {1}
 
-Verwenden Sie den Ordnerlink und importieren Sie die Datei in DXKeeper von dort.</value>
+Используйте ссылку папки и импортируйте файл в DXKeeper Оттуда.</value>
     <comment>EN: Could not open {0}:
 
 {1}
@@ -365,7 +365,7 @@ Verwenden Sie den Ordnerlink und importieren Sie die Datei in DXKeeper von dort.
 Use the folder link and import the file into DXKeeper from there.</comment>
   </data>
   <data name="DlgCouldNotOpenFolder" xml:space="preserve">
-    <value>Konnte den Ordner nicht öffnen:
+    <value>Не удалось открыть папку:
 
 {0}</value>
     <comment>EN: Could not open the folder:
@@ -373,7 +373,7 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="DlgNoErrorLog" xml:space="preserve">
-    <value>Es wurde noch nichts in das Fehlerprotokoll geschrieben:
+    <value>В журнале ошибок пока ничего не написано:
 
 {0}</value>
     <comment>EN: Nothing has been written to the error log yet:
@@ -381,7 +381,7 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="DlgCouldNotOpenErrorLog" xml:space="preserve">
-    <value>Konnte nicht öffnen ErrorLog.txt:
+    <value>Не могу открыть ErrorLog.txt:
 
 {0}</value>
     <comment>EN: Could not open ErrorLog.txt:
@@ -389,7 +389,7 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="DlgCouldNotOpenHelp" xml:space="preserve">
-    <value>Die Hilfeseite konnte nicht geöffnet werden:
+    <value>Не удалось открыть страницу справки:
 
 {0}</value>
     <comment>EN: Could not open the help page:
@@ -397,87 +397,87 @@ Use the folder link and import the file into DXKeeper from there.</comment>
 {0}</comment>
   </data>
   <data name="ErrNotAnIpAddress" xml:space="preserve">
-    <value>„{0}" ist keine gültige IP-Adresse</value>
+    <value>"{0}"не является действительным IP-адресом</value>
     <comment>EN: "{0}" is not a valid IP address</comment>
   </data>
   <data name="ErrNotMulticast" xml:space="preserve">
-    <value>„{0}„ ist nicht ein IPv4 Multicast-Adresse (224.0.0.0 - 239.255.255.255)</value>
+    <value>"{0}"не является IPv4 многоадресный адрес (224.0.0.0 - 239.255.255.255)</value>
     <comment>EN: "{0}" is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)</comment>
   </data>
   <data name="MsgBindFailed" xml:space="preserve">
-    <value>Konnte nicht zuhören UDP Hafen {0}: {1}</value>
+    <value>Не могу слушать UDP порт {0}: {1}</value>
     <comment>EN: Could not listen on UDP port {0}: {1}</comment>
   </data>
   <data name="AlertMulticastRejected" xml:space="preserve">
-    <value>{0} - Start ohne Multicast.</value>
+    <value>{0} - без мультикаста.</value>
     <comment>EN: {0} - starting WITHOUT multicast.</comment>
   </data>
   <data name="AlertUdpPortReverted" xml:space="preserve">
-    <value>Zurück zu UDP Hafen {0}.</value>
+    <value>Возвращаясь к UDP порт {0}.</value>
     <comment>EN: Reverted to UDP port {0}.</comment>
   </data>
   <data name="AlertMulticastReverted" xml:space="preserve">
-    <value>Reverted die Multicast-Gruppe zu "{0}„.</value>
+    <value>Возвращает группу мультикастов к "{0}".</value>
     <comment>EN: Reverted the multicast group to "{0}".</comment>
   </data>
   <data name="AlertReplaceNoKey" xml:space="preserve">
-    <value>contactreplace für {0}: nicht verwendbar &lt;oldcall&gt;/&lt;oldtimestamp&gt; Der Edit wurde NICHT angewendet DXKeeper</value>
+    <value>contactreplace для {0}Нет полезного &lt;oldcall&gt;/&lt;oldtimestamp&gt; Редакция не была применена к DXKeeper</value>
     <comment>EN: contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper</comment>
   </data>
   <data name="AlertDeleteNoKey" xml:space="preserve">
-    <value>contactdelete für {0}: fehlendes Rufzeichen oder Zeitstempel - nichts wurde an DXKeeper</value>
+    <value>contactdelete для {0}: отсутствующий позывной или метка времени - ничего не было отправлено DXKeeper</value>
     <comment>EN: contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper</comment>
   </data>
   <data name="AlertInternalError" xml:space="preserve">
-    <value>INTERNER FEHLER, der eine Nachricht bearbeitet (){0}: {1}) - siehe ErrorLog.txtDas Gateway läuft noch.</value>
+    <value>Внутренняя ошибка при обработке сообщения ({0}: {1}) - Смотри ErrorLog.txtШлюз все еще работает.</value>
     <comment>EN: INTERNAL ERROR handling a message ({0}: {1}) - see ErrorLog.txt. The gateway is still running.</comment>
   </data>
   <data name="AlertInvalidMessage" xml:space="preserve">
-    <value>INVALID: {0}</value>
+    <value>ИНВАЛИД: {0}</value>
     <comment>EN: INVALID: {0}</comment>
   </data>
   <data name="AlertReplaceLostQso" xml:space="preserve">
-    <value>****** {0}: DXKeeper Das Original gelöscht, aber nicht protokolliert{1} - das Edited QSO ist in {2}Importieren Sie es. Grund: {3}</value>
+    <value>*** {0}: DXKeeper Удалил оригинал, но не записал редактирование{1} - отредактированный QSO находится в {2}импортировать. Причина: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}</comment>
   </data>
   <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
-    <value>****** {0}: DXKeeper Das Original gelöscht, der Edit wurde nicht protokolliert{1}Und die Bearbeitung konnte nicht gespeichert werden {2}. Grund: {3}</value>
+    <value>*** {0}: DXKeeper Удаленный оригинал, правка не была зарегистрирована{1}Редактирование не может быть сохранено для {2}Причина: {3}</value>
     <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}</comment>
   </data>
   <data name="AlertNotConfirmed" xml:space="preserve">
-    <value>DXKeeper nicht bestätigt {0}{1}{2}: {3}</value>
+    <value>DXKeeper не подтвердил {0}{1}{2}: {3}</value>
     <comment>EN: DXKeeper did not confirm {0}{1}{2}: {3}</comment>
   </data>
   <data name="AlertSavedTo" xml:space="preserve">
-    <value> - gespeichert {0}</value>
+    <value> - спасенный {0}</value>
     <comment>EN:  - saved to {0}</comment>
   </data>
   <data name="AlertNotSavedTo" xml:space="preserve">
-    <value> - Und es konnte nicht gerettet werden {0}</value>
+    <value> - И его нельзя было спасти {0}</value>
     <comment>EN:  - AND it could not be saved to {0}</comment>
   </data>
   <data name="FailBusy" xml:space="preserve">
-    <value>Ein weiteres Senden war noch nicht beendet</value>
+    <value>Еще одна отправка еще не закончилась</value>
     <comment>EN: another send had not finished yet</comment>
   </data>
   <data name="FailConnectTimeout" xml:space="preserve">
-    <value>Die Verbindung zum DXKeeper Timeout nach {0} Sekunden</value>
+    <value>Подключение к DXKeeper отсрочить после {0} секунды</value>
     <comment>EN: the connection to DXKeeper timed out after {0} seconds</comment>
   </data>
   <data name="FailConnectRefused" xml:space="preserve">
-    <value>kann keine Verbindung herstellen DXKeeper am TCP Hafen {0}; in DXKeeper, überprüfen Sie, dass {1} BerichteListening„</value>
+    <value>не может подключиться к DXKeeper на TCP порт {0}; в DXKeeperПроверьте это {1} сообщаетListening"</value>
     <comment>EN: cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"</comment>
   </data>
   <data name="FailNoPeerClose" xml:space="preserve">
-    <value>DXKeeper Niemals die Verbindung innerhalb {0} Sekunden, also die QSO Vielleicht nie akzeptiert</value>
+    <value>DXKeeper Никогда не закрывайте связь внутри {0} секунды, так что QSO может никогда не быть принято</value>
     <comment>EN: DXKeeper never closed the connection within {0} seconds, so the QSO may never have been accepted</comment>
   </data>
   <data name="FailShuttingDown" xml:space="preserve">
-    <value>Das Gateway wurde heruntergefahren und dies wurde nie gesendet</value>
+    <value>Шлюз был закрыт, и его так и не отправили.</value>
     <comment>EN: the gateway was shutting down and this was never sent</comment>
   </data>
   <data name="FailSendFailed" xml:space="preserve">
-    <value>Der Send fehlgeschlagen</value>
+    <value>Посылка провалилась</value>
     <comment>EN: the send failed</comment>
   </data>
   <data name="DxKeeperConfigNetworkService" xml:space="preserve">

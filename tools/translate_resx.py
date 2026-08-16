@@ -46,7 +46,13 @@ PROTECTED_TERMS = sorted(
         "Club Log", "LoTW", "eQSL.cc", "eQSL", "QRZ", "ARRL",
         "ErrorLog.txt", "FailedQSOs",
         "contactinfo", "contactreplace", "contactdelete", "lookupinfo",
-        "externallog", "deleteqso", "oldcall", "oldtimestamp",
+        "externallog", "deleteqso",
+        # With their angle brackets: escaped as &lt;oldcall&gt; these sent the
+        # Ukrainian model into a degenerate run of "=" hundreds of characters
+        # long. Masked as a unit they are simply passed through.
+        "<oldcall>", "<oldtimestamp>", "oldcall", "oldtimestamp",
+        # The word DXKeeper's own English UI displays, quoted in our text.
+        "Listening",
         "QSO", "ADIF", "RST", "UDP", "TCP", "DDE", "XML", "IPv4",
         # The DXKeeper menu paths are whole entries in DO_NOT_TRANSLATE_KEYS
         # and reach sentences only through a {0}, so they need no term masking.
@@ -57,51 +63,75 @@ PROTECTED_TERMS = sorted(
 
 PLACEHOLDER = re.compile(r"\{\d+\}")
 
-# Alphanumeric, no spaces, no punctuation: survives a translation pass far
-# better than bracketed or unicode sentinels, which get spaced out or dropped.
-def token(i):
-    return f"QQ{i}ZZ"
+# Masking uses HTML rather than a text sentinel, because a text sentinel does
+# not survive a non-Latin target. Measured: "QQ0ZZ" comes back from Korean as
+# "사이트맵" (the engine translated it as the word "sitemap") and from Ukrainian
+# as "КК1ЗЗ" (transliterated into Cyrillic). Any Latin-letter marker is just
+# another word to a translation model.
+#
+# LibreTranslate's format:"html" mode parses the input and translates only text
+# nodes, leaving element tags alone. So each placeholder and protected term
+# becomes an empty element, which comes back untouched in every language tested
+# (ko, uk, ja, zh-Hans). Note that WRAPPING a term is not enough - "<b>DXKeeper
+# </b>" returned as "<b>DX保持器</b>", tag preserved and content translated.
+# The term has to BE the tag.
+#
+# The win over splitting the string at its placeholders is context: the engine
+# still sees one whole sentence and can order it naturally.
+SENTINEL = re.compile(r'<x\s+id="(\d+)"\s*/?>(?:</x>)?')
 
 
 def mask(text):
-    """Replace placeholders and protected terms with opaque tokens."""
+    """Replace placeholders and protected terms with empty HTML elements."""
     originals = []
+    marker = "\x00%d\x00"
 
     def take(match):
         originals.append(match.group(0))
-        return token(len(originals) - 1)
+        return marker % (len(originals) - 1)
 
     text = PLACEHOLDER.sub(take, text)
     for term in PROTECTED_TERMS:
         while term in text:
             originals.append(term)
-            text = text.replace(term, token(len(originals) - 1), 1)
+            text = text.replace(term, marker % (len(originals) - 1), 1)
+
+    # Escape only the operator-visible text. Masked content is already out of
+    # the way, so "<oldcall>" in a source string cannot be mistaken for markup.
+    text = (text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+    text = text.replace("\n", "<br>")
+
+    for i in range(len(originals)):
+        text = text.replace(marker % i, f'<x id="{i}"></x>')
     return text, originals
 
 
 def unmask(text, originals):
-    """Restore tokens, tolerating the ways an engine damages them.
+    """Restore the masked content and undo the HTML transport encoding.
 
-    Measured against LibreTranslate: a sentinel that lands at the end of a
-    segment comes back with its doubled tail collapsed - "QQ0ZZ" returns as
-    "QQ0Z" - while the same sentinel mid-sentence survives intact. Engines also
-    case-fold and occasionally space out such runs. So restoration matches the
-    numeric core with a tolerant fringe rather than demanding the exact token.
-
-    Returns None if a token cannot be found at all, which is the signal for the
-    caller to keep the English text rather than write damaged output.
+    Returns None if any sentinel is missing, which tells the caller to keep the
+    English text rather than write damaged output.
     """
-    for i, original in enumerate(originals):
-        loose = re.compile(rf"[Qq]{{1,2}}\s*{i}\s*[Zz]{{1,2}}")
-        text, n = loose.subn(lambda _: original.replace("\\", "\\\\"), text)
-        if n == 0:
-            return None
-    return text
+    seen = set()
+
+    def put(match):
+        i = int(match.group(1))
+        seen.add(i)
+        return originals[i] if i < len(originals) else match.group(0)
+
+    text = SENTINEL.sub(put, text)
+    if seen != set(range(len(originals))):
+        return None
+
+    text = re.sub(r"<br\s*/?>", "\n", text)
+    return (text.replace("&lt;", "<").replace("&gt;", ">")
+                .replace("&quot;", '"').replace("&#39;", "'")
+                .replace("&amp;", "&"))
 
 
 def translate(text, target):
     body = json.dumps({
-        "q": text, "source": "en", "target": target, "format": "text",
+        "q": text, "source": "en", "target": target, "format": "html",
     }).encode()
     req = urllib.request.Request(
         LIBRETRANSLATE, data=body, headers={"Content-Type": "application/json"})
@@ -142,7 +172,8 @@ def main(targets):
             # Nothing left to translate once the protected terms are masked -
             # e.g. AppTitle, which is entirely a product name. Sending it would
             # only give the engine a chance to damage the sentinel.
-            if not re.search(r"[A-Za-z]", re.sub(r"[Qq]{1,2}\d+[Zz]{1,2}", "", masked)):
+            bare = re.sub(r"<br\s*/?>", "", SENTINEL.sub("", masked))
+            if not re.search(r"[A-Za-z]", bare):
                 translated[name] = english
                 continue
 
@@ -161,6 +192,16 @@ def main(targets):
                 problems.append(
                     f"{name}: placeholders changed "
                     f"{placeholders(english)} -> {placeholders(restored)}")
+                translated[name] = english
+            elif len(restored) > 3 * len(english) + 40:
+                # Degeneration guard. A translation model that loses its way
+                # emits a long repeated run - one produced 250 "=" characters
+                # in the middle of a sentence. No honest translation of a UI
+                # string grows by that much, and the damage is not otherwise
+                # detectable: placeholders and masked terms all survive it.
+                problems.append(
+                    f"{name}: output degenerated "
+                    f"({len(english)} chars -> {len(restored)})")
                 translated[name] = english
             else:
                 translated[name] = restored
