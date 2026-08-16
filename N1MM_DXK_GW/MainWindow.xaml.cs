@@ -241,6 +241,16 @@ public partial class MainWindow : FluentWindow
       dxvDde.Start();
       pfDde.Start();
 
+      // After the first layout pass, when the collapsed cards have a real
+      // height to read. Services starts collapsed, so it is the reference.
+      Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+      {
+         if (!ServicesSection.IsExpanded && ServicesSection.ActualHeight > 0)
+         {
+            collapsedSectionHeight = ServicesSection.ActualHeight;
+         }
+      }));
+
       // Last, deliberately: everything above is already running, so the notice
       // never delays the gateway starting to listen.
       ShowFirstRunNoticeIfNeeded();
@@ -1566,9 +1576,155 @@ public partial class MainWindow : FluentWindow
    /// group's content and another's — and the MinHeight below absorbs even
    /// that, so nothing underneath moves at all.
    /// </summary>
+   /// <summary>
+   /// How long a section takes to open or close. Short enough not to be in the
+   /// way during a contest, long enough for the eye to follow what moved.
+   /// </summary>
+   private static readonly Duration SectionAnimation =
+      new(TimeSpan.FromMilliseconds(180));
+
+   /// <summary>
+   /// Height of a settings card showing only its header. Read once from a card
+   /// that starts collapsed rather than hard-coded, so it follows the theme's
+   /// metrics and the operator's text scaling. Zero until the first layout, in
+   /// which case the collapse simply does not animate.
+   /// </summary>
+   private double collapsedSectionHeight;
+
+   /// <summary>
+   /// Animates a section's height so the sections below it slide rather than
+   /// jump.
+   ///
+   /// CardExpander does not animate: measured, the header below a collapsing
+   /// section occupied exactly two positions, 116px apart, with nothing in
+   /// between. The control simply shows or hides its content and the
+   /// StackPanel re-measures once, in a single frame.
+   ///
+   /// Animating the section's own Height is what fixes it, and the reason is
+   /// the layout pass rather than the animation itself: a StackPanel re-runs
+   /// measure and arrange whenever a child's height changes, so driving that
+   /// height over 180ms makes it reposition everything below on every frame.
+   /// Nothing has to animate the siblings; they follow.
+   ///
+   /// The height is released back to Auto when the animation finishes.
+   /// Leaving it pinned would freeze the section at whatever size it happened
+   /// to be, and its content changes with the language it is running in.
+   /// </summary>
+   /// <returns>True if an animation was started, false if it was skipped.</returns>
+   private bool AnimateSectionHeight(Wpf.Ui.Controls.CardExpander section)
+   {
+      // Honours the "show animations in Windows" setting. Somebody who has
+      // turned animations off has usually done it because they make them ill
+      // or because the machine is slow, and neither is ours to overrule.
+      if (!SystemParameters.ClientAreaAnimation)
+      {
+         return false;
+      }
+
+      var from = section.ActualHeight;
+      if (from <= 0)
+      {
+         return false;
+      }
+
+      // Pin the old height immediately. IsExpanded has flipped but the control
+      // has not yet shown or hidden its content, so this holds the section
+      // still through the frame in which it otherwise snaps to its new size —
+      // the jump never reaches the screen.
+      section.BeginAnimation(HeightProperty, null);
+      section.Height = from;
+
+      // Measuring here would return the old height: WPF-UI applies the content
+      // presenter's visibility in a later pass, which is why an UpdateLayout at
+      // this point reported from and to as identical and nothing animated.
+      // Loaded priority runs after that pass and still before rendering.
+      Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() =>
+      {
+         double to;
+         if (section.IsExpanded)
+         {
+            section.Height = double.NaN;
+            // Measure without Arrange: it yields the natural height without
+            // painting the section at that size first.
+            section.Measure(new System.Windows.Size(section.ActualWidth, double.PositiveInfinity));
+            // DesiredSize INCLUDES the margin; Height and ActualHeight do not.
+            // Animating to the unadjusted figure overshot by exactly the card's
+            // 8px bottom margin and then snapped back when the height was
+            // released — which is the flicker at the end of the movement.
+            to = section.DesiredSize.Height - section.Margin.Top - section.Margin.Bottom;
+            section.Height = from;
+         }
+         else
+         {
+            // Measuring a collapsing section returns its EXPANDED height —
+            // measured, 184 where 60 was correct. WPF-UI hides the content
+            // presenter later than any dispatcher priority we can wait for
+            // without the collapse painting first.
+            //
+            // It does not need measuring. A collapsed card is its header and
+            // nothing else, every card's header is identical, and that height
+            // is captured once at startup from a card that begins collapsed.
+            to = collapsedSectionHeight;
+         }
+
+         if (to <= 0 || Math.Abs(to - from) < 1)
+         {
+            section.Height = double.NaN;
+            ScrollSectionIntoView(section);
+            return;
+         }
+
+         var animation = new System.Windows.Media.Animation.DoubleAnimation(
+            from, to, SectionAnimation)
+         {
+            // Fast first and easing out: the Fluent motion curve, which reads
+            // as the content settling rather than stopping dead.
+            EasingFunction = new System.Windows.Media.Animation.CubicEase
+            {
+               EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut,
+            },
+         };
+         animation.Completed += (_, _) =>
+         {
+            section.BeginAnimation(HeightProperty, null);
+            section.Height = double.NaN;
+            ScrollSectionIntoView(section);
+         };
+         section.BeginAnimation(HeightProperty, animation);
+      }));
+
+      return true;
+   }
+
+   /// <summary>
+   /// Scrolls a newly opened section into view, once it has finished opening.
+   ///
+   /// Only matters on a window short enough for the settings region to scroll.
+   /// It must not run during the animation: measured, calling it mid-flight
+   /// forced a layout that shoved the Connection Status card 51px down the
+   /// window and then let it spring back — the flicker was this, not the
+   /// animation. Afterwards it is invisible.
+   /// </summary>
+   private void ScrollSectionIntoView(Wpf.Ui.Controls.CardExpander section)
+   {
+      if (section.IsExpanded)
+      {
+         section.BringIntoView();
+      }
+   }
+
    private void SettingsSection_ExpandChanged(object sender, RoutedEventArgs e)
    {
-      if (adjustingSections || sender is not Wpf.Ui.Controls.CardExpander opened)
+      if (sender is not Wpf.Ui.Controls.CardExpander opened)
+      {
+         return;
+      }
+
+      // Before the accordion guard, so a section the accordion closes on the
+      // operator's behalf animates exactly like one they closed themselves.
+      var animating = AnimateSectionHeight(opened);
+
+      if (adjustingSections)
       {
          return;
       }
@@ -1603,8 +1759,13 @@ public partial class MainWindow : FluentWindow
          }
       }
 
-      // After the expander's own layout pass, or the bounds are pre-expansion.
-      Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(() => opened.BringIntoView()));
+      // When an animation is running it does this itself on completion; this
+      // covers the case where animation was skipped.
+      if (!animating)
+      {
+         Dispatcher.BeginInvoke(DispatcherPriority.Loaded,
+            new Action(() => ScrollSectionIntoView(opened)));
+      }
    }
 
    private void CopyLogButton_Click(object sender, RoutedEventArgs e)
