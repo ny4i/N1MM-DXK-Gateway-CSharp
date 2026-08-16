@@ -625,6 +625,10 @@ This program is free software under the GNU General Public License version 3 or 
     <value>Open the undelivered QSO file</value>
     <comment>Menu entry that opens FailedQSOs_*.adi.</comment>
   </data>
+  <data name="TrayOpenFailedFolder" xml:space="preserve">
+    <value>Show it in its folder</value>
+    <comment>Menu entry that opens Explorer with the undelivered-QSO file selected. Needed as well as the entry above because .adi often has no program associated with it, and because the file may not be in the Gateway's own folder.</comment>
+  </data>
   <data name="TrayFailureTitle" xml:space="preserve">
     <value>QSO not delivered</value>
     <comment>Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>

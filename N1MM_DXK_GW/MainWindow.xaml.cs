@@ -155,6 +155,7 @@ public partial class MainWindow : FluentWindow
       tray.ShowRequested += RestoreFromTray;
       tray.QuitRequested += Close;
       tray.OpenFailedFileRequested += () => FailedQsoFileLink_Click(this, new RoutedEventArgs());
+      tray.OpenFailedFolderRequested += () => FailedQsoFolderLink_Click(this, new RoutedEventArgs());
       tray.OpenErrorLogRequested += OpenErrorLog;
       trayTimer.Tick += (_, _) => RefreshTray();
 

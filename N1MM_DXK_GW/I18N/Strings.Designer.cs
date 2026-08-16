@@ -1106,6 +1106,15 @@ namespace N1MM_DXK_GW {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show it in its folder.
+        /// </summary>
+        public static string TrayOpenFailedFolder {
+            get {
+                return ResourceManager.GetString("TrayOpenFailedFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waiting to send: {0}.
         /// </summary>
         public static string TrayQueued {

@@ -39,6 +39,7 @@ public sealed class TrayIcon : IDisposable
    public event Action? ShowRequested;
    public event Action? QuitRequested;
    public event Action? OpenFailedFileRequested;
+   public event Action? OpenFailedFolderRequested;
    public event Action? OpenErrorLogRequested;
 
    private readonly NotifyIcon notifyIcon;
@@ -51,6 +52,18 @@ public sealed class TrayIcon : IDisposable
    private readonly ToolStripMenuItem deliveredItem = Info();
    private readonly ToolStripMenuItem lastQsoItem = Info();
    private readonly ToolStripMenuItem openFailedItem = new(Strings.TrayOpenFailedFile);
+
+   /// <summary>
+   /// Both an open and a show-in-folder entry, because ".adi" commonly has no
+   /// program associated with it — opening the file then raises Windows' "how
+   /// do you want to open this?" picker instead of showing anything. The
+   /// window offers the same pair; from here it matters more, since the
+   /// window's own advice to "use the folder link" is out of reach while it is
+   /// hidden. It also matters when the file is not in the Gateway's own folder,
+   /// which happens when the program is installed somewhere unwritable.
+   /// </summary>
+   private readonly ToolStripMenuItem openFailedFolderItem = new(Strings.TrayOpenFailedFolder);
+
    private readonly ToolStripMenuItem errorLogItem = new(Strings.DisplayErrorLog);
 
    private bool showingAlertIcon;
@@ -68,6 +81,7 @@ public sealed class TrayIcon : IDisposable
       showItem.Font = new Font(showItem.Font, FontStyle.Bold);
 
       openFailedItem.Click += (_, _) => OpenFailedFileRequested?.Invoke();
+      openFailedFolderItem.Click += (_, _) => OpenFailedFolderRequested?.Invoke();
       errorLogItem.Click += (_, _) => OpenErrorLogRequested?.Invoke();
 
       var quitItem = new ToolStripMenuItem(Strings.TrayQuit);
@@ -80,7 +94,7 @@ public sealed class TrayIcon : IDisposable
          new ToolStripSeparator(),
          receivedItem, loggedItem, queuedItem, deliveredItem, lastQsoItem,
          new ToolStripSeparator(),
-         openFailedItem, errorLogItem,
+         openFailedItem, openFailedFolderItem, errorLogItem,
          new ToolStripSeparator(),
          quitItem,
       });
@@ -124,6 +138,7 @@ public sealed class TrayIcon : IDisposable
          : Format(Strings.TrayLastQso, lastQso);
 
       openFailedItem.Visible = notDelivered > 0;
+      openFailedFolderItem.Visible = notDelivered > 0;
       errorLogItem.Visible = errorLogWritten;
 
       var wantAlert = notDelivered > 0;

@@ -575,8 +575,7 @@ Use the folder link and import the file into DXKeeper from there.
   <data name="AboutPurpose" xml:space="preserve">
     <value>груз QSOs от TR4W и N1MM Logger+ в DXKeeper И спрашивает DXView и Pathfinder О позывных, которые вы используете.</value>
     <comment>EN: Carries QSOs from TR4W and N1MM Logger+ into DXKeeper, and asks DXView and Pathfinder about the callsigns you work.
-    NOTE: One-line description. All five product names stay in English. TR4W is named here and nowhere else - the program's title stays "N1MM-DXKeeper Gateway", which is what operators have called it for years.
-    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+    NOTE: One-line description. All five product names stay in English. TR4W is named here and nowhere else - the program's title stays "N1MM-DXKeeper Gateway", which is what operators have called it for years.</comment>
   </data>
   <data name="AboutLicenceShort" xml:space="preserve">
     <value>Бесплатное программное обеспечение под лицензией GNU General Public License, версия 3 или более поздняя, без каких-либо гарантий.</value>
@@ -719,6 +718,11 @@ This program is free software under the GNU General Public License version 3 or 
     <value>Откройте недоставленное QSO файл</value>
     <comment>EN: Open the undelivered QSO file
     NOTE: Menu entry that opens FailedQSOs_*.adi.</comment>
+  </data>
+  <data name="TrayOpenFailedFolder" xml:space="preserve">
+    <value>Показать его в папке</value>
+    <comment>EN: Show it in its folder
+    NOTE: Menu entry that opens Explorer with the undelivered-QSO file selected. Needed as well as the entry above because .adi often has no program associated with it, and because the file may not be in the Gateway's own folder.</comment>
   </data>
   <data name="TrayFailureTitle" xml:space="preserve">
     <value>QSO не доставлено</value>
