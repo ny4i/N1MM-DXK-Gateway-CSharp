@@ -156,6 +156,87 @@ Optional, off by default: the **Multicast group** field (registry value `Multica
 
 An earlier revision of this file argued the opposite — that `SO_REUSEADDR` must never be set — reasoning from the unicast rule alone. That was wrong for the broadcast traffic this gateway actually receives.
 
+### WPF-UI controls
+
+**Read `docs/WPF-UI-NOTES.md` before changing the window.** WPF-UI controls
+several times do something other than what the markup says, and every case in
+that file was found by measuring the running window rather than by reading the
+XAML — a keyed `Style` without `BasedOn` stripping a control template, an
+`InfoBar` silently ignoring its `Content`, a `HyperlinkButton` ignoring
+`Foreground`, a `Card` centring instead of filling, a `CardExpander` that does
+not animate at all, and a scrollbar drawn over the content it scrolls.
+
+Note also that WPF-UI is WPF, **not** WinUI 3. Guidance found online for WinUI
+3, the Windows Community Toolkit or UWP usually describes a different control
+with a different template.
+
+### Notification area
+
+`TrayIcon` wraps WinForms' `NotifyIcon`. WPF has no tray support of its own, but this project already references WinForms for NDde's hidden window, so this costs no new package and no new assembly. Everything on it must be touched from the UI thread — it needs a message pump.
+
+- **Minimise hides to the tray; close still quits.** Both gestures keep their usual meaning. Nobody should discover by accident that the gateway they thought they shut down is still the only thing logging their contest, or that the one they meant to tuck away has stopped.
+- **The refresh timer runs only while hidden.** A gateway sits up for a whole contest; a 1 Hz timer that ticked regardless would spend all of it waking the CPU to recompute text the window already shows.
+- **Failure balloons are rate-limited to one a minute.** A DXKeeper outage fails every QSO, and one balloon each would bury the shack describing a condition the operator has already been told about. The red badge on the icon persists between notices.
+- **The tooltip is clamped to 127 characters.** Windows caps it there and .NET throws rather than truncating. Measured on .NET 8: 127 accepted, 128 rejected (it was 63 on .NET Framework). Longest translated tooltip today is 78, so the clamp is a guard, not a routine path.
+- **`WithAlertBadge` must `DestroyIcon` the handle from `GetHicon`.** `Icon.FromHandle` does not take ownership, so the returned icon is `Clone`d and the handle released; otherwise every construction leaks a GDI handle.
+
+**Windows 11 puts new notification icons in the overflow flyout by default.** Verified on this machine: after minimising, the icon was not on the taskbar and was found only under "Show Hidden Icons". This is why the red badge alone cannot be the error indication — an operator who has not dragged the icon out will never see it. The balloon notification is the channel that reaches them, and the undelivered count is also in `FailedQSOs_*.adi` and the window's own warning bar. Worth telling operators to pin the icon.
+
+`SaveWindowPosition` reads `RestoreBounds` rather than returning early when minimised. It used to skip saving in that state to avoid recording a taskbar-minimised window's coordinates; quitting from the tray menu now makes minimised the ordinary path, and returning early would silently discard a resize made earlier in the session.
+
+### Localization
+
+Strings live in `N1MM_DXK_GW\I18N\`. `Strings.Designer.cs` is **checked in**, because WPF runs `MarkupCompilePass1` before `PrepareResources` and forcing the reverse is circular. Regenerate it with `dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings`.
+
+**The `LogicalName` rule in the `.csproj` is load-bearing.** MSBuild derives a manifest resource name from the file's path, so the subfolder alone would embed `N1MM_DXK_GW.I18N.Strings` while the generated code looks up `N1MM_DXK_GW.Strings`. One rule handles both the neutral file and every satellite:
+
+```xml
+<EmbeddedResource Update="I18N\*.resx">
+  <LogicalName>N1MM_DXK_GW.%(Filename).resources</LogicalName>
+</EmbeddedResource>
+```
+
+`%(Filename)` strips only the final extension, so `Strings.resx` → `N1MM_DXK_GW.Strings.resources` and `Strings.de.resx` → `N1MM_DXK_GW.Strings.de.resources`.
+
+**The culture must be in the satellite's resource name.** `ResourceManager` composes what it looks for as `BaseName + "." + culture + ".resources"`, so inside the German satellite it asks for `N1MM_DXK_GW.Strings.de.resources`, *not* the neutral name. Forcing every culture file to the culture-less name produced a satellite with the correct assembly identity (`Culture=de`), in the correct folder, loadable by identity, containing all 85 strings — that `ResourceManager` then silently ignored. No exception; the UI simply stayed English. Both failure modes here are runtime-only and survive a clean build with zero warnings, so **verify a language change actually renders** after touching any of this.
+
+Adding a language means dropping `I18N\Strings.<culture>.resx` in. No project or code change: the rule above names it correctly, MSBuild reads the culture from the filename and routes it into the matching satellite, and `Localization.AvailableTranslations` finds it by scanning for `<culture>\N1MM_DXK_GW.resources.dll` next to the executable rather than from a list in code.
+
+**What is translated, and what is deliberately not:**
+
+| | Translated |
+|---|---|
+| Window chrome, dialogs | yes |
+| Operation-log lines reporting a problem the operator must act on | yes |
+| Operation-log routine traffic lines (`contactinfo: …`, `lookupinfo: …`) | **no** |
+| `ErrorLog.txt`, `FailedQSOs_*.adi` | **no** |
+| Menu paths inside DXKeeper | **no** — its interface is English-only, so a translated path names a menu that does not exist |
+
+The routine log lines are mostly wire identifiers, and the log is what an operator pastes into a support thread. Same reason `ErrorLog.txt` is English.
+
+- **Only `CurrentUICulture` is set, never `CurrentCulture`.** Windows regional settings keep deciding number and date formatting. This also keeps the invariant frequency formatting (the VB6 v1.2.0 bug) out of the blast radius.
+- **The language applies on restart, and the UI says so.** XAML resolves 45 `x:Static` references at load time, so a live switch would repaint nothing; rebuilding the visual tree to fake it is a lot of machinery for a setting touched once.
+- **`SendResult` carries a `SendFailure` enum, not just `ErrorMessage`.** The message is English and goes to `ErrorLog.txt` verbatim; the enum is what the UI maps to a translated sentence. Do not collapse them back into one string — that would translate the support artefact.
+- **Translated log lines must pass severity explicitly** to `AppendLog(line, level)`. `LogEntry.Classify` derives severity by grepping English phrases (`"ERROR"`, `"***"`, `"did not confirm"`); a translated failure line would classify as Normal and lose its colour, silently, in exactly the languages that most need it to stand out.
+- **`MainWindow.L()` catches `FormatException`** and shows the raw template. Translations are produced outside this repo and a damaged placeholder (`{ 0 }`, an invented `{2}`) would otherwise throw on the send-queue worker and kill the gateway mid-contest. `tools/translate_resx.py` rejects such a string before writing it; the catch is the second line of defence.
+- **No idioms in source strings.** "Another send was already in flight" machine-translated into German as a literal statement about aviation. It now reads "another send had not finished yet".
+
+### Producing translations
+
+`tools/translate_resx.py` against a local LibreTranslate on `127.0.0.1:5000` is the whole pipeline — there is no other tool in the loop:
+
+```
+python tools/translate_resx.py cs de es fi fr it ja ko nl pt ru uk zh-Hans
+```
+
+It masks `{N}` placeholders and protected terms (product names, protocol names, wire identifiers, `<oldcall>`, `Listening`) before each request and restores them after, one string at a time.
+
+**Masking is HTML, not a text sentinel, and must stay that way.** A Latin-letter marker is just another word to a translation model. Measured: `QQ0ZZ` came back from Korean as `사이트맵` — the engine translated the sentinel as the word "sitemap" — and from Ukrainian as `КК1ЗЗ`, transliterated into Cyrillic. So each masked item is sent as an empty element, `<x id="0"></x>`, with `format: "html"`; LibreTranslate parses that and translates only text nodes. Note that *wrapping* a term does not protect it — `<b>DXKeeper</b>` returned as `<b>DX保持器</b>`, tag preserved and content translated. The term has to **be** the tag. Splitting each string at its placeholders would protect them too, but sending whole sentences keeps the context the model needs to order them.
+
+Three checks reject a string and leave it in English rather than write damaged output — placeholder set changed, a masked term missing, or the output more than ~3× the source. That last one catches model degeneration, which is otherwise undetectable: escaped `&lt;oldcall&gt;` once produced a run of 250 `=` characters mid-sentence with every placeholder and masked term intact.
+
+Output is machine quality and wants a native review before being advertised — Ukrainian renders "Connection Status" as "status on servers", Japanese renders "Help" as "Contact us". Each entry carries its English source as a `<comment>`, which is what Poedit shows a reviewer beside each string.
+
 ---
 
 ## NuGet Packages

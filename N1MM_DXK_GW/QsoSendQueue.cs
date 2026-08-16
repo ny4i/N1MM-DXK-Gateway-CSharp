@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.Threading.Channels;
 
 namespace N1MM_DXK_GW;
@@ -182,6 +184,7 @@ public sealed class QsoSendQueue : IDisposable
                result = Describe(op, new DxKeeperTcpClient.SendResult
                {
                   Outcome = DxKeeperTcpClient.SendOutcome.Failed,
+                  Failure = DxKeeperTcpClient.SendFailure.Exception,
                   ErrorMessage = ex.Message,
                });
             }
@@ -290,7 +293,12 @@ public sealed class QsoSendQueue : IDisposable
       };
 
    private static DxKeeperTcpClient.SendResult Abandoned(string why) =>
-      new() { Outcome = DxKeeperTcpClient.SendOutcome.Failed, ErrorMessage = why };
+      new()
+      {
+         Outcome = DxKeeperTcpClient.SendOutcome.Failed,
+         Failure = DxKeeperTcpClient.SendFailure.ShuttingDown,
+         ErrorMessage = why,
+      };
 
    private void Report(Op op, DxKeeperTcpClient.SendResult send)
    {

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.Xml;
@@ -24,6 +26,7 @@ public sealed class MessageDispatcher
    public event Action<XElement>? ContactReplaceReceived;
    public event Action<XElement>? LookupInfoReceived;
    public event Action<XElement>? ContactDeleteReceived;
+   public event Action<AdifBuilder.Result>? AdifRecordReceived;   // (one logged QSO, as ADIF)
    public event Action<string, string>? InvalidMessageReceived;   // (rawXml, reason)
    public event Action<string>? UnhandledMessageReceived;         // (messageType)
    public event Action<string, Exception>? DispatchFailed;        // (rawXml, fault)
@@ -84,6 +87,31 @@ public sealed class MessageDispatcher
       }
    }
 
+   /// <summary>
+   /// Raises one event per QSO in a received ADIF datagram.
+   ///
+   /// Split here rather than in the handler because a sender is free to put
+   /// more than one record in a datagram, and each is a separate QSO for
+   /// DXKeeper. A datagram that turns out to hold no usable record is
+   /// reported, since something addressed to this port and shaped like ADIF
+   /// was meant to log something.
+   /// </summary>
+   private void DispatchAdif(string datagram)
+   {
+      var records = AdifBuilder.ReadAdifRecords(datagram);
+      if (records.Count == 0)
+      {
+         InvalidMessageReceived?.Invoke(datagram,
+            "ADIF received but no record in it had a CALL field");
+         return;
+      }
+
+      foreach (var record in records)
+      {
+         AdifRecordReceived?.Invoke(record);
+      }
+   }
+
    private void ProcessOne(string xml)
    {
       XDocument doc;
@@ -93,13 +121,18 @@ public sealed class MessageDispatcher
       }
       catch (XmlException strictEx)
       {
-         // WSJT-X broadcasts ADIF (not XML) on a configurable UDP port by
-         // default. If the user has WSJT-X pointed at our port we want a
-         // useful hint rather than just "XML parse error".
-         if (xml.IndexOf("<EOR>", StringComparison.OrdinalIgnoreCase) >= 0)
+         // Not XML at all, but ADIF — which is a supported input, not a
+         // mistake. WSJT-X ("Enable logged contact ADIF broadcast") and
+         // SDR-Control send a logged QSO this way instead of as N1MM XML, and
+         // the gateway logs those to DXKeeper just as it does contactinfo.
+         //
+         // This branch used to report the datagram as invalid and tell the
+         // operator to switch the feature off, on the assumption that ADIF
+         // arriving here meant a sender pointed at the wrong port. That was
+         // wrong: it is the documented way SDR-Control logs to DXKeeper.
+         if (xml.IndexOf("<eor>", StringComparison.OrdinalIgnoreCase) >= 0)
          {
-            InvalidMessageReceived?.Invoke(xml,
-               "Received ADIF instead of N1MM XML — check WSJT-X Settings > Reporting (disable 'Enable logged contact ADIF broadcast' or change its port)");
+            DispatchAdif(xml);
             return;
          }
 

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 namespace N1MM_DXK_GW;
 
 /// <summary>

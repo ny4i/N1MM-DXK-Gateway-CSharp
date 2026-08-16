@@ -1,0 +1,504 @@
+<ui:FluentWindow x:Class="N1MM_DXK_GW.MainWindow"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+                 xmlns:local="clr-namespace:N1MM_DXK_GW"
+                 Title="{x:Static local:Strings.AppTitle}"
+                 Width="800" Height="620"
+                 MinWidth="660" MinHeight="520"
+                 ExtendsContentIntoTitleBar="True"
+                 WindowBackdropType="Mica"
+                 WindowCornerPreference="Round"
+                 WindowStartupLocation="CenterScreen">
+
+   <Window.Resources>
+      <!-- Card heading: promoted in weight and given breathing room so the
+           three groups read as groups, rather than every line competing. -->
+      <Style x:Key="CardHeading" TargetType="TextBlock">
+         <Setter Property="FontSize" Value="15" />
+         <Setter Property="FontWeight" Value="SemiBold" />
+         <Setter Property="VerticalAlignment" Value="Center" />
+      </Style>
+
+      <Style x:Key="HeadingIcon" TargetType="ui:SymbolIcon">
+         <Setter Property="FontSize" Value="18" />
+         <Setter Property="Margin" Value="0,0,10,0" />
+         <Setter Property="VerticalAlignment" Value="Center" />
+         <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+      </Style>
+
+      <!-- One settings row: label (with optional description) on the left,
+           control hard right. This is the Fluent settings pattern and it fixes
+           the uneven rhythm of two ragged checkbox columns - every row shares
+           the same left edge and the same height. -->
+      <Style x:Key="SettingRow" TargetType="Grid">
+         <Setter Property="Margin" Value="0,0,0,2" />
+      </Style>
+
+      <Style x:Key="SettingLabel" TargetType="TextBlock">
+         <Setter Property="VerticalAlignment" Value="Center" />
+         <Setter Property="TextWrapping" Value="Wrap" />
+         <Setter Property="Margin" Value="0,5,16,5" />
+      </Style>
+
+      <Style x:Key="SubSettingLabel" TargetType="TextBlock" BasedOn="{StaticResource SettingLabel}">
+         <Setter Property="Margin" Value="26,5,16,5" />
+         <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+      </Style>
+
+      <!-- BasedOn is not optional. A keyed Style with no BasedOn REPLACES the
+           theme's default style rather than extending it, which strips the
+           control template - the toggles rendered as bare dots without it. -->
+      <Style x:Key="RowToggle" TargetType="ui:ToggleSwitch"
+             BasedOn="{StaticResource {x:Type ui:ToggleSwitch}}">
+         <Setter Property="HorizontalAlignment" Value="Right" />
+         <Setter Property="VerticalAlignment" Value="Center" />
+      </Style>
+
+      <!-- A settings group. When open it takes an accent border and a tinted
+           surface, which does two jobs: it says which group you opened, and it
+           draws a hard edge between the open group and the card below that it
+           has just pushed down. Without that edge the expansion reads as the
+           whole page jumping rather than as one section growing.
+
+           BasedOn, as ever - a keyed Style with no BasedOn would replace the
+           theme's template rather than extend it. -->
+      <Style x:Key="SettingsSection" TargetType="ui:CardExpander"
+             BasedOn="{StaticResource {x:Type ui:CardExpander}}">
+         <Setter Property="Margin" Value="0,0,0,8" />
+         <Setter Property="ContentPadding" Value="14" />
+         <Style.Triggers>
+            <Trigger Property="IsExpanded" Value="True">
+               <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+               <Setter Property="BorderThickness" Value="1.5" />
+               <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />
+            </Trigger>
+         </Style.Triggers>
+      </Style>
+
+      <!-- Status chip: subtle filled pill so the three DXLab programs read as
+           discrete states rather than as a bulleted list. -->
+      <Style x:Key="StatusChip" TargetType="Border">
+         <Setter Property="CornerRadius" Value="14" />
+         <Setter Property="Padding" Value="12,6" />
+         <Setter Property="Margin" Value="0,0,8,0" />
+         <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+         <Setter Property="BorderBrush" Value="{DynamicResource ControlElevationBorderBrush}" />
+         <!-- Deliberately thinner than the expanded-section accent: the chips
+              are ambient status, not the thing being pointed at. -->
+         <Setter Property="BorderThickness" Value="1" />
+      </Style>
+   </Window.Resources>
+
+   <Grid>
+      <Grid.RowDefinitions>
+         <RowDefinition Height="Auto" />
+         <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <!-- Bound to the window's own Title, which SetTitleWithVersion rewrites
+           at startup to include the version. Pinning it to Strings.AppTitle
+           here silently overrode that, so the caption showed no version even
+           though the window title carried one. The VB6 gateway put the version
+           in its caption and testers quote it in reports. -->
+      <ui:TitleBar Grid.Row="0"
+                   Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+                   ShowMaximize="True" />
+
+      <Grid Grid.Row="1" Margin="18,6,18,14">
+         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+         </Grid.RowDefinitions>
+
+         <!-- Settings and status scroll together; the log keeps the rest of the
+              window. On a short window the operator can still reach every
+              setting, and the log never collapses to nothing. -->
+         <ScrollViewer x:Name="SettingsScroll" Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+               <!-- ========================= Network ========================= -->
+               <ui:CardExpander x:Name="NetworkSection" Style="{StaticResource SettingsSection}"
+                                Icon="{ui:SymbolIcon Globe24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
+                                IsExpanded="True">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.NetworkHeader}" />
+                  </ui:CardExpander.Header>
+                  <StackPanel>
+                     <!-- Two fields per row rather than one. Column widths are
+                          Auto so a longer translated label still fits; the
+                          trailing star column absorbs the slack. -->
+                     <Grid Style="{StaticResource SettingRow}">
+                        <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="28" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.UdpPortLabel}" />
+                        <ui:TextBox x:Name="UdpPortBox" Grid.Column="1"
+                                    Width="110" VerticalAlignment="Center"
+                                    ToolTip="{x:Static local:Strings.UdpPortTip}"
+                                    KeyDown="UdpPortBox_KeyDown"
+                                    LostFocus="UdpPortBox_LostFocus" />
+                        <TextBlock Grid.Column="3" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.MulticastLabel}" />
+                        <ui:TextBox x:Name="MulticastBox" Grid.Column="4"
+                                    Width="180" VerticalAlignment="Center"
+                                    PlaceholderText="{x:Static local:Strings.MulticastPlaceholder}"
+                                    ToolTip="{x:Static local:Strings.MulticastTip}"
+                                    KeyDown="MulticastBox_KeyDown"
+                                    LostFocus="MulticastBox_LostFocus" />
+                     </Grid>
+
+                     <Grid Style="{StaticResource SettingRow}">
+                        <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="DxkPortLabel" Grid.Column="0"
+                                   Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.DxKeeperPortLabel}" />
+                        <TextBlock x:Name="DxkPortValue" Grid.Column="1"
+                                   VerticalAlignment="Center" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                   Text="{x:Static local:Strings.DxKeeperPortReading}" />
+                     </Grid>
+                  </StackPanel>
+               </ui:CardExpander>
+
+               <!-- ========================= Services ======================== -->
+               <!-- Collapsed by default. These are set once when the station is
+                    configured and then left alone, so they should not cost
+                    vertical space every session at the expense of the log. -->
+               <ui:CardExpander x:Name="ServicesSection" Style="{StaticResource SettingsSection}"
+                                Icon="{ui:SymbolIcon CloudArrowUp24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
+                                IsExpanded="False">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.ServicesHeader}" />
+                  </ui:CardExpander.Header>
+                  <StackPanel>
+                     <!-- ToggleSwitch, not CheckBox: each of these takes effect
+                          the instant it is changed (saved and applied, no OK
+                          button), which is exactly when Fluent calls for a
+                          switch rather than a checkbox.
+
+                          Two columns, not five stacked rows. These are five
+                          short independent options; one per row made the card
+                          twice as tall as it needed to be and pushed the log -
+                          the part actually watched during a contest - down the
+                          window. The star label columns stay equal so both
+                          halves keep their toggles aligned, and a longer
+                          translated label wraps rather than shoving the other
+                          column out of true. -->
+                     <Grid>
+                        <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="28" />
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.CheckDxkLookup}"
+                                   ToolTip="{x:Static local:Strings.CheckDxkLookupTip}" />
+                        <ui:ToggleSwitch x:Name="DxkLookupToggle" Grid.Row="0" Grid.Column="1"
+                                         Style="{StaticResource RowToggle}"
+                                         ToolTip="{x:Static local:Strings.CheckDxkLookupTip}"
+                                         Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
+
+                        <TextBlock Grid.Row="0" Grid.Column="3" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.CheckCallbook}"
+                                   ToolTip="{x:Static local:Strings.CheckCallbookTip}" />
+                        <ui:ToggleSwitch x:Name="CallbookToggle" Grid.Row="0" Grid.Column="4"
+                                         Style="{StaticResource RowToggle}"
+                                         ToolTip="{x:Static local:Strings.CheckCallbookTip}"
+                                         Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.CheckEqsl}"
+                                   ToolTip="{x:Static local:Strings.CheckEqslTip}" />
+                        <ui:ToggleSwitch x:Name="EqslToggle" Grid.Row="1" Grid.Column="1"
+                                         Style="{StaticResource RowToggle}"
+                                         ToolTip="{x:Static local:Strings.CheckEqslTip}"
+                                         Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="3" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.CheckLotw}"
+                                   ToolTip="{x:Static local:Strings.CheckLotwTip}" />
+                        <ui:ToggleSwitch x:Name="LotwToggle" Grid.Row="1" Grid.Column="4"
+                                         Style="{StaticResource RowToggle}"
+                                         ToolTip="{x:Static local:Strings.CheckLotwTip}"
+                                         Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
+
+                        <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.CheckClubLog}"
+                                   ToolTip="{x:Static local:Strings.CheckClubLogTip}" />
+                        <ui:ToggleSwitch x:Name="ClubLogToggle" Grid.Row="2" Grid.Column="1"
+                                         Style="{StaticResource RowToggle}"
+                                         ToolTip="{x:Static local:Strings.CheckClubLogTip}"
+                                         Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
+                     </Grid>
+                  </StackPanel>
+               </ui:CardExpander>
+
+               <!-- ======================= Diagnostics ======================= -->
+               <ui:CardExpander x:Name="DiagnosticsSection" Style="{StaticResource SettingsSection}"
+                                Icon="{ui:SymbolIcon DocumentBulletList24}" Expanded="SettingsSection_ExpandChanged" Collapsed="SettingsSection_ExpandChanged"
+                                IsExpanded="False">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.DiagnosticsHeader}" />
+                  </ui:CardExpander.Header>
+                  <StackPanel>
+                     <!-- Same five-column grid as Services, using only the left
+                          half. Diagnostics has two rows rather than four, but
+                          its toggles must land on the same vertical line as the
+                          ones above or the eye jumps between cards. Verbose
+                          logging stays on its own row, indented and dimmed:
+                          it is a sub-option of the row above it, and putting
+                          the two side by side would lose that. -->
+                     <Grid>
+                        <Grid.ColumnDefinitions>
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
+                           <ColumnDefinition Width="28" />
+                           <ColumnDefinition Width="*" />
+                           <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                           <RowDefinition Height="Auto" />
+                           <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource SettingLabel}"
+                                   Text="{x:Static local:Strings.CheckDebugLogging}"
+                                   ToolTip="{x:Static local:Strings.CheckDebugLoggingTip}" />
+                        <ui:ToggleSwitch x:Name="DebugLogToggle" Grid.Row="0" Grid.Column="1"
+                                         Style="{StaticResource RowToggle}"
+                                         ToolTip="{x:Static local:Strings.CheckDebugLoggingTip}"
+                                         Checked="DebugLogToggle_Changed" Unchecked="DebugLogToggle_Changed" />
+
+                        <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource SubSettingLabel}"
+                                   Text="{x:Static local:Strings.CheckVerboseLogging}"
+                                   ToolTip="{x:Static local:Strings.CheckVerboseLoggingTip}" />
+                        <ui:ToggleSwitch x:Name="VerboseLogToggle" Grid.Row="1" Grid.Column="1"
+                                         Style="{StaticResource RowToggle}"
+                                         ToolTip="{x:Static local:Strings.CheckVerboseLoggingTip}"
+                                         Checked="SettingToggleChanged" Unchecked="SettingToggleChanged" />
+
+                     </Grid>
+                  </StackPanel>
+               </ui:CardExpander>
+
+               <!-- Language had been tucked into the right half of the
+                    Diagnostics grid, which reads as an afterthought: that card
+                    is about logging. Services was considered and rejected too -
+                    that one is specifically what DXKeeper should do with each
+                    QSO, and the interface language is not a DXKeeper service.
+                    It belongs to the gateway itself, so it gets its own card,
+                    placed last so the default view is unchanged. -->
+               <ui:CardExpander x:Name="GeneralSection" Style="{StaticResource SettingsSection}"
+                                Icon="{ui:SymbolIcon Settings24}"
+                                Expanded="SettingsSection_ExpandChanged"
+                                Collapsed="SettingsSection_ExpandChanged"
+                                IsExpanded="False">
+                  <ui:CardExpander.Header>
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.GeneralHeader}" />
+                  </ui:CardExpander.Header>
+                  <Grid>
+                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                     </Grid.ColumnDefinitions>
+                     <TextBlock Grid.Column="0" Style="{StaticResource SettingLabel}"
+                                Text="{x:Static local:Strings.LanguageLabel}"
+                                ToolTip="{x:Static local:Strings.LanguageTip}" />
+                     <!-- The list is built at run time from the satellite
+                          assemblies actually present, so it holds only
+                          "Follow Windows" when none are shipped. -->
+                     <ComboBox x:Name="LanguageCombo" Grid.Column="1"
+                               MinWidth="180" HorizontalAlignment="Left"
+                               Margin="12,0,0,0" VerticalAlignment="Center"
+                               ToolTip="{x:Static local:Strings.LanguageTip}"
+                               SelectionChanged="LanguageCombo_SelectionChanged" />
+                  </Grid>
+               </ui:CardExpander>
+            </StackPanel>
+         </ScrollViewer>
+
+         <!-- ====================== Connection Status ====================== -->
+         <ui:Card Grid.Row="1" Margin="0,0,0,8" Padding="14">
+            <StackPanel>
+               <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                  <ui:SymbolIcon Symbol="PlugConnected24" Style="{StaticResource HeadingIcon}" />
+                  <TextBlock Style="{StaticResource CardHeading}"
+                             Text="{x:Static local:Strings.StatusHeader}" />
+               </StackPanel>
+               <!-- Three status chips on one row: compact, and the whole
+                    DXLab picture is legible at a glance instead of as a list. -->
+               <StackPanel Orientation="Horizontal">
+                  <Border x:Name="DxkChip" Style="{StaticResource StatusChip}">
+                     <StackPanel Orientation="Horizontal">
+                        <Ellipse x:Name="DxkDot" Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" />
+                        <TextBlock Text="DXKeeper" FontWeight="SemiBold" Margin="0,0,6,0" />
+                        <TextBlock x:Name="DxkStatus" />
+                     </StackPanel>
+                  </Border>
+                  <Border x:Name="DxvChip" Style="{StaticResource StatusChip}">
+                     <StackPanel Orientation="Horizontal">
+                        <Ellipse x:Name="DxvDot" Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" />
+                        <TextBlock Text="DXView" FontWeight="SemiBold" Margin="0,0,6,0" />
+                        <TextBlock x:Name="DxvStatus" />
+                     </StackPanel>
+                  </Border>
+                  <Border x:Name="PfChip" Style="{StaticResource StatusChip}">
+                     <StackPanel Orientation="Horizontal">
+                        <Ellipse x:Name="PfDot" Width="8" Height="8" Margin="0,0,8,0" VerticalAlignment="Center" />
+                        <TextBlock Text="Pathfinder" FontWeight="SemiBold" Margin="0,0,6,0" />
+                        <TextBlock x:Name="PfStatus" />
+                     </StackPanel>
+                  </Border>
+               </StackPanel>
+            </StackPanel>
+         </ui:Card>
+
+         <!-- ========================= Operation log ======================== -->
+         <!-- VerticalContentAlignment is load-bearing. Without it the card
+              centres its content rather than filling, so the star-sized row
+              holding the log collapsed to the height of its text: measured,
+              the list was 50px tall with the heading stranded in the middle of
+              the card and empty space above and below it. -->
+         <ui:Card x:Name="LogCard" Grid.Row="2" Margin="0,0,0,8" Padding="14" MinHeight="150"
+                  VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <Grid VerticalAlignment="Stretch">
+               <Grid.RowDefinitions>
+                  <RowDefinition Height="Auto" />
+                  <RowDefinition Height="*" />
+               </Grid.RowDefinitions>
+
+               <Grid Grid.Row="0" Margin="0,0,0,10">
+                  <StackPanel Orientation="Horizontal">
+                     <ui:SymbolIcon Symbol="TextBulletListSquare24" Style="{StaticResource HeadingIcon}" />
+                     <TextBlock Style="{StaticResource CardHeading}"
+                                Text="{x:Static local:Strings.LogHeader}" />
+                  </StackPanel>
+                  <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                     <ui:Button x:Name="CopyLogButton" Appearance="Transparent" Margin="0,0,4,0"
+                                Icon="{ui:SymbolIcon Copy24}"
+                                Content="{x:Static local:Strings.LogCopy}"
+                                ToolTip="{x:Static local:Strings.LogCopyTip}"
+                                Click="CopyLogButton_Click" />
+                     <ui:Button x:Name="ClearLogButton" Appearance="Transparent"
+                                Icon="{ui:SymbolIcon Eraser24}"
+                                Content="{x:Static local:Strings.LogClear}"
+                                ToolTip="{x:Static local:Strings.LogClearTip}"
+                                Click="ClearLogButton_Click" />
+                  </StackPanel>
+               </Grid>
+
+               <!-- Monospace stays: timestamps and callsigns align into columns
+                    the operator scans during a run. Severity drives colour so
+                    a failure stands out without reading every line. -->
+               <ListBox x:Name="OperationLogList" Grid.Row="1"
+                        FontFamily="Consolas" FontSize="12"
+                        BorderThickness="0" Background="Transparent"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                        VirtualizingStackPanel.IsVirtualizing="True">
+                  <!-- The clearance for the horizontal scrollbar goes HERE, on
+                       the items panel, and not on the ListBox's Padding.
+                       Fluent draws that scrollbar as an overlay across the
+                       content rather than as a strip beside it, so without
+                       clearance it lies over the newest line - which in a log
+                       pinned to the bottom is always the line being read.
+                       Padding on the ListBox does not fix it: it is not part
+                       of the scrollable extent, so scrolling to the end still
+                       puts the last line under the bar. The panel's margin is
+                       inside the scroll viewer and does count. -->
+                  <ListBox.ItemsPanel>
+                     <ItemsPanelTemplate>
+                        <VirtualizingStackPanel Margin="0,0,0,14" />
+                     </ItemsPanelTemplate>
+                  </ListBox.ItemsPanel>
+                  <ListBox.ItemContainerStyle>
+                     <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="2,1,2,1" />
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="MinHeight" Value="0" />
+                        <Setter Property="Focusable" Value="False" />
+                     </Style>
+                  </ListBox.ItemContainerStyle>
+                  <ListBox.ItemTemplate>
+                     <DataTemplate DataType="{x:Type local:LogEntry}">
+                        <TextBlock Text="{Binding Text}" Foreground="{Binding Brush}" />
+                     </DataTemplate>
+                  </ListBox.ItemTemplate>
+               </ListBox>
+            </Grid>
+         </ui:Card>
+
+         <!-- =================== Notice + footer commands =================== -->
+         <StackPanel Grid.Row="3">
+            <!-- A real InfoBar rather than a coloured sentence with links: this
+                 is a standing condition needing an action, which is exactly
+                 what InfoBar is for. -->
+            <Grid>
+               <StackPanel Orientation="Horizontal" HorizontalAlignment="Left"
+                           VerticalAlignment="Center">
+                  <ui:HyperlinkButton x:Name="ErrorLogLink"
+                                      Visibility="Collapsed" Padding="0" Margin="0,0,12,0"
+                                      Foreground="{DynamicResource SystemFillColorCriticalBrush}"
+                                      Content="{x:Static local:Strings.SeeErrorLog}"
+                                      Click="ErrorLogLink_Click" />
+                  <!-- Always present, and quiet. The first-run notice is shown
+                       once; after that this is the way back to the version,
+                       the terms, the warranty disclaimer and the credit for
+                       whoever translated the language on screen. -->
+                  <ui:HyperlinkButton x:Name="AboutLink" Padding="0"
+                                      Opacity="0.7" FontSize="12"
+                                      Content="{x:Static local:Strings.AboutLink}"
+                                      Click="AboutLink_Click" />
+               </StackPanel>
+               <!-- Failed QSOs, centre of the footer. This replaced a warning
+                    bar that stayed on screen until the file was deleted. The
+                    bar was right that an undelivered QSO must not be missed
+                    and wrong about how: a permanent block nagging about a
+                    condition the operator has already read is how a warning
+                    becomes wallpaper. This says the same thing in one line,
+                    goes quiet when there is nothing to say, and is the way to
+                    the file at any time - including for a file an earlier run
+                    left behind, which nothing previously surfaced at all. -->
+               <ui:HyperlinkButton x:Name="FailedQsoIndicator"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Padding="0" FontSize="12"
+                                   Click="FailedQsoIndicator_Click" />
+
+               <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                  <ui:Button x:Name="ShowErrorLogButton" Margin="0,0,8,0"
+                             Icon="{ui:SymbolIcon DocumentError24}"
+                             Content="{x:Static local:Strings.DisplayErrorLog}"
+                             Click="ShowErrorLogButton_Click" />
+                  <ui:Button x:Name="HelpButton"
+                             Icon="{ui:SymbolIcon QuestionCircle24}"
+                             Content="{x:Static local:Strings.Help}"
+                             Click="HelpButton_Click" />
+               </StackPanel>
+            </Grid>
+         </StackPanel>
+      </Grid>
+   </Grid>
+</ui:FluentWindow>

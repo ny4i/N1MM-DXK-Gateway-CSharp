@@ -1,5 +1,8 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace N1MM_DXK_GW;
@@ -127,6 +130,112 @@ public sealed class AdifBuilder
    /// edit that changed the callsign or the time still matches. A
    /// contactdelete carries only the current values.
    /// </summary>
+   /// <summary>
+   /// Matches one ADIF field header: &lt;name:length&gt; or &lt;name:length:type&gt;.
+   /// Case-insensitive, because ADIF field names are.
+   /// </summary>
+   private static readonly Regex AdifField =
+      new(@"<(?<name>[A-Za-z0-9_]+):(?<len>\d+)(?::[A-Za-z])?>",
+          RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+   /// <summary>
+   /// Splits a received ADIF datagram into records.
+   ///
+   /// WSJT-X and SDR-Control broadcast a logged QSO as ADIF text rather than
+   /// as N1MM XML. That text is already the format DXKeeper's externallog
+   /// command takes, so nothing is rebuilt from it — it is passed through as
+   /// received. Rebuilding would silently drop the fields our XML path does
+   /// not know about, and this datagram carries several of them: GRIDSQUARE,
+   /// MY_GRIDSQUARE, QSO_DATE_OFF, TIME_OFF, TX_PWR.
+   ///
+   /// An optional header (everything up to and including &lt;EOH&gt;) is
+   /// discarded; some senders include one and some do not.
+   /// </summary>
+   public static IReadOnlyList<Result> ReadAdifRecords(string datagram)
+   {
+      var text = datagram ?? string.Empty;
+
+      var eoh = text.IndexOf("<eoh>", StringComparison.OrdinalIgnoreCase);
+      if (eoh >= 0)
+      {
+         text = text[(eoh + "<eoh>".Length)..];
+      }
+
+      var records = new List<Result>();
+      foreach (var part in Regex.Split(text, "<eor>", RegexOptions.IgnoreCase))
+      {
+         var record = part.Trim();
+         if (record.Length == 0)
+         {
+            continue;
+         }
+
+         var call = ReadAdifField(record, "CALL");
+         if (call.Length == 0)
+         {
+            // No callsign, nothing DXKeeper could log. Skipped rather than
+            // reported: trailing whitespace after the last <EOR> lands here
+            // routinely and is not a fault.
+            continue;
+         }
+
+         var band = ReadAdifField(record, "BAND");
+         var mode = ReadAdifField(record, "MODE");
+
+         var summary = call;
+         if (band.Length > 0)
+         {
+            summary += " on " + band;
+         }
+         if (mode.Length > 0)
+         {
+            summary += " in " + mode;
+         }
+
+         records.Add(new Result
+         {
+            // <EOR> re-appended in our own casing and spacing, so a frame from
+            // this path is indistinguishable in the debug log from one this
+            // program built itself.
+            AdifRecord = record + " <EOR>",
+            Summary = summary,
+            Call = call,
+            Band = band,
+            Mode = mode,
+         });
+      }
+
+      return records;
+   }
+
+   /// <summary>
+   /// Reads one field's value out of an ADIF record, honouring the declared
+   /// length rather than scanning for the next '&lt;'. A value is allowed to
+   /// contain anything, angle brackets included, so the length prefix is the
+   /// only reliable delimiter.
+   /// </summary>
+   private static string ReadAdifField(string record, string name)
+   {
+      foreach (Match match in AdifField.Matches(record))
+      {
+         if (!string.Equals(match.Groups["name"].Value, name,
+                            StringComparison.OrdinalIgnoreCase))
+         {
+            continue;
+         }
+
+         var start = match.Index + match.Length;
+         var length = int.Parse(match.Groups["len"].Value, CultureInfo.InvariantCulture);
+         if (start + length > record.Length)
+         {
+            // Declared length runs past the end - a truncated datagram.
+            return string.Empty;
+         }
+         return record.Substring(start, length).Trim();
+      }
+      return string.Empty;
+   }
+
    public static DeleteKey BuildDeleteRecord(XElement message, bool useOldIdentity)
    {
       var call = useOldIdentity ? FirstNonEmpty(message, "oldcall", "call")

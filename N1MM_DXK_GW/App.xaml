@@ -1,0 +1,16 @@
+<Application x:Class="N1MM_DXK_GW.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+   <Application.Resources>
+      <ResourceDictionary>
+         <ResourceDictionary.MergedDictionaries>
+            <!-- Theme is set here to Light only as a starting value; App.OnStartup
+                 hands control to SystemThemeWatcher so the window follows the
+                 operator's Windows light/dark setting. -->
+            <ui:ThemesDictionary Theme="Light" />
+            <ui:ControlsDictionary />
+         </ResourceDictionary.MergedDictionaries>
+      </ResourceDictionary>
+   </Application.Resources>
+</Application>

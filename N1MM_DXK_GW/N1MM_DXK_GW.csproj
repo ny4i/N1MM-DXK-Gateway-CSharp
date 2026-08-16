@@ -1,26 +1,153 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <UseWPF>true</UseWPF>
+
+    <!-- Still true, and not a leftover: Specshell.NDde depends on
+         Specshell.WinForm.HiddenForm, because DDEML needs a hidden window with
+         a message pump. No WinForms control is ever shown; the assembly is
+         only there so DDE to DXKeeper, DXView and Pathfinder can work.
+         WinForms Screen is also used for multi-monitor window restore. -->
+    <UseWindowsForms>true</UseWindowsForms>
 
     <!-- The original VB6 gateway's icon, extracted from the StdPicture blob in
          N1MM_DXK_UI.frx. Sets the icon on the .exe itself (Explorer, taskbar
-         pinning); MainForm loads the same file as an embedded resource for its
-         title bar and Alt-Tab entry. -->
+         pinning); the window loads the same file for its title bar. -->
     <ApplicationIcon>N1MM_DXK_GW.ico</ApplicationIcon>
+
+    <!-- Neutral language of the strings compiled into the main assembly. Tells
+         the resource loader it need not probe for an "en" satellite before
+         falling back, and is the baseline every translation is made from. -->
+    <NeutralResourcesLanguage>en</NeutralResourcesLanguage>
+
+    <!-- 2.0 because this is the C# rewrite. The VB6 gateway reached 1.3.x, so
+         continuing that sequence would suggest a point release rather than a
+         reimplementation with a new UI, new failure handling and translations.
+         Shown in the title bar and the About window; testers quote it. -->
+    <Version>2.0.0</Version>
+    <Company>NY4I</Company>
+    <Product>N1MM-DXKeeper Gateway</Product>
+    <Copyright>Copyright (C) 2026 Tom Schaefer, NY4I</Copyright>
   </PropertyGroup>
+
+  <!-- UseWindowsForms puts System.Windows.Forms into the implicit usings, which
+       collides with WPF on Application, MessageBox, Clipboard and more. We do
+       not write WinForms UI - the assembly is here only for NDde's hidden
+       window and for Screen during window restore - so take it out of the
+       global set and qualify it explicitly at the two places that need it. -->
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="N1MM_DXK_GW.ico" />
   </ItemGroup>
 
+  <!-- The licence travels with the binary, not just with the repository.
+       NoticeWindow reads COPYING from AppContext.BaseDirectory, the GPL
+       requires the terms to accompany what is conveyed, and NDde's own licence
+       requires its notices to be distributed alongside. An installer picks
+       these up simply by taking the output directory. -->
+  <!-- Shipped with a .txt extension even though the repository keeps the
+       conventional extensionless COPYING that GitHub and packagers expect.
+       Windows opens a file by its extension: double-clicking a file named
+       "COPYING" raises the "how do you want to open this?" picker, offering
+       7-Zip and Adobe Acrobat, rather than showing the licence. An operator
+       asked to read the terms should get Notepad, not a chooser. -->
+  <ItemGroup>
+    <!-- The English and every translation of it. ReadmeFile picks the one for
+         the running language, and falls back to English when a translation was
+         made from an older English README. -->
+    <Content Include="..\README.txt" Link="README.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\README.*.txt" Link="%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\COPYING" Link="COPYING.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\NOTICE.md" Link="NOTICE.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\third-party-licenses\**"
+             Link="third-party-licenses\%(RecursiveDir)%(Filename)%(Extension)"
+             CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <!-- Strings.Designer.cs is CHECKED IN, not generated at build time, and must
+       stay that way. WPF runs MarkupCompilePass1 before PrepareResources, so a
+       build-generated resource class does not exist yet when XAML referencing
+       it is compiled - and making PrepareResources run first is a circular
+       dependency. Checking the file in is also what Visual Studio does with a
+       .Designer.cs, so VS regenerates it automatically when the .resx is saved.
+       It is public because the markup compiler resolves x:Static against public
+       types only.
+
+       LogicalName is load-bearing, not decoration. MSBuild derives a resource's
+       manifest name from its path, so I18N\Strings.resx would embed as
+       "N1MM_DXK_GW.I18N.Strings" while the generated code looks up
+       "N1MM_DXK_GW.Strings" - a mismatch that throws
+       MissingManifestResourceException at the first string lookup, at run time,
+       with a clean build. (The files sat at the project root until now for
+       exactly that reason.) Stating the name explicitly decouples it from the
+       folder, so the resources can be organised without the lookup caring.
+
+       The culture MUST be part of the name for the satellites. ResourceManager
+       composes what it looks for as BaseName + "." + culture + ".resources", so
+       inside the German satellite it asks for
+       "N1MM_DXK_GW.Strings.de.resources" - NOT the neutral name. Forcing every
+       culture file to the culture-less name produced a satellite that was
+       perfectly well-formed and loadable, with the right assembly identity and
+       all 85 strings in it, that ResourceManager then silently ignored: no
+       exception, just English. Measured, not assumed.
+
+       %(Filename) is what makes one rule cover both cases: MSBuild strips only
+       the final extension, so Strings.resx gives "Strings" and Strings.de.resx
+       gives "Strings.de", producing exactly the two names above.
+
+       Add a language by dropping I18N\Strings.<culture>.resx in. The rule below
+       names it correctly on its own, MSBuild reads the culture from the
+       filename and routes it into the matching satellite assembly, and
+       Localization.AvailableTranslations finds it at run time. No project or
+       code change. -->
+  <ItemGroup>
+    <EmbeddedResource Update="I18N\*.resx">
+      <LogicalName>N1MM_DXK_GW.%(Filename).resources</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Update="I18N\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="I18N\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <!-- Regenerates the checked-in I18N\Strings.Designer.cs after editing the .resx:
+           dotnet msbuild N1MM_DXK_GW.csproj -t:RegenerateStrings
+       Visual Studio does this automatically when the .resx is saved; this is
+       the equivalent for anyone working from the command line. Deliberately a
+       named target rather than part of the build - see the note above on why
+       the file cannot be generated during a normal build. -->
+  <Target Name="RegenerateStrings">
+    <!-- ExecuteAsTool=false keeps this in-process: the out-of-process path
+         shells out to ResGen.exe, which .NET Core MSBuild does not ship. -->
+    <GenerateResource Sources="I18N\Strings.resx"
+                      OutputResources="$(IntermediateOutputPath)Strings.regen.resources"
+                      StronglyTypedFileName="I18N\Strings.Designer.cs"
+                      StronglyTypedLanguage="CSharp"
+                      StronglyTypedNamespace="N1MM_DXK_GW"
+                      StronglyTypedClassName="Strings"
+                      PublicClass="true"
+                      ExecuteAsTool="false" />
+    <Message Importance="high" Text="Regenerated Strings.Designer.cs from Strings.resx" />
+  </Target>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
     <PackageReference Include="Specshell.NDde" Version="4.0.0" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

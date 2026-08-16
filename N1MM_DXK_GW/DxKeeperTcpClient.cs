@@ -1,4 +1,7 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 using System.Globalization;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using Microsoft.Win32;
@@ -60,6 +63,11 @@ public sealed class DxKeeperTcpClient
    // DXKeeper into a stream of Unconfirmed QSOs.
    private static readonly TimeSpan PeerCloseTimeout = TimeSpan.FromSeconds(10);
 
+   // Surfaced so the UI can quote the same numbers in a translated sentence
+   // rather than restating them and drifting out of step with the timeouts.
+   public static int ConnectTimeoutSeconds => (int)ConnectTimeout.TotalSeconds;
+   public static int PeerCloseTimeoutSeconds => (int)PeerCloseTimeout.TotalSeconds;
+
    private int sendInProgress; // 0 = idle, 1 = in flight
 
    public enum SendOutcome
@@ -81,10 +89,46 @@ public sealed class DxKeeperTcpClient
       Unconfirmed,
    }
 
+   /// <summary>
+   /// What went wrong, as a value rather than as prose.
+   ///
+   /// This exists because <see cref="SendResult.ErrorMessage"/> has two
+   /// audiences that want different things. It is written verbatim to
+   /// ErrorLog.txt, which is the file an operator pastes into a support thread
+   /// and which must therefore stay English; but the operator also needs to
+   /// read the reason on screen, in their own language. Localising the one
+   /// string would have translated the support artefact.
+   ///
+   /// So the transport says what happened and the UI decides how to say it:
+   /// ErrorMessage stays English for the log, and MainWindow maps this enum to
+   /// a translated sentence for the operation log. Adding a failure mode means
+   /// adding a case here and a string in Strings.resx, which is exactly the
+   /// pair that should move together.
+   /// </summary>
+   public enum SendFailure
+   {
+      None,
+      ConnectTimeout,
+      ConnectRefused,
+      PeerCloseTimeout,
+
+      /// <summary>Never handed to the transport — the queue was closing.</summary>
+      ShuttingDown,
+
+      /// <summary>Anything else; ErrorMessage carries the detail.</summary>
+      Exception,
+   }
+
    public sealed class SendResult
    {
       public SendOutcome Outcome { get; init; }
+      public SendFailure Failure { get; init; }
       public string? Response { get; init; }
+
+      /// <summary>
+      /// English, always. Goes to ErrorLog.txt verbatim. Use
+      /// <see cref="Failure"/> to decide what to show the operator.
+      /// </summary>
       public string? ErrorMessage { get; init; }
       // The exact bytes (as a string) we wrote to the socket — surfaced so
       // the UI's debug log can show the user the on-wire frame for diagnosis.
@@ -154,6 +198,7 @@ public sealed class DxKeeperTcpClient
             return new SendResult
             {
                Outcome = SendOutcome.Failed,
+               Failure = SendFailure.ConnectTimeout,
                ErrorMessage = $"Connection to DXKeeper at {DxkHost}:{port} timed out after {ConnectTimeout.TotalSeconds:0}s.",
                WireFrame = frame,
                Port = port,
@@ -164,6 +209,7 @@ public sealed class DxKeeperTcpClient
             return new SendResult
             {
                Outcome = SendOutcome.Failed,
+               Failure = SendFailure.ConnectRefused,
                // Name the panel the operator can check, not the registry key
                // this port was read from — that heading also reports whether
                // the service is actually listening.
@@ -197,6 +243,7 @@ public sealed class DxKeeperTcpClient
             return new SendResult
             {
                Outcome = SendOutcome.Unconfirmed,
+               Failure = SendFailure.PeerCloseTimeout,
                Response = peer.Text,
                ErrorMessage =
                   $"DXKeeper did not close the connection within {PeerCloseTimeout.TotalSeconds:0}s. " +
@@ -216,7 +263,12 @@ public sealed class DxKeeperTcpClient
       }
       catch (Exception ex)
       {
-         return new SendResult { Outcome = SendOutcome.Failed, ErrorMessage = ex.Message };
+         return new SendResult
+         {
+            Outcome = SendOutcome.Failed,
+            Failure = SendFailure.Exception,
+            ErrorMessage = ex.Message,
+         };
       }
       finally
       {
