@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Neutral (English) UI strings. Every operator-visible string belongs here.
+
+    TRANSLATOR NOTES
+
+    Do NOT translate these - they are product names, protocol names, or terms
+    of art that operators use in English worldwide, and several are wire-format
+    identifiers:
+
+      DXKeeper, N1MM Logger+, DXView, Pathfinder, Club Log, LoTW, eQSL, QRZ
+      QSO, ADIF, ARRL, RST, callsign, DX, UDP, TCP, multicast
+      any filename such as FailedQSOs_20260815_014645.adi
+
+    Menu paths inside OTHER programs must also stay in English. DXKeeper's own
+    interface is English-only, so translating "Config > Defaults tab > Network
+    Service" would send the operator hunting for a menu that does not exist.
+    Those paths are held in DxKeeperConfigPath and DxKeeperConfigNetworkService
+    and substituted into sentences.
+
+    WHAT IS AND IS NOT IN HERE
+
+    The Operation Log's routine traffic lines ("contactinfo: W1AW 20m CW ->
+    sending to DXKeeper...") are deliberately NOT in this file and stay in
+    English. They are mostly wire identifiers - contactinfo, contactreplace,
+    lookupinfo, ADIF, callsigns, port numbers - so a translated sentence around
+    them would be half English anyway, and that log is what an operator pastes
+    into a support thread. ErrorLog.txt is English for the same reason.
+
+    The log lines that ARE here are the ones reporting something the operator
+    must act on: a QSO DXKeeper did not confirm, a failed bind, an edit that
+    left DXKeeper without the QSO. Those are prefixed Alert* below.
+
+    Alert* strings carry their own marker where they need one ("***"). Do not
+    add a translated "ERROR:" prefix by concatenation - severity is passed to
+    the log explicitly in code and drives the colour, so the marker is part of
+    the sentence or not present at all.
+
+    WRITING SOURCE STRINGS
+
+    No idioms. "Another send was already in flight" machine-translated into
+    German as a literal statement about aviation; it now reads "another send
+    had not finished yet". Anything that cannot be translated word for word
+    will not survive a machine pass, and will puzzle a human translator who
+    has no screenshot to work from. Prefer plain, literal wording even where
+    it reads a little flatter in English.
+
+    Avoid brackets, especially around a placeholder. "Failed QSOs ({0})" came
+    back from the machine pass as "Failed QSOs (){0})", which renders as
+    "Failed QSOs ()2)"; the same happened to three other strings that had
+    parenthesised asides. The placeholder itself survived every time - it is
+    the punctuation wrapped tightly around it that does not. Use a dash, a
+    colon or a second sentence instead. tools/translate_resx.py now rejects a
+    translation that leaves brackets unbalanced, so a string written this way
+    simply stays in English rather than shipping broken.
+
+    Placeholders must keep their indices. A translation may reorder {0} and
+    {1} freely, but inventing an index the English string does not have makes
+    string.Format throw. MainWindow.L() catches that and shows the raw
+    template rather than letting it crash the gateway, and
+    tools/translate_resx.py rejects the string before it is ever written -
+    but the first line of defence is not writing one.
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <data name="AppTitle" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway</value>
+    <comment>EN: N1MM-DXKeeper Gateway
+    NOTE: Window title. "N1MM" and "DXKeeper" are product names - do not translate.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
+  </data>
+  <data name="SettingsHeader" xml:space="preserve">
+    <value>Nastavenie</value>
+    <comment>EN: Settings
+    NOTE: Heading of the settings section.</comment>
+  </data>
+  <data name="NetworkHeader" xml:space="preserve">
+    <value>Sieť</value>
+    <comment>EN: Network
+    NOTE: Heading of the card holding ports and the multicast group.</comment>
+  </data>
+  <data name="ServicesHeader" xml:space="preserve">
+    <value>Služby</value>
+    <comment>EN: Services
+    NOTE: Heading of the card holding what DXKeeper should do with each logged QSO.</comment>
+  </data>
+  <data name="DiagnosticsHeader" xml:space="preserve">
+    <value>Diagnostika</value>
+    <comment>EN: Diagnostics
+    NOTE: Heading of the card holding logging options.</comment>
+  </data>
+  <data name="GeneralHeader" xml:space="preserve">
+    <value>Všeobecné</value>
+    <comment>EN: General
+    NOTE: Heading of the card holding settings that belong to the gateway itself rather than to what it talks to - currently just the interface language.</comment>
+  </data>
+  <data name="LogCopy" xml:space="preserve">
+    <value>Kopírovať</value>
+    <comment>EN: Copy
+    NOTE: Button copying the visible operation log to the clipboard.</comment>
+  </data>
+  <data name="LogClear" xml:space="preserve">
+    <value>Vyčistiť</value>
+    <comment>EN: Clear
+    NOTE: Button clearing the on-screen operation log. Does not affect ErrorLog.txt.</comment>
+  </data>
+  <data name="LogCopyTip" xml:space="preserve">
+    <value>Skopírujte protokol operácie do schránky</value>
+    <comment>EN: Copy the operation log to the clipboard</comment>
+  </data>
+  <data name="LogClearTip" xml:space="preserve">
+    <value>Vyprázdniť záznam na obrazovke. ErrorLog.txt nie je ovplyvnená.</value>
+    <comment>EN: Clear the on-screen log. ErrorLog.txt is not affected.</comment>
+  </data>
+  <data name="LogCopied" xml:space="preserve">
+    <value>Záznam operácií skopírovaný do schránky {0} riadky.</value>
+    <comment>EN: Operation log copied to the clipboard — {0} lines.
+    NOTE: {0} is a line count. Written without brackets on purpose: parenthesised text around a placeholder is where the machine pass loses a bracket, and the result renders as ")12 lines". See the note on brackets at the top of this file.</comment>
+  </data>
+  <data name="FailedQsoIndicator" xml:space="preserve">
+    <value>Zlyhalo QSOs</value>
+    <comment>EN: Failed QSOs
+    NOTE: Always-present link in the middle of the window footer. Quiet when nothing has failed, highlighted with a count when something has. Keep it SHORT - it sits between two groups of buttons.</comment>
+  </data>
+  <data name="FailedQsoIndicatorCount" xml:space="preserve">
+    <value>Zlyhalo QSOs: {0}</value>
+    <comment>EN: Failed QSOs: {0}
+    NOTE: Same link once QSOs have failed this run. {0} is a count. Keep it short. Written without brackets on purpose - as "Failed QSOs ({0})" the machine pass moved the bracket and returned "(){0})", which reads as "Failed QSOs ()2)". Punctuation wrapped tightly around a placeholder does not survive translation reliably.</comment>
+  </data>
+  <data name="FailedQsoNoneTip" xml:space="preserve">
+    <value>Nie. QSOs tento beh zlyhal. Kliknite pre otvorenie priečinka, kde by boli uložené, v prípade, že skorší spustiť opustil súbor za.</value>
+    <comment>EN: No QSOs have failed this run. Click to open the folder where they would be saved, in case an earlier run left a file behind.
+    NOTE: Tooltip when nothing has failed. The second half matters: a file from an earlier run is otherwise easy to miss.</comment>
+  </data>
+  <data name="UdpPortLabel" xml:space="preserve">
+    <value>UDP počúvanie portu:</value>
+    <comment>EN: UDP listening port:
+    NOTE: Label for the port N1MM broadcasts QSO data to. "UDP" is a protocol name - do not translate.</comment>
+  </data>
+  <data name="UdpPortTip" xml:space="preserve">
+    <value>UDP prístav, ktorý N1MM Logger+ vysielanie QSO XML do (štandard 12060)</value>
+    <comment>EN: UDP port that N1MM Logger+ broadcasts QSO XML to (default 12060)
+    NOTE: Tooltip. Keep "N1MM Logger+", "UDP", "QSO" and "XML" in English.</comment>
+  </data>
+  <data name="MulticastLabel" xml:space="preserve">
+    <value>Multicastová skupina (nepovinné):</value>
+    <comment>EN: Multicast group (optional):
+    NOTE: Label for an optional IPv4 multicast group address.</comment>
+  </data>
+  <data name="MulticastPlaceholder" xml:space="preserve">
+    <value>prázdne = bez multicast</value>
+    <comment>EN: blank = no multicast
+    NOTE: Placeholder shown inside the empty multicast text box.</comment>
+  </data>
+  <data name="MulticastTip" xml:space="preserve">
+    <value>Nepovinné. Ponechajte prázdne, ak je vysielací program nakonfigurovaný tak, aby sa poslal do multicastovej skupiny (224.0.0 - 239.2555.255.255). Unicast a vysielanie sú prijaté tak či tak. Skupina je pripojená na rozhraní, ktoré vyberie smerovacia tabuľka.</value>
+    <comment>EN: Optional. Leave blank unless the sending program is configured to send to a multicast group (224.0.0.0 - 239.255.255.255). Unicast and broadcast are received either way. The group is joined on the interface the routing table selects.
+    NOTE: Tooltip. Do not translate the address range.</comment>
+  </data>
+  <data name="DxKeeperPortLabel" xml:space="preserve">
+    <value>DXKeeper TCP základný port:</value>
+    <comment>EN: DXKeeper TCP base port:
+    NOTE: Label. "DXKeeper" and "TCP" - do not translate.</comment>
+  </data>
+  <data name="DxKeeperPortTip" xml:space="preserve">
+    <value>Tu len na čítanie. Nastavte ho DXKeeper: {0}. Brána posiela do základného prístavu + 1, čo je prístav DXKeeper ukazuje v kurze toho panelu.</value>
+    <comment>EN: Read-only here. Set it in DXKeeper: {0}. The gateway sends to Base Port + 1, which is the port DXKeeper shows in that panel's heading.
+    NOTE: Tooltip. {0} is the English menu path inside DXKeeper (DxKeeperConfigPath) and must stay untranslated, because DXKeeper's own interface is English-only.</comment>
+  </data>
+  <data name="DxKeeperConfigPath" xml:space="preserve">
+    <value>Config &gt; Defaults tab &gt; Network Service &gt; Base Port</value>
+    <comment>EN: Config &gt; Defaults tab &gt; Network Service &gt; Base Port
+    NOTE: DO NOT TRANSLATE. A literal menu path inside DXKeeper, whose interface is English-only. Translating it would describe a menu that does not exist.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
+  </data>
+  <data name="DxKeeperPortReading" xml:space="preserve">
+    <value>(čítanie z registra...)</value>
+    <comment>EN: (reading from registry…)
+    NOTE: Placeholder shown until DXKeeper's configured port has been read.</comment>
+  </data>
+  <data name="StatusHeader" xml:space="preserve">
+    <value>Stav pripojenia</value>
+    <comment>EN: Connection Status
+    NOTE: Heading of the section showing whether each DXLab program is reachable.</comment>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>pripojený</value>
+    <comment>EN: connected</comment>
+  </data>
+  <data name="Disconnected" xml:space="preserve">
+    <value>odpojené</value>
+    <comment>EN: disconnected</comment>
+  </data>
+  <data name="LogHeader" xml:space="preserve">
+    <value>Záznam operácií</value>
+    <comment>EN: Operation Log
+    NOTE: Heading of the running list of what the gateway has done.</comment>
+  </data>
+  <data name="SeeErrorLog" xml:space="preserve">
+    <value>zobraziť ErrorLog</value>
+    <comment>EN: see ErrorLog
+    NOTE: Link shown when something has been written to the error log. "ErrorLog" is the filename ErrorLog.txt - do not translate.</comment>
+  </data>
+  <data name="DisplayErrorLog" xml:space="preserve">
+    <value>Zobraziť záznam o chybe</value>
+    <comment>EN: Display Error Log
+    NOTE: Button that opens ErrorLog.txt.</comment>
+  </data>
+  <data name="Help" xml:space="preserve">
+    <value>Pomocník</value>
+    <comment>EN: Help</comment>
+  </data>
+  <data name="CheckDxkLookup" xml:space="preserve">
+    <value>Hľadanie predchádzajúce QSOs</value>
+    <comment>EN: Lookup previous QSOs
+    NOTE: "QSO" means a radio contact and is used in English worldwide - do not translate.</comment>
+  </data>
+  <data name="CheckDxkLookupTip" xml:space="preserve">
+    <value>Priame DXKeeper zobraziť predchádzajúce QSOs s zaznamenávaným volací znak</value>
+    <comment>EN: Direct DXKeeper to display previous QSOs with the logged callsign</comment>
+  </data>
+  <data name="CheckCallbook" xml:space="preserve">
+    <value>Callbook otázky</value>
+    <comment>EN: Query Callbook
+    NOTE: A callbook is a database of licensed operators.</comment>
+  </data>
+  <data name="CheckCallbookTip" xml:space="preserve">
+    <value>Priame DXKeeper query its callbook</value>
+    <comment>EN: Direct DXKeeper to query its selected callbook</comment>
+  </data>
+  <data name="CheckEqsl" xml:space="preserve">
+    <value>Odoslať eQSL.cc</value>
+    <comment>EN: Upload to eQSL.cc
+    NOTE: "eQSL.cc" is a website name - do not translate.</comment>
+  </data>
+  <data name="CheckEqslTip" xml:space="preserve">
+    <value>Priame DXKeeper nahrať prihlásený QSO do eQSL.cc</value>
+    <comment>EN: Direct DXKeeper to upload logged QSO to eQSL.cc</comment>
+  </data>
+  <data name="CheckLotw" xml:space="preserve">
+    <value>Odoslať LoTW</value>
+    <comment>EN: Upload to LoTW
+    NOTE: "LoTW" is the ARRL's Logbook of the World - do not translate.</comment>
+  </data>
+  <data name="CheckLotwTip" xml:space="preserve">
+    <value>Priame DXKeeper nahrať prihlásený QSO do LoTW</value>
+    <comment>EN: Direct DXKeeper to upload logged QSO to LoTW</comment>
+  </data>
+  <data name="CheckClubLog" xml:space="preserve">
+    <value>Odoslať Club Log</value>
+    <comment>EN: Upload to Club Log
+    NOTE: "Club Log" is a website name - do not translate.</comment>
+  </data>
+  <data name="CheckClubLogTip" xml:space="preserve">
+    <value>Priame DXKeeper nahrať prihlásený QSO do Club Log</value>
+    <comment>EN: Direct DXKeeper to upload logged QSO to Club Log</comment>
+  </data>
+  <data name="CheckDebugLogging" xml:space="preserve">
+    <value>Informácie o ladení denníka</value>
+    <comment>EN: Log debugging information</comment>
+  </data>
+  <data name="CheckDebugLoggingTip" xml:space="preserve">
+    <value>Log ladenie informácie do ErrorLog.txt</value>
+    <comment>EN: Log debugging information to ErrorLog.txt</comment>
+  </data>
+  <data name="CheckVerboseLogging" xml:space="preserve">
+    <value>Logovanie slovesa</value>
+    <comment>EN: Verbose logging</comment>
+  </data>
+  <data name="CheckVerboseLoggingTip" xml:space="preserve">
+    <value>Zobraziť udalosti s nízkou prioritou v protokole operácií, ako napríklad DDE Pripojenie a odpojenie</value>
+    <comment>EN: Show low-priority status events in the operation log, such as DDE connecting and disconnecting
+    NOTE: "DDE" is a Windows protocol name - do not translate. Written without brackets on purpose - see the note on brackets at the top of this file.</comment>
+  </data>
+  <data name="FailedQsoCount" xml:space="preserve">
+    <value>{0} QSOs nedoručená</value>
+    <comment>EN: {0} QSOs not delivered — open
+    NOTE: Status line. {0} is a count. Followed by links reading "file" and "folder". See FailedQsoCountOne for the singular.</comment>
+  </data>
+  <data name="FailedQsoCountOne" xml:space="preserve">
+    <value>1 QSO nedoručená</value>
+    <comment>EN: 1 QSO not delivered — open
+    NOTE: Singular form of FailedQsoCount. Languages with more plural forms may need extra keys.</comment>
+  </data>
+  <data name="FailedQsoOpenFile" xml:space="preserve">
+    <value>súbor</value>
+    <comment>EN: file
+    NOTE: Link that opens the failed-QSO ADIF file.</comment>
+  </data>
+  <data name="FailedQsoOpenFolder" xml:space="preserve">
+    <value>priečinok</value>
+    <comment>EN: folder
+    NOTE: Link that shows the failed-QSO file in Explorer.</comment>
+  </data>
+  <data name="FailedQsoTip" xml:space="preserve">
+    <value>{0} QSOs neboli dodané DXKeeper Tento beh. Kliknite pre zobrazenie súboru vo svojom priečinku, import do DXKeeper Potom to vymaž. Tento počet sa odstráni, keď súbor zmizne.
+
+{1}</value>
+    <comment>EN: {0} QSOs were not delivered to DXKeeper this run. Click to show the file in its folder, import it into DXKeeper, then delete it. This count clears when the file is gone.
+
+{1}
+    NOTE: Tooltip once QSOs have failed. {0} is a count, {1} is the full path of the ADIF file - do not translate the path.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+  </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Jazyk:</value>
+    <comment>EN: Language:
+    NOTE: Label for the user-interface language selector.</comment>
+  </data>
+  <data name="LanguageTip" xml:space="preserve">
+    <value>Jazyk tohto okna. "Follow Windows" používa jazyk Windows. Zmena nadobudne účinnosť pri ďalšom spustení brány.</value>
+    <comment>EN: Language of this window. "Follow Windows" uses the Windows display language. A change takes effect the next time the gateway starts.</comment>
+  </data>
+  <data name="LanguageFollowWindows" xml:space="preserve">
+    <value>Sledujte okná</value>
+    <comment>EN: Follow Windows
+    NOTE: First entry of the language list, meaning "use the Windows display language".</comment>
+  </data>
+  <data name="LanguageRestartNote" xml:space="preserve">
+    <value>Reštartovať bránu pre prepínanie rozhrania na {0}.</value>
+    <comment>EN: Restart the gateway to switch the interface to {0}.
+    NOTE: Shown as a dialog and logged when the language is changed. {0} is a language name, already written in its own language - do not translate it. Deliberately one sentence ending in the placeholder: as "Language set to {0}. Restart the gateway to apply it." the machine pass dropped the ". " that followed the placeholder, producing "espanolReinicie" and "cestinaObnovit" - two sentences run together. Keep the placeholder at the end.</comment>
+  </data>
+  <data name="DlgAlreadyRunning" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway už beží.</value>
+    <comment>EN: N1MM-DXKeeper Gateway is already running.
+    NOTE: Shown when a second copy is launched. The product name stays in English.</comment>
+  </data>
+  <data name="DlgUdpPortInvalid" xml:space="preserve">
+    <value>EÚ UDP počúvanie port musí byť celé číslo medzi 1 a 65535.</value>
+    <comment>EN: The UDP listening port must be a whole number between 1 and 65535.</comment>
+  </data>
+  <data name="DlgMulticastInvalid" xml:space="preserve">
+    <value>{0}.
+
+Ponechajte prázdne, pokiaľ nie je vysielací program nastavený tak, aby sa poslal do multicastovej skupiny.</value>
+    <comment>EN: {0}.
+
+Leave this blank unless the sending program is configured to send to a multicast group.
+    NOTE: {0} is ErrNotAnIpAddress or ErrNotMulticast. Keep the blank line.</comment>
+  </data>
+  <data name="DlgNoFailedQsos" xml:space="preserve">
+    <value>Každý QSO zasadnutie DXKeeper.
+
+{0} neexistuje.</value>
+    <comment>EN: Every QSO this session was delivered to DXKeeper.
+
+{0} does not exist.
+    NOTE: {0} is a full file path - do not translate it.</comment>
+  </data>
+  <data name="DlgCouldNotOpenFile" xml:space="preserve">
+    <value>Nepodarilo sa otvoriť {0}:
+
+{1}
+
+Použiť odkaz na priečinok a importovať súbor do DXKeeper odtiaľ.</value>
+    <comment>EN: Could not open {0}:
+
+{1}
+
+Use the folder link and import the file into DXKeeper from there.
+    NOTE: {0} is a filename, {1} is an operating-system error message. Do not translate either.</comment>
+  </data>
+  <data name="DlgCouldNotOpenFolder" xml:space="preserve">
+    <value>Nepodarilo sa otvoriť priečinok:
+
+{0}</value>
+    <comment>EN: Could not open the folder:
+
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgNoErrorLog" xml:space="preserve">
+    <value>Zatiaľ sa nič nenapísalo do chybového protokolu:
+
+{0}</value>
+    <comment>EN: Nothing has been written to the error log yet:
+
+{0}
+    NOTE: {0} is the full path of ErrorLog.txt - do not translate it.</comment>
+  </data>
+  <data name="DlgCouldNotOpenErrorLog" xml:space="preserve">
+    <value>Nepodarilo sa otvoriť ErrorLog.txt:
+
+{0}</value>
+    <comment>EN: Could not open ErrorLog.txt:
+
+{0}
+    NOTE: "ErrorLog.txt" is a filename - do not translate it. {0} is an operating-system error message.</comment>
+  </data>
+  <data name="DlgCouldNotOpenHelp" xml:space="preserve">
+    <value>Nepodarilo sa otvoriť stránku pomocníka:
+
+{0}</value>
+    <comment>EN: Could not open the help page:
+
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="ErrNotAnIpAddress" xml:space="preserve">
+    <value>"{0}" nie je platná IP adresa</value>
+    <comment>EN: "{0}" is not a valid IP address
+    NOTE: {0} is what the operator typed. Used inside DlgMulticastInvalid and AlertMulticastRejected, so it is a fragment, not a sentence - no full stop.</comment>
+  </data>
+  <data name="ErrNotMulticast" xml:space="preserve">
+    <value>"{0}" nie je IPv4 multicastová adresa (224.0.0 - 239.2555.255.255)</value>
+    <comment>EN: "{0}" is not an IPv4 multicast address (224.0.0.0 - 239.255.255.255)
+    NOTE: Fragment, no full stop. Do not translate the address range or "IPv4".</comment>
+  </data>
+  <data name="MsgBindFailed" xml:space="preserve">
+    <value>Nepodarilo sa počúvať UDP prístav {0}: {1}</value>
+    <comment>EN: Could not listen on UDP port {0}: {1}
+    NOTE: Used both as a dialog and as a log line. {0} is a port number, {1} is an operating-system error message.</comment>
+  </data>
+  <data name="AlertMulticastRejected" xml:space="preserve">
+    <value>{0} - začína bez multicastu.</value>
+    <comment>EN: {0} - starting WITHOUT multicast.
+    NOTE: {0} is ErrNotAnIpAddress or ErrNotMulticast. The emphasis on "without" matters: the gateway looks healthy but would receive nothing from that group.</comment>
+  </data>
+  <data name="AlertUdpPortReverted" xml:space="preserve">
+    <value>Vrátené UDP prístav {0}.</value>
+    <comment>EN: Reverted to UDP port {0}.</comment>
+  </data>
+  <data name="AlertMulticastReverted" xml:space="preserve">
+    <value>Vrátil multicast skupinu na "{0}"."</value>
+    <comment>EN: Reverted the multicast group to "{0}".
+    NOTE: {0} may be empty, meaning no multicast.</comment>
+  </data>
+  <data name="AlertReplaceNoKey" xml:space="preserve">
+    <value>contactreplace namiesto {0}: žiadne použiteľné &lt;oldcall&gt;/&lt;oldtimestamp&gt; - úprava nebola aplikovaná na DXKeeper</value>
+    <comment>EN: contactreplace for {0}: no usable &lt;oldcall&gt;/&lt;oldtimestamp&gt; - the edit was NOT applied to DXKeeper
+    NOTE: "contactreplace", "&lt;oldcall&gt;" and "&lt;oldtimestamp&gt;" are wire-format names - do not translate them. {0} is a callsign.</comment>
+  </data>
+  <data name="AlertDeleteNoKey" xml:space="preserve">
+    <value>contactdelete namiesto {0}: chýbajúci volací znak alebo časová pečiatka - nič nebolo zaslané DXKeeper</value>
+    <comment>EN: contactdelete for {0}: missing callsign or timestamp - nothing was sent to DXKeeper
+    NOTE: "contactdelete" is a wire-format name - do not translate it. {0} is a callsign.</comment>
+  </data>
+  <data name="AlertInternalError" xml:space="preserve">
+    <value>VNÚTORNÝ ERROR rieši správu. {0}: {1}Pozri ErrorLog.txt Brána stále beží.</value>
+    <comment>EN: INTERNAL ERROR handling a message. {0}: {1}. See ErrorLog.txt. The gateway is still running.
+    NOTE: A defect in this program, not bad input. {0} is an exception type name and {1} its message - do not translate either. The last sentence matters: it tells the operator not to restart mid-contest.
+    REVIEW: the machine pass ran a product name into the next word and a space was inserted to separate them. Check that the wording around it reads naturally.</comment>
+  </data>
+  <data name="AlertInvalidMessage" xml:space="preserve">
+    <value>INVALID: {0}</value>
+    <comment>EN: INVALID: {0}
+    NOTE: {0} describes what was wrong with a received datagram and stays in English - it is wire diagnostics that also goes to ErrorLog.txt.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
+  </data>
+  <data name="AlertReplaceLostQso" xml:space="preserve">
+    <value>*** {0}: DXKeeper Vymazaný originál, ale neprihlásil editáciu{1} - editovaný QSO je {2}, importovať. Dôvod: {3}</value>
+    <comment>EN: *** {0}: DXKeeper DELETED the original but did not log the edit{1} - the edited QSO is in {2}, import it. Reason: {3}
+    NOTE: The most serious message this program emits: DXKeeper no longer holds the QSO at all. Keep the *** marker. {0} callsign, {1} an optional " (TCP 52001)" tag, {2} a filename, {3} a reason from the Fail* strings.</comment>
+  </data>
+  <data name="AlertReplaceLostQsoNotSaved" xml:space="preserve">
+    <value>*** {0}: DXKeeper Vymazaný originál, úprava nebola prihlásená{1}, A úprava nemohla byť uložená {2}Dôvod: {3}</value>
+    <comment>EN: *** {0}: DXKeeper DELETED the original, the edit was not logged{1}, AND the edit could not be saved to {2}. Reason: {3}
+    NOTE: As AlertReplaceLostQso, but the recovery file could not be written either - the QSO is unrecoverable. Keep the *** marker.</comment>
+  </data>
+  <data name="AlertNotConfirmed" xml:space="preserve">
+    <value>DXKeeper nepotvrdil {0}{1}{2}: {3}</value>
+    <comment>EN: DXKeeper did not confirm {0}{1}{2}: {3}
+    NOTE: {0} a short description of the QSO, {1} an optional " (TCP 52001)" tag, {2} AlertSavedTo or AlertNotSavedTo or empty, {3} a reason from the Fail* strings.</comment>
+  </data>
+  <data name="AlertSavedTo" xml:space="preserve">
+    <value> - uložené {0}</value>
+    <comment>EN:  - saved to {0}
+    NOTE: Fragment appended inside AlertNotConfirmed. Keep the leading space. {0} is a filename.</comment>
+  </data>
+  <data name="AlertNotSavedTo" xml:space="preserve">
+    <value> - A nebolo možné ho zachrániť. {0}</value>
+    <comment>EN:  - AND it could not be saved to {0}
+    NOTE: Fragment appended inside AlertNotConfirmed. Keep the leading space. {0} is a filename.</comment>
+  </data>
+  <data name="FailBusy" xml:space="preserve">
+    <value>iný send ešte neskončil</value>
+    <comment>EN: another send had not finished yet
+    NOTE: Deliberately plain. This read "another send was already in flight" and machine-translated into German as a literal statement about aviation - see the note on idioms at the top of this file.</comment>
+  </data>
+  <data name="FailConnectTimeout" xml:space="preserve">
+    <value>spojenie s DXKeeper časované po {0} sekundy</value>
+    <comment>EN: the connection to DXKeeper timed out after {0} seconds
+    NOTE: {0} is a number of seconds.</comment>
+  </data>
+  <data name="FailConnectRefused" xml:space="preserve">
+    <value>nemožno pripojiť k DXKeeper o TCP prístav {0}; DXKeeper, skontroluj {1} "Listening"</value>
+    <comment>EN: cannot connect to DXKeeper on TCP port {0}; in DXKeeper, check that {1} reports "Listening"
+    NOTE: {0} is a port number. {1} is DxKeeperConfigNetworkService, an English menu path inside DXKeeper - it must stay untranslated because DXKeeper's own interface is English-only.</comment>
+  </data>
+  <data name="FailNoPeerClose" xml:space="preserve">
+    <value>DXKeeper nikdy neuzavreli spojenie {0} sekundy, takže QSO možno nikdy neboli prijaté</value>
+    <comment>EN: DXKeeper never closed the connection within {0} seconds, so the QSO may never have been accepted
+    NOTE: {0} is a number of seconds. DXKeeper acknowledges only by closing the connection, so no close means the QSO cannot be claimed as delivered.</comment>
+  </data>
+  <data name="FailShuttingDown" xml:space="preserve">
+    <value>Brána bola vypnutá a toto nikdy nebolo poslané.</value>
+    <comment>EN: the gateway was shutting down and this was never sent</comment>
+  </data>
+  <data name="FailSendFailed" xml:space="preserve">
+    <value>poslanie zlyhalo</value>
+    <comment>EN: the send failed
+    NOTE: Last-resort wording when no more specific reason is available.</comment>
+  </data>
+  <data name="TranslatedBy" xml:space="preserve">
+    <value>LibreTranslate (https://libretranslate.com/)</value>
+    <comment>EN: Tom Schaefer, NY4I
+    NOTE: WHOEVER TRANSLATED THIS FILE: replace this value with your name and callsign, however you would like to be credited. It is shown in the About window to anyone running the gateway in this language, and it is the one entry here that is not a translation of the English. Free-form - a name, a callsign, an email, a club, whatever you prefer. It is never overwritten by the machine-translation tool.</comment>
+  </data>
+  <data name="AboutLink" xml:space="preserve">
+    <value>O</value>
+    <comment>EN: About
+    NOTE: Small link in the window footer that opens the About window.</comment>
+  </data>
+  <data name="AboutTitle" xml:space="preserve">
+    <value>O N1MM-DXKeeper Gateway</value>
+    <comment>EN: About N1MM-DXKeeper Gateway
+    NOTE: Title of the About window. The product name stays in English.</comment>
+  </data>
+  <data name="AboutVersion" xml:space="preserve">
+    <value>Verzia {0}</value>
+    <comment>EN: Version {0}
+    NOTE: {0} is a version number such as 2.0.0.</comment>
+  </data>
+  <data name="AboutPurpose" xml:space="preserve">
+    <value>Carries QSOs z TR4W a N1MM Logger+ do DXKeeper, a pýta sa DXView a Pathfinder o volaní, ktoré pracuješ.</value>
+    <comment>EN: Carries QSOs from TR4W and N1MM Logger+ into DXKeeper, and asks DXView and Pathfinder about the callsigns you work.
+    NOTE: One-line description. All five product names stay in English. TR4W is named here and nowhere else - the program's title stays "N1MM-DXKeeper Gateway", which is what operators have called it for years.</comment>
+  </data>
+  <data name="AboutLicenceShort" xml:space="preserve">
+    <value>Bezplatný softvér pod GNU General Public License, verzia 3 alebo neskôr, s ABSOLUTELY NO WARRANTY.</value>
+    <comment>EN: Free software under the GNU General Public License, version 3 or later, with ABSOLUTELY NO WARRANTY.</comment>
+  </data>
+  <data name="AboutTranslationBy" xml:space="preserve">
+    <value>Preklad do {0} podľa {1}</value>
+    <comment>EN: Translation into {0} by {1}
+    NOTE: {0} is a language name in its own language, {1} is the value of TranslatedBy. Do not translate either.</comment>
+  </data>
+  <data name="AboutOriginal" xml:space="preserve">
+    <value>Prepis pôvodnej brány VB6. EÚ DXLab Formáty správ apartmánu sú prácou AA6YQ.</value>
+    <comment>EN: A rewrite of the original VB6 gateway. The DXLab Suite message formats are the work of AA6YQ.
+    NOTE: "VB6", "DXLab Suite" and the callsign AA6YQ stay in English.</comment>
+  </data>
+  <data name="AboutClose" xml:space="preserve">
+    <value>Zavrieť</value>
+    <comment>EN: Close</comment>
+  </data>
+  <data name="AboutCopyProfile" xml:space="preserve">
+    <value>Kopírovať podrobnosti</value>
+    <comment>EN: Copy details
+    NOTE: Button that copies version and environment details to the clipboard for pasting into a bug report.</comment>
+  </data>
+  <data name="AboutProfileCopied" xml:space="preserve">
+    <value>Detaily skopírované do schránky.</value>
+    <comment>EN: Details copied to the clipboard.</comment>
+  </data>
+  <data name="NoticeTitle" xml:space="preserve">
+    <value>O tomto programe</value>
+    <comment>EN: About this program
+    NOTE: Title of the first-run notice window. Deliberately not "Licence Agreement" - nothing is being agreed to.</comment>
+  </data>
+  <data name="NoticeHeading" xml:space="preserve">
+    <value>Bezplatný softvér a žiadna záruka</value>
+    <comment>EN: Free software, and no warranty</comment>
+  </data>
+  <data name="NoticeFreeSoftware" xml:space="preserve">
+    <value>N1MM-DXKeeper Gateway je bezplatný softvér pod GNU General Public License, verzia 3 alebo neskôr. Môžete ju používať na akýkoľvek účel, študovať, ako funguje, deliť sa o ňu a meniť ju.</value>
+    <comment>EN: N1MM-DXKeeper Gateway is free software under the GNU General Public License, version 3 or later. You may use it for any purpose, study how it works, share it, and change it.
+    NOTE: "GNU General Public License" is the name of a licence - do not translate it.</comment>
+  </data>
+  <data name="NoticeWarranty" xml:space="preserve">
+    <value>Prichádza s ASOLUTENE NO WARRANTY. Ponúka sa v nádeji, že je užitočná, ale nikto nezaručuje, že je vhodná na nejaký konkrétny účel, a žiadny prispievateľ nie je zodpovedný za všetko, čo sa pokazí. Váš denník je vaša zodpovednosť: skontrolujte, či QSOs dosah DXKeeper.</value>
+    <comment>EN: It comes with ABSOLUTELY NO WARRANTY. It is offered in the hope that it is useful, but nobody guarantees it is fit for any particular purpose, and no contributor is liable for anything that goes wrong. Your log is your responsibility: check that QSOs reach DXKeeper.
+    NOTE: The point of this window. Keep the emphasis on "no warranty" - many languages capitalise for emphasis differently, so use whatever reads as emphatic. The last sentence is specific to this program: the operator's contest log is at stake.</comment>
+  </data>
+  <data name="NoticeWhereToFind" xml:space="preserve">
+    <value>Plná licencia je v súbore COPIEING.txt vedľa programu a je vždy k dispozícii z odkazu About v okne.</value>
+    <comment>EN: The full licence is in the file COPYING.txt next to the program, and is always available from the About link in the window.
+    NOTE: "COPYING.txt" is a filename - do not translate it.</comment>
+  </data>
+  <data name="NoticeViewLicence" xml:space="preserve">
+    <value>Zobraziť licenciu</value>
+    <comment>EN: View the licence
+    NOTE: Button that opens the COPYING file.</comment>
+  </data>
+  <data name="NoticeUnderstood" xml:space="preserve">
+    <value>Rozumiem.</value>
+    <comment>EN: I understand
+    NOTE: Button that dismisses the notice. An acknowledgement, not an acceptance - see the note above.</comment>
+  </data>
+  <data name="DlgCouldNotOpenLicence" xml:space="preserve">
+    <value>Nepodarilo sa otvoriť licenčný súbor:
+
+{0}</value>
+    <comment>EN: Could not open the licence file:
+
+{0}
+    NOTE: {0} is an operating-system error message - do not translate it.</comment>
+  </data>
+  <data name="DlgLicenceMissing" xml:space="preserve">
+    <value>Licenčný súbor nie je tam, kde by mal byť:
+
+{0}
+
+Tento program je zadarmo softvér podľa GNU General Public License verzia 3 alebo neskôr, a prichádza s ABSOLUTLY NO WARRANTY. Licenciu si môžete prečítať na adrese https://www.gnu.org/licenses/gpl-3.0.html.</value>
+    <comment>EN: The licence file is not where it should be:
+
+{0}
+
+This program is free software under the GNU General Public License version 3 or later, and comes with ABSOLUTELY NO WARRANTY. You can read the licence at https://www.gnu.org/licenses/gpl-3.0.html
+    NOTE: Shown when COPYING is missing next to the program - a broken install. {0} is a file path. Do not translate the URL or the licence name.</comment>
+  </data>
+  <data name="TrayShow" xml:space="preserve">
+    <value>Otvoriť okno brány</value>
+    <comment>EN: Open the gateway window
+    NOTE: Notification area menu entry that brings the window back. Also the double-click action. Phrased as a full instruction rather than "Show gateway", which machine-translated into German as "Schaufenster" (a shop window) - a bare verb-noun pair gives a translator nothing to disambiguate against.</comment>
+  </data>
+  <data name="TrayQuit" xml:space="preserve">
+    <value>Ukončiť bránu</value>
+    <comment>EN: Quit the gateway
+    NOTE: Notification area menu entry that shuts the gateway down. Not the bare word "Quit", which machine-translated into German as "Quittung" (a receipt), Japanese as "login" and Korean as nonsense. Naming the object gives the model something to work with.</comment>
+  </data>
+  <data name="TrayHiddenTitle" xml:space="preserve">
+    <value>Stále beží</value>
+    <comment>EN: Still running
+    NOTE: Title of the notification shown the first time the window is minimised to the notification area.</comment>
+  </data>
+  <data name="TrayHiddenMessage" xml:space="preserve">
+    <value>Brána stále prijíma QSOs Tu. Kliknutím na túto ikonu vrátite okno späť.</value>
+    <comment>EN: The gateway is still receiving QSOs here. Double-click this icon to bring the window back.
+    NOTE: Shown once per session. It matters: an operator who thinks they closed the gateway would stop watching for problems while it is still the only thing logging their contest.</comment>
+  </data>
+  <data name="TrayReceived" xml:space="preserve">
+    <value>Prijaté od N1MM: {0}</value>
+    <comment>EN: Received from N1MM: {0}
+    NOTE: Count of UDP datagrams received. Menu entry.</comment>
+  </data>
+  <data name="TrayLogged" xml:space="preserve">
+    <value>Prihlásený do DXKeeper: {0}</value>
+    <comment>EN: Logged to DXKeeper: {0}
+    NOTE: Count of QSOs DXKeeper confirmed. Menu entry.</comment>
+  </data>
+  <data name="TrayQueued" xml:space="preserve">
+    <value>Čakám na odoslanie: {0}</value>
+    <comment>EN: Waiting to send: {0}
+    NOTE: Count of QSOs queued behind the one in flight. Menu entry.</comment>
+  </data>
+  <data name="TrayNotDelivered" xml:space="preserve">
+    <value>NEdodáva sa: {0}</value>
+    <comment>EN: NOT delivered: {0}
+    NOTE: Count of QSOs DXKeeper did not confirm. Menu entry. The emphasis is deliberate - this is the number that needs acting on.</comment>
+  </data>
+  <data name="TrayAllDelivered" xml:space="preserve">
+    <value>Všetky QSOs dodaný</value>
+    <comment>EN: All QSOs delivered
+    NOTE: Menu entry shown instead of TrayNotDelivered when nothing has failed.</comment>
+  </data>
+  <data name="TrayLastQso" xml:space="preserve">
+    <value>Posledný QSO: {0}</value>
+    <comment>EN: Last QSO: {0}
+    NOTE: {0} is a callsign and time, e.g. "W1AW 14:32". Menu entry.</comment>
+  </data>
+  <data name="TrayNoQsoYet" xml:space="preserve">
+    <value>Nie. QSOs zatiaľ</value>
+    <comment>EN: No QSOs yet</comment>
+  </data>
+  <data name="TrayOpenFailedFile" xml:space="preserve">
+    <value>Otvoriť nedodané QSO súbor</value>
+    <comment>EN: Open the undelivered QSO file
+    NOTE: Menu entry that opens FailedQSOs_*.adi.</comment>
+  </data>
+  <data name="TrayOpenFailedFolder" xml:space="preserve">
+    <value>Zobraziť vo svojom priečinku</value>
+    <comment>EN: Show it in its folder
+    NOTE: Menu entry that opens Explorer with the undelivered-QSO file selected. Needed as well as the entry above because .adi often has no program associated with it, and because the file may not be in the Gateway's own folder.</comment>
+  </data>
+  <data name="TrayFailureTitle" xml:space="preserve">
+    <value>QSO nedodaný</value>
+    <comment>EN: QSO not delivered
+    NOTE: Title of the notification raised when DXKeeper does not confirm a QSO while the window is hidden.</comment>
+  </data>
+  <data name="TrayFailureMessage" xml:space="preserve">
+    <value>DXKeeper nepotvrdila {0} QSOs Toto sedenie. Sú uložené pre vás importovať ručne.</value>
+    <comment>EN: DXKeeper has not confirmed {0} QSOs this session. They are saved for you to import by hand.
+    NOTE: {0} is a count. Raised while the window is hidden, because the operator cannot see the warning bar then.</comment>
+  </data>
+  <data name="TrayTooltip" xml:space="preserve">
+    <value>Prijaté {0}, zaznamenané {1}, nedodané {2}</value>
+    <comment>EN: Received {0}, logged {1}, not delivered {2}
+    NOTE: Tooltip under the product name. Windows caps the whole tooltip at 127 characters and it is truncated past that, so keep this short.</comment>
+  </data>
+  <data name="DxKeeperConfigNetworkService" xml:space="preserve">
+    <value>Config &gt; Defaults tab &gt; Network Service</value>
+    <comment>EN: Config &gt; Defaults tab &gt; Network Service
+    NOTE: DO NOT TRANSLATE. A literal menu path inside DXKeeper, whose interface is English-only.
+    NOT TRANSLATED: left in English deliberately - either a do-not-translate entry, or the machine pass damaged it and was rejected.</comment>
+  </data>
+</root>

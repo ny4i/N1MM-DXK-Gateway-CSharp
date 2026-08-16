@@ -160,10 +160,8 @@ In Process…
 
 ## Pending Changes
 
-Please note that the Gateway does not handle the Log Editing and Log deleting capabilities that the N1MM UDP messages support. That is implemented in this beta version: [N1MM_DXK_GW_2.0.0](https://ny4i.com/wp-content/uploads/2026/08/N1MM_DXK_GW_1.3.3.zip)
+Please note that the Gateway does not handle the Log Editing and Log deleting capabilities that the N1MM UDP messages support. That is implemented in this beta version: [N1MM_DXK_GW_2.0.0](https://ny4i.com/wp-content/uploads/2026/08/N1MM_DXK_GW.exe)
 
 [NY4I](https://ny4i.com/)
 
-Amateur Radio Station NY4I
 
-[Mission News Theme](https://www.competethemes.com/mission-news/) by Compete Themes.
